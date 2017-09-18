@@ -66,3 +66,10 @@ def agentSignup(request):
 
 def viewProfile(request):
     return render(request, 'webpage/profile.html')
+
+@login_required
+def submitConcern(request):
+    return render(request, 'webpage/concern.html')
+
+def notFound(request):
+    return render(request, 'webpage/404.html')
