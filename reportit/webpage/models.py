@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
+from django_markdown.models import MarkdownField
 from django.db import models
 from django.contrib.auth.models import User as User
 from django.db.models.signals import post_save
@@ -18,3 +18,9 @@ class ReporterProfile(models.Model):
 
 class AgentProfile(models.Model):
     username = models.ForeignKey(User, on_delete=models.CASCADE)
+
+class Concern(models.Model):
+	reporter = models.ForeignKey(ReporterProfile, on_delete=models.CASCADE)
+	target_agent = models.ManyToManyField(AgentProfile)
+	title = models.CharField(max_length=500)
+	content = MarkdownField(blank=False)
