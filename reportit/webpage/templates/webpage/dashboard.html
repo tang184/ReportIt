@@ -10,6 +10,10 @@
     {% if user.is_authenticated %}
     <li><a href="/account/profile/" name="profile" id="profile">{{request.user.username}}'s Profile </a></li>
       <li><a href="/logout?next=/" name="logout" id="logout"> Log out</a></li>
+      <li><a href="/account/profile/">{{request.user.username}}'s Profile </a></li>
+      <li><a href="/logout?next=/"> Log out</a></li>
+      <li><a href="/logout/">Logout</a></li>
+      <li><a href="/account/submitConcern/">SubmitConcern</a></li>
     {% else %}
       <li><a href="/login" name="login" id="login">Login</a></li>
       <li><a href="/reporterSignup" name="reporterSignup" id="reporterSignup">ReporterSignup</a></li>
