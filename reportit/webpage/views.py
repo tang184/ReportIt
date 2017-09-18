@@ -8,6 +8,8 @@ from django.shortcuts import render, redirect
 from .forms import ReporterSignUpForm
 
 # Create your views here.
+def home(request):
+    return render(request, 'webpage/home.html')
 
 def login(request):
     html = 'This is a login page'
@@ -35,3 +37,6 @@ def reporterSignup(request):
     else:
         form = ReporterSignUpForm()
     return render(request, 'webpage/reporterSignup.html', {'form': form})
+
+def viewProfile(request):
+    return render(request, 'webpage/profile.html')
