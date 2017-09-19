@@ -1,25 +1,46 @@
 
-{% block content %}
-  <h2>Login</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Login</button>
-  </form>
-{% endblock %}
+<!-- Website CSS style -->
+{% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static 'webpage/signup.css' %}"/>
 
-<div class="reporterSignup">
-    <a href="/reporterSignup">ReporterSignup</a>
-</div>
+<!-- Website Font style -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
 
-<div class="agentSignup">
-    <a href="/agentSignup">AgentSignup</a>
-</div>
+<!-- Google Fonts -->
+<link href='https://fonts.googleapis.com/css?family=Passion+One' rel='stylesheet' type='text/css'>
+<link href='https://fonts.googleapis.com/css?family=Oxygen' rel='stylesheet' type='text/css'>
+<body>
+		<div class="container">
+			<div class="row main">
+				<div class="panel-heading">
+	               <div class="panel-title text-center">
+	               		<h1 class="title">ReportIt Login</h1>
+	               		<hr />
+	               	</div>
+	            </div>
+            </div>
+        </div>
 
-<div class="homepage">
-    <a href="/">Homepage</a>
-</div>
+    {% block content %}
+      <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Login</button>
+      </form>
+    {% endblock %}
 
+    <div class="reporterSignup">
+        <a href="/reporterSignup">ReporterSignup</a>
+    </div>
+
+    <div class="agentSignup">
+        <a href="/agentSignup">AgentSignup</a>
+    </div>
+
+    <div class="homepage">
+        <a href="/">Homepage</a>
+    </div>
+</body>
 
 <!--
 <div class="container">
