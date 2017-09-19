@@ -19,7 +19,8 @@ def dashboard(request):
     return render(request, 'webpage/dashboard.html')
 
 def home(request):
-    return render(request, 'webpage/home.html')
+    # return render(request, 'webpage/home.html')
+    return render(request, 'webpage/index.html')
 
 def login(request):
     html = 'This is a login page'
