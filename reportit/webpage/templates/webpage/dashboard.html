@@ -7,6 +7,15 @@
     <h2>You have successfully logged in!</h2>
 </head>
 <body>
+    {% if user.is_authenticated %}
+      <li><a href="/account/profile/">{{request.user.username}}'s Profile </a></li>
+      <li><a href="/logout/">Logout</a></li>
+    {% else %}
+      <li><a href="/login/">Login</a></li>
+      <li><a href="/reporterSignup">ReporterSignup</a></li>
+      <li><a href="/agentSignup">AgentSignup</a></li>
+    {% endif %}
+
     This is a dashboard page
     Here, you can view all concerncs.
 </body>

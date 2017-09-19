@@ -5,6 +5,14 @@
     <title>Profile Page</title>
 </head>
 <body>
+    {% if user.is_authenticated %}
+      <li><a href="/logout/">Logout</a></li>
+    {% else %}
+      <li><a href="/login/">Login</a></li>
+      <li><a href="/reporterSignup/">ReporterSignup</a></li>
+      <li><a href="/agentSignup">AgentSignup</a></li>
+    {% endif %}
+
     This is a profile page
 </body>
 </html>

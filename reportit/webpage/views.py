@@ -5,7 +5,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 
-from .forms import ReporterSignUpForm
+from .forms import ReporterSignUpForm, AgentSignUpForm
 
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
@@ -37,16 +37,29 @@ def reporterSignup(request):
 
             username = form.cleaned_data.get('username')
             print (username)
-            #print(username)
             password1 = form.cleaned_data.get('password1')
-            #print(password1)
             password2 = form.cleaned_data.get('password2')
-            #user = authenticate(username=username, password=password1)
             form.save()
             return redirect('/')
     else:
         form = ReporterSignUpForm()
     return render(request, 'webpage/reporterSignup.html', {'form': form})
+
+def agentSignup(request):
+    if request.method == 'POST':
+        form = AgentSignUpForm(request.POST)
+        #print(form)
+        if form.is_valid():
+
+            username = form.cleaned_data.get('username')
+            print (username)
+            password1 = form.cleaned_data.get('password1')
+            password2 = form.cleaned_data.get('password2')
+            form.save()
+            return redirect('/')
+    else:
+        form = AgentSignUpForm()
+    return render(request, 'webpage/agentSignup.html', {'form': form})
 
 def viewProfile(request):
     return render(request, 'webpage/profile.html')
