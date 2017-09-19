@@ -9,7 +9,8 @@ from .forms import ReporterSignUpForm
 
 # Create your views here.
 def home(request):
-    return render(request, 'webpage/home.html')
+    # return render(request, 'webpage/home.html')
+    return render(request, 'webpage/index.html')
 
 def login(request):
     html = 'This is a login page'
