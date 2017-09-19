@@ -34,9 +34,7 @@ def reporterSignup(request):
         form = ReporterSignUpForm(request.POST)
         #print(form)
         if form.is_valid():
-            print(form)
             username = form.cleaned_data.get('username')
-            print (username)
             password1 = form.cleaned_data.get('password1')
             password2 = form.cleaned_data.get('password2')
             form.save()
