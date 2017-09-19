@@ -6,11 +6,11 @@
 </head>
 <body>
     {% if user.is_authenticated %}
-      <li><a href="/logout/">Logout</a></li>
+      <li><a href="/logout?next=/" name="logout" id="logout"> Log out</a></li>
     {% else %}
-      <li><a href="/login/">Login</a></li>
-      <li><a href="/reporterSignup/">ReporterSignup</a></li>
-      <li><a href="/agentSignup">AgentSignup</a></li>
+      <li><a href="/login" name="login" id="login">Login</a></li>
+      <li><a href="/reporterSignup" name="reporterSignup" id="reporterSignup">ReporterSignup</a></li>
+      <li><a href="/agentSignup"  name="agentSignup" id="agentSignup">AgentSignup</a></li>
     {% endif %}
 
     This is a profile page

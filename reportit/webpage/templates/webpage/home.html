@@ -30,14 +30,14 @@
 	            </div>
 
 
-                {% if user.is_authenticated %}
-                  <li><a href="/account/profile/">{{request.user.username}}'s Profile </a></li>
-                  <li><a href="/logout/">Logout</a></li>
-                {% else %}
-                  <li><a href="/login/">Login</a></li>
-                  <li><a href="/reporterSignup">ReporterSignup</a></li>
-                  <li><a href="/agentSignup">AgentSignup</a></li>
-                {% endif %}
+				{% if user.is_authenticated %}
+				<li><a href="/account/profile/" name="profile" id="profile">{{request.user.username}}'s Profile </a></li>
+				  <li><a href="/logout?next=/" name="logout" id="logout"> Log out</a></li>
+				{% else %}
+				  <li><a href="/login" name="login" id="login">Login</a></li>
+				  <li><a href="/reporterSignup" name="reporterSignup" id="reporterSignup">ReporterSignup</a></li>
+				  <li><a href="/agentSignup"  name="agentSignup" id="agentSignup">AgentSignup</a></li>
+				{% endif %}
 
                 <!-- <div class="login">
                 <a href="/login">Login</a>

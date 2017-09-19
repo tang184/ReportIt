@@ -6,7 +6,8 @@ from django.contrib import admin
 
 from .models import ReporterProfile
 from .models import AgentProfile
-
+from .models import Agent
 
 admin.site.register(ReporterProfile)
 admin.site.register(AgentProfile)
+admin.site.register(Agent)
