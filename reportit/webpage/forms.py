@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 class ReporterSignUpForm(UserCreationForm):
     #first_name = forms.CharField(max_length=30, required=False, help_text='Optional.')
     #last_name = forms.CharField(max_length=30, required=False, help_text='Optional.')
-    email = forms.EmailField(max_length=254, help_text='Required. Inform a valid email address.')
+    email = forms.EmailField(max_length=254)
 
     class Meta:
         model = User

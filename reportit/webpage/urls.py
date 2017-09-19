@@ -8,4 +8,5 @@ urlpatterns = [
     url(r'^$', views.home, name = 'home'),
     url(r'^reporterSignup$', views.reporterSignup, name = 'reporterSignup'),
     url(r'^accounts/profile/', views.viewProfile, name = 'profile'),
+    url(r'^account/dashboard', views.dashboard, name = 'dashboard'),
 ]
