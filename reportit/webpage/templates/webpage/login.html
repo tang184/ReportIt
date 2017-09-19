@@ -4,12 +4,16 @@
   <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button name="submitbutton" type="submit">Login</button>
+    <button type="submit">Login</button>
   </form>
 {% endblock %}
 
-<div class="signup">
+<div class="reporterSignup">
     <a href="/reporterSignup">ReporterSignup</a>
+</div>
+
+<div class="agentSignup">
+    <a href="/agentSignup">AgentSignup</a>
 </div>
 
 <div class="homepage">

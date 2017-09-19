@@ -18,6 +18,8 @@
 	</head>
 
     <body>
+
+
         <div class="container">
 			<div class="row main">
 				<div class="panel-heading">
@@ -27,7 +29,17 @@
 	               	</div>
 	            </div>
 
-                <div class="login">
+
+                {% if user.is_authenticated %}
+                  <li><a href="/account/profile/">{{request.user.username}}'s Profile </a></li>
+                  <li><a href="/logout/">Logout</a></li>
+                {% else %}
+                  <li><a href="/login/">Login</a></li>
+                  <li><a href="/reporterSignup">ReporterSignup</a></li>
+                  <li><a href="/agentSignup">AgentSignup</a></li>
+                {% endif %}
+
+                <!-- <div class="login">
                 <a href="/login">Login</a>
                 </div>
 
@@ -39,6 +51,6 @@
                     <a href="/agentSignup">Agent Signup</a>
                 </div>
             </div>
-        </div>
+        </div> -->
     </body>
 </html>
