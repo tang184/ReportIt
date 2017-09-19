@@ -2,9 +2,9 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
+from .models import Agent
+
 class ReporterSignUpForm(UserCreationForm):
-    #first_name = forms.CharField(max_length=30, required=False, help_text='Optional.')
-    #last_name = forms.CharField(max_length=30, required=False, help_text='Optional.')
     email = forms.EmailField(max_length=254)
 
     def __init__(self, *args, **kwargs):
@@ -17,9 +17,8 @@ class ReporterSignUpForm(UserCreationForm):
         model = User
         fields = ('username', 'email', 'password1', 'password2')
 
+
 class AgentSignUpForm(UserCreationForm):
-    #first_name = forms.CharField(max_length=30, required=False, help_text='Optional.')
-    #last_name = forms.CharField(max_length=30, required=False, help_text='Optional.')
     email = forms.EmailField(max_length=254)
 
     def __init__(self, *args, **kwargs):
@@ -31,6 +30,11 @@ class AgentSignUpForm(UserCreationForm):
     class Meta:
         model = User
         fields = ('username', 'email', 'password1', 'password2')
+
+class AdditionalForm(forms.ModelForm):
+    class Meta:
+        model = Agent
+        exclude = 'user',
 
 
 
