@@ -26,16 +26,21 @@
 	               	</div>
 	            </div>
 				<div class="main-login main-center">
-					<form action="/accounts/submitConcern/">
+					<form method="post" action="/account/submitConcern/">
+					{% csrf_token %}
+
+					<!-- {{ form }} -->
+
 					  Title:<br>
-					  <input type="text" name="Title">
+					  {{ form.title }}
 					  <br>
 					  Target Agency:<br>
-					  <input type="text" name="target_agency">
+					  {{ form.agent }}
 					  <br>
 					  Content:<br>
-					  <textarea>  </textarea>
+					  {{ form.content }}
 					  <br><br>
+					
 					<button type="submit" class="btn btn-primary btn-lg btn-block login-button">Submit</button>
 					</form> 
 				</div>

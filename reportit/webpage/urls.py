@@ -12,9 +12,9 @@ urlpatterns = [
     url(r'^account/profile/$', views.viewProfile, name = 'profile'),
     url(r'^account/dashboard/$', views.dashboard, name = 'dashboard'),
     url(r'^account/profile/$', views.viewProfile, name = 'profile'),
-    url(r'^account/submitConcern/$', views.submitConcern, name = 'submitConcern'),
+    url(r'^account/submitConcern/', views.submitConcern, name = 'submitConcern'),
 
-
+	url(r'^account/dashboard$', views.dashboard, name = 'dashboard'),
     url(r'^account$', views.dashboard, name = 'dashboard'),
     url(r'^.*$', views.notFound, name = '404notFound'),
 ]

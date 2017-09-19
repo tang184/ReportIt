@@ -5,7 +5,8 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 
-from .forms import ReporterSignUpForm, AgentSignUpForm, AdditionalForm
+from .forms import ReporterSignUpForm, AgentSignUpForm, AdditionalForm, SubmitConcernForm
+from .models import Concern
 
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
@@ -69,7 +70,29 @@ def viewProfile(request):
 
 @login_required
 def submitConcern(request):
-    return render(request, 'webpage/concern.html')
+    form = SubmitConcernForm(request.POST)
+
+    if (form.is_valid()):
+        title = request.POST['title']
+        agent = request.POST['agent']
+        content = request.POST['content']
+
+        new_concern = Concern()
+        new_concern.title = title
+        new_concern.content = content
+        # new_concern.target_agent = agent
+        # new_concern.reporter = reporter
+        # new_concern.save()
+
+        return render(request, 'webpage/profile.html')
+
+    else:
+        form = SubmitConcernForm()
+        context = {
+            'form': form
+        }
+        return render(request, 'webpage/concern.html', context)
+
 
 def notFound(request):
     return render(request, 'webpage/404.html')
