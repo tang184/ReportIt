@@ -11,15 +11,9 @@ from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from pyvirtualdisplay import Display
 from django.test import LiveServerTestCase
 
-from django.db import connections
-from django.db.utils import OperationalError
-from django.core.validators import URLValidator
-from django.core.exceptions import ValidationError
-
 from django.test.testcases import LiveServerThread
-
-
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+
 from django.contrib.auth.models import User
 
 import os
@@ -70,6 +64,19 @@ class AddTestCase(StaticLiveServerTestCase):
 		pw = browser.find_element_by_name('password')
 		pw.send_keys("admin")
 		browser.find_element_by_name('submitbutton').click()		
+		url = self.live_server_url + '/accounts/profile/'
+		assert 'Profile Page' in browser.title
+
+	"""
+	def test_a_register_reporter(self):
+		browser = self.selenium
+		url = self.live_server_url + '/login/'
+		browser.get(url)
+		un = browser.find_element_by_name('username')
+		un.send_keys("admin")
+		pw = browser.find_element_by_name('password')
+		pw.send_keys("admin")
+		browser.find_element_by_name('submitbutton').click()		
 		
 		WebDriverWait(browser, 10).until(
 		    EC.text_to_be_present_in_element(
@@ -77,4 +84,5 @@ class AddTestCase(StaticLiveServerTestCase):
 		        "Admin Page"
 		    )
 		)
+	"""
 		
