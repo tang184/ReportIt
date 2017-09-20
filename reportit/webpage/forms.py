@@ -41,6 +41,6 @@ class SubmitConcernForm(forms.Form):
 	content = forms.CharField(label='Content', max_length=500)
 	agent = forms.CharField(label="Agent", max_length=1000)
 
-
-
-
+	class Meta:
+		model = User
+		fields = {'reporter', 'target_agent', 'title', 'content'}

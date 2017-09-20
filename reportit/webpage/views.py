@@ -77,13 +77,11 @@ def submitConcern(request):
         agent = request.POST['agent']
         content = request.POST['content']
 
-        new_concern = Concern()
+        new_concern = Concern.objects.create(reporter=request.user, content=content)
         new_concern.title = title
-        new_concern.content = content
-        # new_concern.target_agent = agent
-        # new_concern.reporter = reporter
-        # new_concern.save()
+        new_concern.save()
 
+        print (Concern.objects.all()[0].title)
         return render(request, 'webpage/profile.html')
 
     else:

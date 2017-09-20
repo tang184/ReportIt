@@ -23,7 +23,7 @@ class AgentProfile(models.Model):
     username = models.ForeignKey(User, on_delete=models.CASCADE)
 
 class Concern(models.Model):
-	reporter = models.ForeignKey(ReporterProfile, on_delete=models.CASCADE)
+	reporter = models.ForeignKey(User, on_delete=models.CASCADE)
 	target_agent = models.ManyToManyField(AgentProfile)
 	title = models.CharField(max_length=500)
 	content = MarkdownField(blank=False)

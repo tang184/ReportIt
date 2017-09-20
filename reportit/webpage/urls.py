@@ -16,5 +16,5 @@ urlpatterns = [
 
 	url(r'^account/dashboard$', views.dashboard, name = 'dashboard'),
     url(r'^account$', views.dashboard, name = 'dashboard'),
-    url(r'^.*$', views.notFound, name = '404notFound'),
+    # url(r'^.*$', views.notFound, name = '404notFound'),
 ]
