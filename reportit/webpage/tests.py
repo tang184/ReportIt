@@ -67,6 +67,30 @@ class AddTestCase(StaticLiveServerTestCase):
 		url = self.live_server_url + '/accounts/profile/'
 		assert 'Profile Page' in browser.title
 
+	def test_wrongpassword_admin(self):
+		browser = self.selenium
+		url = self.live_server_url + '/login/'
+		browser.get(url)
+		un = browser.find_element_by_id('id_username')
+		un.send_keys("admin")
+		pw = browser.find_element_by_name('password')
+		pw.send_keys("admin1")
+		browser.find_element_by_name('submitbutton').click()		
+		assert 'Profile Page' not in browser.title
+		assert 'username' in browser.page_source
+
+	def test_notexist_admin(self):
+		browser = self.selenium
+		url = self.live_server_url + '/login/'
+		browser.get(url)
+		un = browser.find_element_by_id('id_username')
+		un.send_keys("admin999")
+		pw = browser.find_element_by_name('password')
+		pw.send_keys("admin")
+		browser.find_element_by_name('submitbutton').click()		
+		assert 'Profile Page' not in browser.title
+		assert 'username' in browser.page_source
+
 	"""
 	def test_a_register_reporter(self):
 		browser = self.selenium
