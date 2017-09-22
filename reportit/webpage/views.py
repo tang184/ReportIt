@@ -66,7 +66,7 @@ def agentSignup(request):
 
 
 def viewProfile(request):
-    return render(request, 'webpage/profile.html')
+    return render(request, 'webpage/newprofile.html')
 
 @login_required
 def submitConcern(request):

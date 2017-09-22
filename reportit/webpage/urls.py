@@ -12,9 +12,15 @@ urlpatterns = [
     url(r'^account/profile/$', views.viewProfile, name = 'profile'),
     url(r'^account/dashboard/$', views.dashboard, name = 'dashboard'),
     url(r'^account/profile/$', views.viewProfile, name = 'profile'),
-    url(r'^account/submitConcern/', views.submitConcern, name = 'submitConcern'),
 
+    url(r'^account/submitConcern/', views.submitConcern, name = 'submitConcern'),
 	url(r'^account/dashboard$', views.dashboard, name = 'dashboard'),
     url(r'^account$', views.dashboard, name = 'dashboard'),
     # url(r'^.*$', views.notFound, name = '404notFound'),
+
+    url(r'^password_reset/$', auth_views.password_reset, name='password_reset'),
+    url(r'^password_reset_email_sent/$', auth_views.password_reset_done, name='password_reset_done'),
+    url(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
+        auth_views.password_reset_confirm, name='password_reset_confirm'),
+    url(r'^reset/done/$', auth_views.password_reset_complete, name='password_reset_complete'),
 ]
