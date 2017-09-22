@@ -5,3 +5,4 @@ webpage/migrations/
 
 *.pyc
 *.DS_Store
+reportit/webpage/migrations/*
