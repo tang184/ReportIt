@@ -5,7 +5,8 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 
-from .forms import ReporterSignUpForm, AgentSignUpForm, AdditionalForm
+from .forms import ReporterSignUpForm, AgentSignUpForm, AdditionalForm, SubmitConcernForm
+from .models import Concern
 
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
@@ -19,7 +20,8 @@ def dashboard(request):
     return render(request, 'webpage/dashboard.html')
 
 def home(request):
-    return render(request, 'webpage/home.html')
+    # return render(request, 'webpage/home.html')
+    return render(request, 'webpage/index.html')
 
 def login(request):
     html = 'This is a login page'
@@ -65,3 +67,30 @@ def agentSignup(request):
 
 def viewProfile(request):
     return render(request, 'webpage/profile.html')
+
+@login_required
+def submitConcern(request):
+    form = SubmitConcernForm(request.POST)
+
+    if (form.is_valid()):
+        title = request.POST['title']
+        agent = request.POST['agent']
+        content = request.POST['content']
+
+        new_concern = Concern.objects.create(reporter=request.user, content=content)
+        new_concern.title = title
+        new_concern.save()
+
+        print (Concern.objects.all()[0].title)
+        return render(request, 'webpage/profile.html')
+
+    else:
+        form = SubmitConcernForm()
+        context = {
+            'form': form
+        }
+        return render(request, 'webpage/concern.html', context)
+
+
+def notFound(request):
+    return render(request, 'webpage/404.html')

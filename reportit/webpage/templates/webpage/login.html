@@ -1,9 +1,11 @@
 
 <!-- Website CSS style -->
 {% load staticfiles %}
+<link rel="stylesheet" type="text/css" href="{% static 'webpage/bootstrap.css' %}"/>
 <link rel="stylesheet" type="text/css" href="{% static 'webpage/signup.css' %}"/>
 
 <!-- Website Font style -->
+
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
 
 <!-- Google Fonts -->
@@ -14,7 +16,7 @@
 			<div class="row main">
 				<div class="panel-heading">
 	               <div class="panel-title text-center">
-	               		<h1 class="title">ReportIt Login</h1>
+	               		<h1 class="title" style="margin:auto">ReportIt Login</h1>
 	               		<hr />
 	               	</div>
 	            </div>
@@ -39,7 +41,6 @@
 				    <div class="btn homepage">
 				        <a href="/" name="home" id="home">Homepage</a>
 				    </div>
-
 					<div class="btn forgetPassword">
 				        <a href="/password_reset/" name="forget_password" id="forget_password">Forget Password</a>
 				    </div>
@@ -48,25 +49,14 @@
             </div>
         </div>
 
-    {% block content %}
-      <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" name="login-submit" id="login-submit">Login</button>
-      </form>
-    {% endblock %}
 
-    <div class="reporterSignup">
-        <a href="/reporterSignup" name="reporterSignup" id="reporterSignup">ReporterSignup</a>
-    </div>
 
-    <div class="agentSignup">
-        <a href="/agentSignup" name="agentSignup" id="agentSignup">AgentSignup</a>
-    </div>
+            </div>
+        </div>
 
-    <div class="homepage">
-        <a href="/" name="home" id="home">Homepage</a>
-    </div>
+    
+
+    
 </body>
 
 <!--

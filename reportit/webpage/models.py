@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-
+from django_markdown.models import MarkdownField
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
@@ -23,8 +23,12 @@ class AgentProfile(models.Model):
     username = models.ForeignKey(User, on_delete=models.CASCADE)
 
 class Concern(models.Model):
-	reporter = models.ForeignKey(User, on_delete=models.CASCADE)
-	target_agent = models.ManyToManyField(AgentProfile)
-	title = models.CharField(max_length=500)
-	# content = MarkdownField(blank=False)
-	content = models.CharField(max_length=500)
+
+    reporter = models.ForeignKey(User, on_delete=models.CASCADE)
+    target_agent = models.ManyToManyField(AgentProfile)
+    title = models.CharField(max_length=500)
+    # content = MarkdownField(blank=False)
+    content = models.CharField(max_length=500)
+
+    def __str__(self):
+        return str(self.reporter.username)

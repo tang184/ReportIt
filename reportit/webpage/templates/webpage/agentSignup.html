@@ -5,6 +5,7 @@
 
 		<!-- Website CSS style -->
 		{% load staticfiles %}
+		<link rel="stylesheet" type="text/css" href="{% static 'webpage/bootstrap.css' %}"/>
 		<link rel="stylesheet" type="text/css" href="{% static 'webpage/signup.css' %}"/>
 
 		<!-- Website Font style -->
@@ -57,19 +58,21 @@
 
 
 						<div class="form-group ">
-							<button type="submit" class="signup-button"  name="signup_submit" id="signup_submit">Register</button>
+							<button type="submit" class="btn btn-primary login-button"  name="signup_submit" id="signup_submit">Register</button>
 						</div>
-						<div class="login">
+						<div class="btn login">
 				            <a href="/login" name="login" id="login">Login</a>
 				         </div>
-						<div class="hoempage">
-				            <a href="/" name="hoempage" id="hoempage">Homepage</a>
+						<div class="btn homepage">
+				            <a href="/" name="homepage" id="homepage">Homepage</a>
+				         </div>
+				         <div class="btn reporter">
+				            <a href="/reporterSignup" name="reporter" id="reporter">Reporter Signup</a>
 				         </div>
 					</form>
 				</div>
 			</div>
 		</div>
 
-		<script type="text/javascript" src="assets/js/bootstrap.js"></script>
 	</body>
 </html>
