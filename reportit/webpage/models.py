@@ -11,8 +11,8 @@ class Agent(models.Model):
     phone_number = models.CharField(verbose_name='Phone number', max_length=100)
     address = models.CharField(verbose_name='Address', max_length=300)
 
-    def __str__(self):
-        return str(self.user.username)
+    #def __str__(self):
+    #    return str(self.user.username)
 
 class ReporterProfile(models.Model):
     username = models.ForeignKey(User, on_delete=models.CASCADE)
