@@ -82,7 +82,7 @@ def submitConcern(request):
         new_concern.save()
 
         print (Concern.objects.all()[0].title)
-        return render(request, 'webpage/profile.html')
+        return render(request, 'webpage/dashboard.html')
 
     else:
         form = SubmitConcernForm()
@@ -91,6 +91,14 @@ def submitConcern(request):
         }
         return render(request, 'webpage/concern.html', context)
 
+@login_required
+def viewConcern(request):
+    # print (request)
+    # print (request.user)
+    # print (Concern.objects.filter(reporter=request.user))
+    concern = Concern.objects.filter(reporter=request.user)
+
+    return render(request, 'webpage/viewPersonalConcern.html', locals())
 
 def notFound(request):
     return render(request, 'webpage/404.html')
