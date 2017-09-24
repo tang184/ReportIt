@@ -24,18 +24,11 @@ class Agent(models.Model):
     def __str__(self):
         return "address: " + str(self.address)
 
-class ReporterProfile(models.Model):
-    username = models.ForeignKey(User, on_delete=models.CASCADE)
-    name = models.CharField(max_length=250)
-    gender = models.CharField(max_length = 10)
-
-class AgentProfile(models.Model):
-    username = models.ForeignKey(User, on_delete=models.CASCADE)
 
 class Concern(models.Model):
 
     reporter = models.ForeignKey(User, on_delete=models.CASCADE)
-    target_agent = models.ManyToManyField(AgentProfile)
+    target_agent = models.ManyToManyField(Agent)
     title = models.CharField(max_length=500)
     # content = MarkdownField(blank=False)
     content = models.CharField(max_length=500)
