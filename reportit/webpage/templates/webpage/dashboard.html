@@ -1,12 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Profile Page</title>
+{% extends "webpage/base.html" %}
+{% load static %}
+
+{% block content %}
     <h2>Congratulations!</h2>
     <h2>You have successfully logged in!</h2>
-</head>
-<body>
     {% if user.is_authenticated %}
     <li><a href="/account/profile/" name="profile" id="profile">{{request.user.username}}'s Profile </a></li>
       <li><a href="/logout?next=/" name="logout" id="logout"> Log out</a></li>
@@ -20,5 +17,4 @@
 
     This is a dashboard page
     Here, you can view all concerncs.
-</body>
-</html>
+{% endblock %}

@@ -38,10 +38,12 @@ class AgentSignUpForm(UserCreationForm):
         model = User
         fields = ('username', 'email', 'password1', 'password2')
 
+        User._meta.get_field('email')._unique = True
+
 class AdditionalForm(forms.ModelForm):
     class Meta:
         model = Agent
-        exclude = 'user', 'agentimage'
+        exclude = 'user',
 
 class SubmitConcernForm(forms.Form):
 	title = forms.CharField(label='Title', max_length=500)
