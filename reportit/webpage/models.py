@@ -14,7 +14,7 @@ class Reporter(models.Model):
     phone_number = models.CharField(verbose_name='Phone number(Optional)', max_length=100, blank=True, null=True)
     address = models.CharField(verbose_name='Address(Optional)', max_length=300, blank=True, null=True)
     reporterimg = models.CharField(verbose_name='Reporter Image(Optional)', max_length=300, blank=True, null=True, validators=[validateURL])
-
+    about = models.CharField(verbose_name='About(Optional)', max_length=300, blank=True, null=True)
 
 class Agent(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -22,6 +22,7 @@ class Agent(models.Model):
     address = models.CharField(verbose_name='Address', max_length=300)
     agentimage = models.CharField(verbose_name='Agent Badge Logo', max_length=300, validators=[validateURL])
     agentverifile = models.CharField(verbose_name='Agent verification file', max_length=300, validators=[validateURL])
+    about = models.CharField(verbose_name='About', max_length=300)
 
     def __str__(self):
         return "address: " + str(self.address)
