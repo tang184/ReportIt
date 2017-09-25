@@ -1,0 +1,81 @@
+{% load static %}
+<!DOCTYPE HTML>
+<!--
+	Alpha by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+
+<html>
+	<head>
+		<title>ReportIt</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
+		{% load staticfiles %}
+		<link rel="stylesheet" href="{% static 'assets/css/main.css' %}" />
+		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+	</head>
+	<body>
+		<div id="page-wrapper">
+		{% block nav %}
+		<!-- Header -->
+		<header id="header">
+			<h1><a href="/account/dashboard">ReportIt</a></h1>
+			<nav id="nav">
+				<ul>
+					<li><a href="/account/dashboard">Home</a></li>
+					{% if not user.is_authenticated %}
+					<li><a href="#" class="button">Sign Up</a></li>
+					{% else %}
+					<li><a href="/logout?next=/" class="button">Log Out</a></li>
+					{% endif %}
+				</ul>
+			</nav>
+		</header>
+		{% endblock %}
+
+		{% if not user.is_authenticated %}
+		<div class="row">
+            <div class="12u">
+
+              <!-- Text -->
+                <section class="box">
+                  <header>
+                    <h3>Please Log in</h3>
+                  <hr />
+						<ul class="actions">
+							<li><a href="/login" class="button special">Log In</a></li>
+							<li><a href="/reporterSignup" class="button">Reporter Signup</a></li>
+							<li><a href="/agentSignup" class="button alt">Agent Signup</a></li>
+						</ul>
+
+                </section>
+
+            </div>
+         </div>
+        {% else %}
+			<!-- Main -->
+			{% block content %}{% endblock %}
+
+		{% endif %}
+		{% block footer %}
+		<!-- Footer -->
+		<footer id="footer">
+			
+			<ul class="copyright">
+				<li>&copy; Untitled. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+			</ul>
+		</footer>
+		{% endblock %}
+
+	</div>
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+	 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	 {% block scripts %}
+	 {% endblock %}
+
+
+
+	</body>
+</html>
