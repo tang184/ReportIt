@@ -6,7 +6,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 
 from .forms import ReporterSignUpForm, ReporterAdditionalForm, AgentSignUpForm, AdditionalForm, SubmitConcernForm
-from .models import Concern
+from .models import Concern, Reporter
 
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
@@ -83,12 +83,27 @@ def submitConcern(request):
         agent = request.POST['agent']
         content = request.POST['content']
 
-        new_concern = Concern.objects.create(reporter=request.user, content=content)
-        new_concern.title = title
-        new_concern.save()
+        # current_reporter = Reporter.objects.filter(user=request.user).get()
+        current_reporter = Reporter.objects.filter(user=request.user)
+        if (len(current_reporter) == 0):
+            # User is not a reporter, return error message
 
-        print (Concern.objects.all()[0].title)
-        return render(request, 'webpage/dashboard.html')
+            form1 = ReporterSignUpForm()
+            form2 = ReporterAdditionalForm()
+            context = {
+                'form1': form1,
+                'form2': form2,
+                'notReporter': True
+            }
+
+            return render(request, 'webpage/reporterSignup.html', context)
+        else:
+            current_reporter = current_reporter.get()
+            new_concern = Concern.objects.create(reporter=current_reporter, content=content)
+            new_concern.title = title
+            new_concern.save()
+
+            return render(request, 'webpage/dashboard.html')
 
     else:
         form = SubmitConcernForm()
@@ -99,10 +114,14 @@ def submitConcern(request):
 
 @login_required
 def viewConcern(request):
-    # print (request)
-    # print (request.user)
-    # print (Concern.objects.filter(reporter=request.user))
-    concern = Concern.objects.filter(reporter=request.user)
+    current_reporter = Reporter.objects.filter(user=request.user)
+
+    if (len(current_reporter) == 0):
+        # User is not a reporter, display ALL concerns
+        concern = Concern.objects.all()
+    else:
+        current_reporter = current_reporter.get()
+        concern = Concern.objects.filter(reporter=current_reporter)
 
     return render(request, 'webpage/viewPersonalConcern.html', locals())
 

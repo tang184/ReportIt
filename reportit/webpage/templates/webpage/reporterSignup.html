@@ -30,6 +30,10 @@
 					<form class="form-horizontal" method="post" action="#">
 						{% csrf_token %}
 
+						{% if notReporter %}
+			            <div id="require-signup" class="alert alert-danger alert-dismissible" role="alert">You are not currently signed up as reporter!.</div>
+			            {% endif %}
+
 						{% for field in form1 %}
 						<p>
 							{{ field.label_tag }}<br>
