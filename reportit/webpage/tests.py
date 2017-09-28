@@ -164,7 +164,7 @@ class AddTestCase(StaticLiveServerTestCase):
 		browser.find_element_by_name('signup_submit').click()		
 		assert 'Reporter Signup' in browser.title
 		assert 'Enter a valid email address.' in browser.page_source
-	"""
+	
 	def test_reportersignup_dismatchpswd(self):
 		browser = self.selenium
 		url = self.live_server_url + '/reporterSignup/'
@@ -185,7 +185,7 @@ class AddTestCase(StaticLiveServerTestCase):
 		abt.send_keys("nice to meet you!")
 		browser.find_element_by_name('signup_submit').click()	
 		assert 'The two password fields didn\'t match.'	in browser.page_source	
-		assert 'ReportIt Reporter Signup' in browser.title
+		assert 'Reporter Signup' in browser.title
 
 	def test_reportersignup_dupuser(self):
 		browser = self.selenium
@@ -207,9 +207,10 @@ class AddTestCase(StaticLiveServerTestCase):
 		abt.send_keys("nice to meet you!")
 		browser.find_element_by_name('signup_submit').click()
 		assert 'A user with that username already exists.' in browser.page_source	
-		assert 'ReportIt Reporter Signup' in browser.title
+		assert 'Reporter Signup' in browser.title
+	
 
-	""" """agent signup""" """
+	"""agent signup""" """
 	def test_agentsignup_invalidusername(self):
 		browser = self.selenium
 		url = self.live_server_url + '/agentSignup/'
