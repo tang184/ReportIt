@@ -46,10 +46,11 @@ class AdditionalForm(forms.ModelForm):
         exclude = 'user',
 
 class SubmitConcernForm(forms.Form):
-	title = forms.CharField(label='Title', max_length=500)
-	content = forms.CharField(label='Content', max_length=500)
-	agent = forms.CharField(label="Agent", max_length=1000)
+    CHOICES = (('Option 1', 'Option 1'),('Option 2', 'Option 2'), ('Option 3', 'Option 3'))
+    title = forms.CharField(label='Title', max_length=500)
+    content = forms.CharField(label='Content', max_length=500)
+    agent = forms.ChoiceField(choices=CHOICES, label="Agent")
 
-	class Meta:
-		model = User
-		fields = {'reporter', 'target_agent', 'title', 'content'}
+    class Meta:
+        model = User
+        fields = {'reporter', 'target_agent', 'title', 'content'}
