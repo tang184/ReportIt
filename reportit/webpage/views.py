@@ -12,6 +12,7 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 
+
 # Create your views here.
 
 
@@ -136,3 +137,4 @@ def viewConcern(request):
 
 def notFound(request):
     return render(request, 'webpage/404.html')
+
