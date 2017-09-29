@@ -22,7 +22,7 @@ class Reporter(models.Model):
 
 class Agent(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    legal_name = models.CharField(blank=False,default=False, verbose_name='Legal Name', max_length=100)
+    legal_name = models.CharField(blank=False, verbose_name='Legal Name', max_length=100)
     phone_number = models.CharField(verbose_name='Phone number', max_length=100)
     address = models.CharField(verbose_name='Address', max_length=300)
     agentimage = models.CharField(verbose_name='Agent Badge Logo', max_length=300, validators=[validateURL], default=None)
