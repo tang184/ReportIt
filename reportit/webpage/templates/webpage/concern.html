@@ -1,49 +1,58 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends "webpage/base.html" %}
+{% load static %}
+
+<!--
     <head>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 
-		<!-- Website CSS style -->
+		
 		{% load staticfiles %}
 		<link rel="stylesheet" type="text/css" href="{% static 'webpage/bootstrap.css' %}"/>
-		<link rel="stylesheet" type="text/css" href="{% static 'webpage/signup.css' %}"/>
+		
 
-		<!-- Website Font style -->
+		
 	    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
 
-		<!-- Google Fonts -->
-		<link href='https://fonts.googleapis.com/css?family=Passion+One' rel='stylesheet' type='text/css'>
-		<link href='https://fonts.googleapis.com/css?family=Oxygen' rel='stylesheet' type='text/css'>
+		
+		
 
 		<title>Agent Signup</title>
 	</head>
-	<body>
-		<div class="container">
-			<div class="row main">
-				<div class="panel-heading">
-	               <div class="panel-title text-center">
-	               		<h1 class="title" style="margin:auto">ReportIt Submit Concern</h1>
-	               		<hr />
-	               	</div>
-	            </div>
-				<div class="main-login main-center">
-					<form method="post" action="/account/submitConcern/">
-					{% csrf_token %}
+	-->
 
-					  Title:<br>
-					  {{ form.title }}
-					  <br>
-					  Target Agency:<br>
-					  {{ form.agent }}
-					  <br>
-					  Content:<br>
-					  {{ form.content }}
-					  <br><br>
-					
-					<button type="submit" id="concern_submit_button" class="btn btn-primary btn-lg btn-block login-button">Submit</button>
-					</form> 
+
+{% block content %}
+		<section id="main" class="container">
+			<header>
+				<h2>Report Concern</h2>
+				<p>Report your concerns here</p>
+			</header>
+			<div class="row">
+				<div class="12u">
+
+			<!-- Table -->
+					<section class="box">
+						<div class="table-wrapper">
+						<div class="main-login main-center">
+							<form method="post" action="/account/submitConcern/">
+							{% csrf_token %}
+
+							  Title:<br>
+							  {{ form.title }}
+							  <br>
+							  Target Agency:<br>
+							  {{ form.agent }}
+							  <br>
+							  Content:<br>
+							  {{ form.content }}
+							  <br><br>
+							
+							<button type="submit" id="concern_submit_button" class="btn btn-primary btn-lg btn-block login-button">Submit</button>
+							</form> 
+						</div>
+						</div>
+					</section>
 				</div>
 			</div>
-		</div>
-	</body>
-</html>
+		</section>
+{% endblock %}

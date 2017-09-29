@@ -2,19 +2,20 @@
 {% load static %}
 
 {% block content %}
-    <h2>Congratulations!</h2>
-    <h2>You have successfully logged in!</h2>
-    {% if user.is_authenticated %}
-    <li><a href="/account/profile/" name="profile" id="profile">{{request.user.username}}'s Profile </a></li>
-      <li><a href="/logout?next=/" name="logout" id="logout"> Log out</a></li>
-      <li><a href="/account/submitConcern/">SubmitConcern</a></li>
-      <li><a href="/account/viewConcern/">View My Concerns</a></li>
-    {% else %}
-      <li><a href="/login" name="login" id="login">Login</a></li>
-      <li><a href="/reporterSignup" name="reporterSignup" id="reporterSignup">ReporterSignup</a></li>
-      <li><a href="/agentSignup"  name="agentSignup" id="agentSignup">AgentSignup</a></li>
-    {% endif %}
+  <section id="main" class="container">
+        <header>
+          <h2>Hello! {{request.user.username}}</h2>
+          <p>You have successfully logged in!</p>
+        </header>
+        <div class="row">
+          <div class="12u">
 
-    This is a dashboard page
-    Here, you can view all concerncs.
+        <!-- Table -->
+            This is a dashboard page
+            Here, you can view all concerncs.
+          </div>
+        </div>
+      </section>
+
+    
 {% endblock %}
