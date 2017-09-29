@@ -21,6 +21,7 @@ class Reporter(models.Model):
 
 class Agent(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    legal_name = models.CharField(verbose_name='Legal Name', max_length=100)
     phone_number = models.CharField(verbose_name='Phone number', max_length=100)
     address = models.CharField(verbose_name='Address', max_length=300)
     agentimage = models.CharField(verbose_name='Agent Badge Logo', max_length=300, validators=[validateURL])
@@ -28,7 +29,7 @@ class Agent(models.Model):
     about = models.CharField(verbose_name='About', max_length=300)
 
     def __str__(self):
-        return "address: " + str(self.address)
+        return str(self.legal_name)
 
 
 class Concern(models.Model):

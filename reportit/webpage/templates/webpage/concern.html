@@ -31,14 +31,24 @@
 					{% csrf_token %}
 
 					  Title:<br>
-					  {{ form.title }}
-					  <br>
+
+					  {{ form.title }}<br>
+
 					  Target Agency:<br>
+
+					  <!-- <select name="target_agent">
+					  	{% for entry in agent %} 
+					  		<option value="{{ entry.user.username }}">{{ entry.legal_name }}</option>
+					  	{% endfor %}
+					  </select> <br> -->
+
 					  {{ form.agent }}
-					  <br>
+
 					  Content:<br>
-					  {{ form.content }}
-					  <br><br>
+
+					  {{ form.content }}<br>
+
+					  <br>
 					
 					<button type="submit" id="concern_submit_button" class="btn btn-primary btn-lg btn-block login-button">Submit</button>
 					</form> 

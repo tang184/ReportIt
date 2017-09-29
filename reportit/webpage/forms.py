@@ -46,10 +46,13 @@ class AdditionalForm(forms.ModelForm):
         exclude = 'user',
 
 class SubmitConcernForm(forms.Form):
-	title = forms.CharField(label='Title', max_length=500)
-	content = forms.CharField(label='Content', max_length=500)
-	agent = forms.CharField(label="Agent", max_length=1000)
+    # SELECTION = ((1, 'Option 1'), (2, 'Option 2'), ) # Mock value. It should be modified to the agents in db in real time 
 
-	class Meta:
-		model = User
-		fields = {'reporter', 'target_agent', 'title', 'content'}
+    title = forms.CharField(label='Title', max_length=500)
+    content = forms.CharField(label='Content', max_length=500)
+    agent = forms.CharField(label="Agent", max_length=1000)
+    # agent = forms.ChoiceField(required=True, choices=SELECTION)
+
+    class Meta:
+        model = User
+        fields = {'reporter', 'target_agent', 'title', 'content'}
