@@ -1,5 +1,7 @@
 {% extends "webpage/base.html" %}
 {% load static %}
+{% load util %}
+
 <section id="main" class="container">
 <header>
 <h2>My Profile</h2>
@@ -12,7 +14,7 @@
 
 <header>
 	<h2>My Profile</h2>
-	<p>My profile content</p>
+	<!-- <p>My profile content</p> -->
 </header>
 
 <div class="row">
@@ -31,10 +33,10 @@
 			<tbody>
 				<tr>
 					<td>Username</td>
-					<td>Ante turpis integer aliquet porttitor.</td>
+					<td>{{request.user.username}}</td>
 
 				</tr>
-				<tr>
+				<!-- <tr>
 					<td>First Name</td>
 					<td>Vis ac commodo adipiscing arcu aliquet.</td>
 
@@ -43,26 +45,44 @@
 					<td>Last Name</td>
 					<td> Morbi faucibus arcu accumsan lorem.</td>
 
-				</tr>
+				</tr> -->
+				{% if request.user.reporter|to_class_name == 'Reporter' %}
 				<tr>
 					<td>Gender</td>
-					<td>Vitae integer tempus condimentum.</td>
+					<td>{{ request.user.reporter.gender }}</td>
 
 				</tr>
 				<tr>
 					<td>Phone Number</td>
-					<td>Ante turpis integer aliquet porttitor.</td>
+					<td>{{request.user.reporter.phone_number}}</td>
 
 				</tr>
 				<tr>
 					<td>Address</td>
-					<td>Ante turpis integer aliquet porttitor.</td>
+					<td>{{request.user.reporter.address}}</td>
 				</tr>
 				<tr>
 					<td>Bio</td>
-					<td>Ante turpis integer aliquet porttitor.</td>
+					<td>{{request.user.reporter.about}}</td>
 
 				</tr>
+				{% else %}
+				<tr>
+					<td>Phone Number</td>
+					<td>{{request.user.agent.phone_number}}</td>
+
+				</tr>
+				<tr>
+					<td>Address</td>
+					<td>{{request.user.agent.address}}</td>
+				</tr>
+				<tr>
+					<td>Bio</td>
+					<td>{{request.user.agent.about}}</td>
+
+				</tr>
+				{% endif %}
+				
 			</tbody>
 			<tfoot>
 				<tr>
