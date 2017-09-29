@@ -6,7 +6,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 
 from .forms import ReporterSignUpForm, ReporterAdditionalForm, AgentSignUpForm, AdditionalForm, SubmitConcernForm
-from .models import Concern, Reporter
+from .models import Concern, Reporter, Agent
 
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
@@ -77,34 +77,43 @@ def viewProfile(request):
 @login_required
 def submitConcern(request):
     form = SubmitConcernForm(request.POST)
+    current_reporter = Reporter.objects.filter(user=request.user)
 
+    # User is not a reporter, return error message
+    if (len(current_reporter) == 0):
+        form1 = ReporterSignUpForm()
+        form2 = ReporterAdditionalForm()
+        context = {
+            'form1': form1,
+            'form2': form2,
+            'notReporter': True
+        }
+
+        return render(request, 'webpage/reporterSignup.html', context)
+
+    # User submits request, save information
     if (form.is_valid()):
         title = request.POST['title']
         agent = request.POST['agent']
         content = request.POST['content']
 
-        # current_reporter = Reporter.objects.filter(user=request.user).get()
-        current_reporter = Reporter.objects.filter(user=request.user)
-        if (len(current_reporter) == 0):
-            # User is not a reporter, return error message
 
-            form1 = ReporterSignUpForm()
-            form2 = ReporterAdditionalForm()
-            context = {
-                'form1': form1,
-                'form2': form2,
-                'notReporter': True
-            }
+        current_reporter = current_reporter.get()
+        new_concern = Concern.objects.create(reporter=current_reporter, content=content)
+        new_concern.title = title
 
-            return render(request, 'webpage/reporterSignup.html', context)
-        else:
-            current_reporter = current_reporter.get()
-            new_concern = Concern.objects.create(reporter=current_reporter, content=content)
-            new_concern.title = title
-            new_concern.save()
+        total_agent = Agent.objects.all()
+        for ele in total_agent:
+            if (ele.legal_name == agent):
+                new_concern.target_agent.add(ele)
 
-            return render(request, 'webpage/dashboard.html')
+        new_concern.save()
 
+        reporter = Reporter.objects.filter(user=request.user).get()
+
+        return render(request, 'webpage/dashboard.html')
+
+    # User opens the page
     else:
         form = SubmitConcernForm()
         context = {

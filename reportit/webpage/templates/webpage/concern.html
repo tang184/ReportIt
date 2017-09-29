@@ -54,6 +54,42 @@
 						</div>
 						</div>
 					</section>
+
+	<body>
+		<div class="container">
+			<div class="row main">
+				<div class="panel-heading">
+	               <div class="panel-title text-center">
+	               		<h1 class="title" style="margin:auto">ReportIt Submit Concern</h1>
+	               		<hr />
+	               	</div>
+	            </div>
+				<div class="main-login main-center">
+					<form method="post" action="/account/submitConcern/">
+					{% csrf_token %}
+
+					  Title:<br>
+
+					  {{ form.title }}<br>
+
+					  Target Agency:<br>
+
+					  <!-- <select name="target_agent">
+					  	{% for entry in agent %} 
+					  		<option value="{{ entry.user.username }}">{{ entry.legal_name }}</option>
+					  	{% endfor %}
+					  </select> <br> -->
+
+					  {{ form.agent }}
+
+					  Content:<br>
+
+					  {{ form.content }}<br>
+
+					  <br>
+					
+					<button type="submit" id="concern_submit_button" class="btn btn-primary btn-lg btn-block login-button">Submit</button>
+					</form> 
 				</div>
 			</div>
 		</section>

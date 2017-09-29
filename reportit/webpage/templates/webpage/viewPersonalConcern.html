@@ -53,7 +53,15 @@
 									  {% for item in concern %}
 									  <tr>
 										    <td> {{ item.reporter }} </td>
-										    <td> {{ item.target_agent }} </td>
+
+										    <td>
+										    	{% for ele in item.target_agent.all %}
+
+										    	{{ ele.legal_name }}, 
+
+										    	{% endfor %}
+										    </td>
+
 										    <td> {{ item.title }} </td>
 										    <td> {{ item.content }} </td>
 									  </tr>
