@@ -14,7 +14,9 @@ class Reporter(models.Model):
     gender = models.CharField(max_length = 10, blank=True, null=True)
     phone_number = models.CharField(verbose_name='Phone number(Optional)', max_length=100, blank=True, null=True)
     address = models.CharField(verbose_name='Address(Optional)', max_length=300, blank=True, null=True)
-    reporterimg = models.CharField(verbose_name='Reporter Image(Optional)', max_length=300, blank=True, null=True, validators=[validateURL])
+    reporterimg = models.CharField(verbose_name='Reporter Image(Optional)', max_length=300, blank=True,
+                                   default="http://127.0.0.1:8000/static/images/default_avatar.png",
+                                   validators=[validateURL])
     about = models.CharField(verbose_name='About(Optional)', max_length=300, blank=True, null=True)
 
     def __str__(self):
