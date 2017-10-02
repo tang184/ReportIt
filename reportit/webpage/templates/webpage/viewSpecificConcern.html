@@ -1,0 +1,66 @@
+{% extends "webpage/base.html" %}
+{% load static %}
+
+
+{% block content %}
+
+{% if not user.is_authenticated %}
+<div class="row">
+    <div class="12u">
+
+      <!-- Text -->
+        <section class="box">
+          <header>
+            <h3>Please Log in</h3>
+          <hr />
+				<ul class="actions">
+					<li><a href="/login" class="button special">Log In</a></li>
+					<li><a href="/reporterSignup" class="button">Reporter Signup</a></li>
+					<li><a href="/agentSignup" class="button alt">Agent Signup</a></li>
+				</ul>
+
+        </section>
+
+    </div>
+  </div>
+{% else %}
+	<!-- Main -->
+	<section id="main" class="container">
+		<header>
+			<h2>My Concerns</h2>
+			<p>Concern</p>
+		</header>
+
+
+		<div class="row">
+			<div class="12u">
+
+				<!-- Table -->
+					<section class="box">
+						<div class="table-wrapper">
+							{% if concern != Null %}
+							<table class="table table-striped">
+								<ul>
+									<thread>
+										<tr>
+											<th> {{ concern.title }} </th>
+										</tr>
+									</thread>
+									<tbody>
+										<td> {{ concern.content }} </td>
+									</tbody>
+								</ul>
+							</table>
+							{% else %}
+							<a> No data has been retriven! </a>
+							{% endif %}
+						</div>
+
+					</section>
+
+			</div>
+		</div>
+
+{% endif %}
+{% endblock %}
+
