@@ -46,7 +46,10 @@
 											<th> Reporter </th>
 											<th> Agent </th>
 											<th> Title </th>
-											<th> Content </th>
+											<!-- <th> Content </th> -->
+											<th> Time submitted </th>
+
+											<th> </th>
 										</tr>
 									</thread>
 									<tbody>
@@ -63,7 +66,16 @@
 										    </td>
 
 										    <td> {{ item.title }} </td>
-										    <td> {{ item.content }} </td>
+										   <!--  <td> {{ item.content }} </td> -->
+										   <td> {{ item.submitted_time }} </td>
+
+										   <td> 
+										   	<!-- <input type="submit" value="View" href="/ViewPersonalConcern"/> -->
+
+										   	<a href="/ViewPersonalConcern" class="button">View</a>
+										   	
+										   </td>
+
 									  </tr>
 									  {% endfor %}
 									</tbody>

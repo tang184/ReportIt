@@ -97,20 +97,22 @@ def submitConcern(request):
         title = request.POST['title']
         agent = request.POST['agent']
         content = request.POST['content']
-
-
         current_reporter = current_reporter.get()
-        new_concern = Concern.objects.create(reporter=current_reporter, content=content)
+
+        concern_id = current_reporter.historical_concern_count + 1
+        new_concern = Concern.objects.create(reporter=current_reporter, concern_id=concern_id)
+        new_concern.content = content
         new_concern.title = title
 
         total_agent = Agent.objects.all()
         for ele in total_agent:
             if (ele.legal_name == agent):
                 new_concern.target_agent.add(ele)
-
+        
         new_concern.save()
 
-        reporter = Reporter.objects.filter(user=request.user).get()
+        current_reporter.historical_concern_count += 1
+        current_reporter.save()
 
         return render(request, 'webpage/dashboard.html')
 

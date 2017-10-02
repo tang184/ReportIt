@@ -5,6 +5,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from webpage.validators import validateURL, validateEmail
+import django
 # Create your models here.
 
 
@@ -16,6 +17,7 @@ class Reporter(models.Model):
     address = models.CharField(verbose_name='Address(Optional)', max_length=300, blank=True, null=True)
     reporterimg = models.CharField(verbose_name='Reporter Image(Optional)', max_length=300, blank=True, null=True, validators=[validateURL])
     about = models.CharField(verbose_name='About(Optional)', max_length=300, blank=True, null=True)
+    historical_concern_count = models.IntegerField(blank=True, default=0)
 
     def __str__(self):
         return str(self.user.username)
@@ -40,6 +42,11 @@ class Concern(models.Model):
     title = models.CharField(max_length=500)
     # content = MarkdownField(blank=False)
     content = models.CharField(max_length=500)
+
+    concern_id = models.IntegerField(default=-1, blank=True) # For now, total count is used as id of concern
+    upvote_count = models.IntegerField(default=0)
+    isSolved = models.BooleanField(default=False)
+    submitted_time = models.DateTimeField(default=django.utils.timezone.now)
 
     def __str__(self):
         return str(self.reporter.user.username) + ", " + self.title
