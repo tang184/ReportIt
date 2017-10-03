@@ -44,10 +44,21 @@
 									<thread>
 										<tr>
 											<th> {{ concern.title }} </th>
+											<th></th>
 										</tr>
 									</thread>
 									<tbody>
 										<td> {{ concern.content }} </td>
+										<td>
+
+											<form method="post" action="/account/editSpecificConcern/id?={{ concern.concern_id }}">
+
+											{% csrf_token %}
+
+											<button type="submit" id="concern_submit_button" class="btn btn-primary ">Edit</button>
+											</form> 
+
+										</td>
 									</tbody>
 								</ul>
 							</table>

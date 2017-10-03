@@ -14,7 +14,8 @@ urlpatterns = [
     url(r'^account/profile/$', views.viewProfile, name = 'profile'),
 
     url(r'^account/submitConcern/', views.submitConcern, name = 'submitConcern'),
-    url(r'^account/viewSpecificConcern/', views.viewSpecificConcern, name = 'specificConcern'),
+    url(r'^account/viewSpecificConcern/', views.viewSpecificConcern, name = 'viewSpecificConcern'),
+    url(r'^account/editSpecificConcern/', views.editSpecificConcern, name = 'editSpecificConcern'),
     url(r'^account/viewConcern/', views.viewConcern, name = 'viewConcern'),
     url(r'^account/dashboard$', views.dashboard, name = 'dashboard'),
     url(r'^account$', views.dashboard, name = 'dashboard'),
