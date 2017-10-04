@@ -11,7 +11,9 @@ from .models import Concern, Reporter, Agent
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
-
+from django.http import JsonResponse
+import json
+import codecs
 
 # Create your views here.
 
@@ -75,52 +77,75 @@ def agentSignup(request):
 def viewProfile(request):
     return render(request, 'webpage/newprofile.html')
 
+
+@login_required
+def getAllAgents(request):
+    total_agent = Agent.objects.all()
+    agent_legalnames = []
+    for ele in total_agent:
+        agent_legalnames.append(ele.legal_name)
+    return JsonResponse({'legalname': agent_legalnames})
+
 @login_required
 def submitConcern(request):
-    form = SubmitConcernForm(request.POST)
-    current_reporter = Reporter.objects.filter(user=request.user)
-
-    # User is not a reporter, return error message
-    if (len(current_reporter) == 0):
-        form1 = ReporterSignUpForm()
-        form2 = ReporterAdditionalForm()
-        context = {
-            'form1': form1,
-            'form2': form2,
-            'notReporter': True
-        }
-
-        return render(request, 'webpage/reporterSignup.html', context)
-
-    # User submits request, save information
-    if (form.is_valid()):
-        title = request.POST['title']
-        agent = request.POST['agent']
-        content = request.POST['content']
+    if request.method == 'POST':
+        #reader = codecs.getreader("utf-8")
+        json_data = json.loads(request.body.decode('utf-8'))
+        print(json_data)
+        current_reporter = Reporter.objects.filter(user=request.user)
         current_reporter = current_reporter.get()
 
         concern_id = current_reporter.historical_concern_count + 1
         new_concern = Concern.objects.create(reporter=current_reporter, concern_id=concern_id)
-        new_concern.content = content
-        new_concern.title = title
-
+        new_concern.content = json_data['content']
+        new_concern.title = json_data['title']
         total_agent = Agent.objects.all()
+
+
         for ele in total_agent:
-            if (ele.legal_name == agent):
+            if (ele.legal_name in json_data['selectagent']):
                 new_concern.target_agent.add(ele)
+
         
         new_concern.save()
 
         current_reporter.historical_concern_count += 1
         current_reporter.save()
-
         return render(request, 'webpage/dashboard.html')
 
-    # User opens the page
+        
+        
+        # User is not a reporter, return error message
+        
+        """
+        if (len(current_reporter) == 0):
+            form1 = ReporterSignUpForm()
+            form2 = ReporterAdditionalForm()
+            context = {
+                'form1': form1,
+                'form2': form2,
+                'notReporter': True
+            }
+
+            return render(request, 'webpage/reporterSignup.html', context)
+        """
+        # User submits request, save information
+        
+
+        # User opens the page
     else:
+        """
         form = SubmitConcernForm()
+        
+        """
+        
+        total_agent = Agent.objects.all()
+        agent_legalnames = []
+        for ele in total_agent:
+            agent_legalnames.append(ele.legal_name)
+
         context = {
-            'form': form
+            'agent_legalnames': agent_legalnames
         }
         return render(request, 'webpage/concern.html', context)
 
