@@ -175,11 +175,6 @@ def viewSpecificConcern(request):
 def editSpecificConcern(request):
     current_reporter = Reporter.objects.filter(user=request.user)
 
-    # print (request)
-    # print (request.POST)
-    # print (request.GET)
-    # print ("===========")
-
     # User is not a reporter
     if (len(current_reporter) == 0):
         form1 = ReporterSignUpForm()
@@ -254,6 +249,53 @@ def editSpecificConcern(request):
             form = EditConcernForm(initial=concern_context)
 
             return render(request, 'webpage/editConcern.html', locals())
+
+@login_required
+def removeSpecificConcern(request):
+    print ("remove concern!")
+    print (request)
+    print (request.POST)
+    print("============")
+
+    current_reporter = Reporter.objects.filter(user=request.user)
+
+    # User is not a reporter
+    if (len(current_reporter) == 0):
+        form1 = ReporterSignUpForm()
+        form2 = ReporterAdditionalForm()
+        context = {
+            'form1': form1,
+            'form2': form2,
+            'notReporter': True
+        }
+
+        return render(request, 'webpage/reporterSignup.html', context)
+    else:
+        current_reporter = current_reporter.get()
+        concern_id = request.GET.get('')
+        concern = Concern.objects.filter(reporter=current_reporter,concern_id=concern_id)
+
+        # Specific conern id does not exist (or has been deleted)
+        if (len(concern) != 1):
+            concern = Concern.objects.filter(reporter=current_reporter)
+            concernNotExist = True
+
+            if (len(concern) > 1):
+                print ("Error! Multiple concern tends to have identical id! Combination is: " + str(request.user) + str(concern_id))
+
+            return render(request, 'webpage/viewPersonalConcern.html', locals())
+
+
+        input_form = EditConcernForm(request.POST)
+        
+        concern = concern.get()
+
+        concern.delete()
+
+        deleteSuccess = True
+        concern = Concern.objects.filter(reporter=current_reporter)
+
+        return render(request, 'webpage/viewPersonalConcern.html', locals())
 
 def notFound(request):
     return render(request, 'webpage/404.html')

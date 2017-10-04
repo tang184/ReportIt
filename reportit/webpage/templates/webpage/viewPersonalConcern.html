@@ -34,6 +34,13 @@
         <div id="require-signup" class="alert alert-danger alert-dismissible" role="alert">Cannot find your concern!</div>
         {% endif %}
 
+        {% if editSuccess %}
+        <div id="require-signup" class="alert alert-danger alert-dismissible" role="alert">Successfully edited the concern!</div>
+        {% endif %}
+
+        {% if deleteSuccess %}
+        <div id="require-signup" class="alert alert-danger alert-dismissible" role="alert">Successfully deleted the concern!</div>
+        {% endif %}
 
 		<div class="row">
 			<div class="12u">
@@ -51,6 +58,7 @@
 											<!-- <th> Content </th> -->
 											<th> Time submitted </th>
 
+											<th> </th>
 											<th> </th>
 										</tr>
 									</thread>
@@ -71,15 +79,22 @@
 										   <!--  <td> {{ item.content }} </td> -->
 										   <td> {{ item.submitted_time }} </td>
 
-										   <td> 
-										   	
+										   <td> 	
 											<form method="post" action="/account/viewSpecificConcern/id?={{ item.concern_id }}">
 
 											{% csrf_token %}
 
 											<button type="submit" id="concern_submit_button" class="btn btn-primary ">View</button>
 											</form> 
+										   </td>
 
+										   <td>
+											<form method="post" action="/account/removeSpecificConcern/id?={{ item.concern_id }}">
+
+											{% csrf_token %}
+
+											<button type="submit" id="concern_submit_button" class="btn btn-primary ">Remove</button>
+											</form> 
 										   </td>
 
 									  </tr>
