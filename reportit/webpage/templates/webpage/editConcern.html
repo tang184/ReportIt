@@ -26,8 +26,8 @@
 {% block content %}
 		<section id="main" class="container">
 			<header>
-				<h2>Report Concern</h2>
-				<p>Report your concerns here</p>
+				<h2>Edit Concern</h2>
+				<p>Please enter your modifications</p>
 			</header>
 			<div class="row">
 				<div class="12u">
@@ -36,23 +36,25 @@
 					<section class="box">
 						<div class="table-wrapper">
 						<div class="main-login main-center">
-							<form method="post" action="/account/submitConcern/">
+							<form method="post" action="/account/editSpecificConcern/id=?={{ concern.concern_id }}">
 							{% csrf_token %}
 
 							  Title:<br>
 							  {{ form.title }}
 							  <br>
 							  Target Agency:<br>
-							  {{ form.agent }}
+							  {% for ele in form.agent %}
+							  	{{ ele }}
+							  {% endfor %}
 							  <br>
 							  Content:<br>
 							  {{ form.content }}
 							  <br><br>
 							
-							<button type="submit" id="concern_submit_button" class="btn btn-primary btn-lg btn-block login-button">Submit</button>
+							<button type="submit" href="#" id="concern_submit_button" class="btn btn-primary btn-lg btn-block login-button">Submit</button>
 							</form> 
 						</div>
 						</div>
-					</section>
+		</section>
 {% endblock %}
 

@@ -5,7 +5,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 
-from .forms import ReporterSignUpForm, ReporterAdditionalForm, AgentSignUpForm, AdditionalForm, SubmitConcernForm
+from .forms import ReporterSignUpForm, ReporterAdditionalForm, AgentSignUpForm, AdditionalForm, SubmitConcernForm, EditConcernForm
 from .models import Concern, Reporter, Agent
 
 from django.http import HttpResponseRedirect
@@ -97,20 +97,22 @@ def submitConcern(request):
         title = request.POST['title']
         agent = request.POST['agent']
         content = request.POST['content']
-
-
         current_reporter = current_reporter.get()
-        new_concern = Concern.objects.create(reporter=current_reporter, content=content)
+
+        concern_id = current_reporter.historical_concern_count + 1
+        new_concern = Concern.objects.create(reporter=current_reporter, concern_id=concern_id)
+        new_concern.content = content
         new_concern.title = title
 
         total_agent = Agent.objects.all()
         for ele in total_agent:
             if (ele.legal_name == agent):
                 new_concern.target_agent.add(ele)
-
+        
         new_concern.save()
 
-        reporter = Reporter.objects.filter(user=request.user).get()
+        current_reporter.historical_concern_count += 1
+        current_reporter.save()
 
         return render(request, 'webpage/dashboard.html')
 
@@ -134,6 +136,161 @@ def viewConcern(request):
         concern = Concern.objects.filter(reporter=current_reporter)
 
     return render(request, 'webpage/viewPersonalConcern.html', locals())
+
+@login_required
+def viewSpecificConcern(request):
+    current_reporter = Reporter.objects.filter(user=request.user)
+
+    # User is not a reporter
+    if (len(current_reporter) == 0):
+        form1 = ReporterSignUpForm()
+        form2 = ReporterAdditionalForm()
+        context = {
+            'form1': form1,
+            'form2': form2,
+            'notReporter': True
+        }
+
+        return render(request, 'webpage/reporterSignup.html', context)
+
+    else:
+        current_reporter = current_reporter.get()
+        concern_id = request.GET.get('')
+        concern = Concern.objects.filter(reporter=current_reporter,concern_id=concern_id)
+
+        # Specific conern id does not exist (or has been deleted)
+        if (len(concern) != 1):
+            concern = Concern.objects.filter(reporter=current_reporter)
+            concernNotExist = True
+
+            if (len(concern) > 1):
+                print ("Error! Multiple concern tends to have identical id! Combination is: " + str(request.user) + str(concern_id))
+
+            return render(request, 'webpage/viewPersonalConcern.html', locals())
+        else:
+            concern = concern.get()
+            return render(request, 'webpage/viewSpecificConcern.html', locals())
+
+@login_required
+def editSpecificConcern(request):
+    current_reporter = Reporter.objects.filter(user=request.user)
+
+    # User is not a reporter
+    if (len(current_reporter) == 0):
+        form1 = ReporterSignUpForm()
+        form2 = ReporterAdditionalForm()
+        context = {
+            'form1': form1,
+            'form2': form2,
+            'notReporter': True
+        }
+
+        return render(request, 'webpage/reporterSignup.html', context)
+    else:
+        current_reporter = current_reporter.get()
+        concern_id = request.GET.get('')
+        concern = Concern.objects.filter(reporter=current_reporter,concern_id=concern_id)
+
+        # Specific conern id does not exist (or has been deleted)
+        if (len(concern) != 1):
+            concern = Concern.objects.filter(reporter=current_reporter)
+            concernNotExist = True
+
+            if (len(concern) > 1):
+                print ("Error! Multiple concern tends to have identical id! Combination is: " + str(request.user) + str(concern_id))
+
+            return render(request, 'webpage/viewPersonalConcern.html', locals())
+
+
+        input_form = EditConcernForm(request.POST)
+        concern = concern.get()
+
+        # User submit their changes
+        if (input_form.is_valid()):
+            concern.content = request.POST.get('content')
+            concern.title = request.POST.get('title')
+
+            agents = request.POST.get('agent')
+
+            concern.target_agent.clear()
+            total_agent = Agent.objects.all()
+            for ele in total_agent:
+                if (ele.legal_name == agents):
+                    concern.target_agent.add(ele)
+
+            concern.save()
+
+            editSuccess = True
+            concern = Concern.objects.filter(reporter=current_reporter)
+
+            return render(request, 'webpage/viewPersonalConcern.html', locals())
+        else:
+            num_concern = len(concern.target_agent.all())
+
+            # no agent is targeted
+            if (num_concern == 0):
+                concern_context = {
+                'title': concern.title,
+                'content': concern.content,
+                'agent': None
+                }
+            else:
+                src = concern.target_agent.all()
+                tar = []
+                for ele in src:
+                    tar.append(str(ele.legal_name))
+
+                concern_context = {
+                    'title': concern.title,
+                    'content': concern.content,
+                    'agent': tar
+                }
+
+            form = EditConcernForm(initial=concern_context)
+
+            return render(request, 'webpage/editConcern.html', locals())
+
+@login_required
+def removeSpecificConcern(request):
+    current_reporter = Reporter.objects.filter(user=request.user)
+
+    # User is not a reporter
+    if (len(current_reporter) == 0):
+        form1 = ReporterSignUpForm()
+        form2 = ReporterAdditionalForm()
+        context = {
+            'form1': form1,
+            'form2': form2,
+            'notReporter': True
+        }
+
+        return render(request, 'webpage/reporterSignup.html', context)
+    else:
+        current_reporter = current_reporter.get()
+        concern_id = request.GET.get('')
+        concern = Concern.objects.filter(reporter=current_reporter,concern_id=concern_id)
+
+        # Specific conern id does not exist (or has been deleted)
+        if (len(concern) != 1):
+            concern = Concern.objects.filter(reporter=current_reporter)
+            concernNotExist = True
+
+            if (len(concern) > 1):
+                print ("Error! Multiple concern tends to have identical id! Combination is: " + str(request.user) + str(concern_id))
+
+            return render(request, 'webpage/viewPersonalConcern.html', locals())
+
+        # Remove the corresponding concern from db
+        input_form = EditConcernForm(request.POST)
+
+        concern = concern.get()
+
+        concern.delete()
+
+        deleteSuccess = True
+        concern = Concern.objects.filter(reporter=current_reporter)
+
+        return render(request, 'webpage/viewPersonalConcern.html', locals())
 
 def notFound(request):
     return render(request, 'webpage/404.html')

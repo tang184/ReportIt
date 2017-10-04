@@ -14,9 +14,13 @@ urlpatterns = [
     url(r'^account/profile/$', views.viewProfile, name = 'profile'),
 
     url(r'^account/submitConcern/', views.submitConcern, name = 'submitConcern'),
+    url(r'^account/viewSpecificConcern/', views.viewSpecificConcern, name = 'viewSpecificConcern'),
+    url(r'^account/removeSpecificConcern/', views.removeSpecificConcern, name = 'removeSpecificConcern'),
+    url(r'^account/editSpecificConcern/', views.editSpecificConcern, name = 'editSpecificConcern'),
     url(r'^account/viewConcern/', views.viewConcern, name = 'viewConcern'),
-	url(r'^account/dashboard$', views.dashboard, name = 'dashboard'),
+    url(r'^account/dashboard$', views.dashboard, name = 'dashboard'),
     url(r'^account$', views.dashboard, name = 'dashboard'),
+
     # url(r'^.*$', views.notFound, name = '404notFound'),
 
     url(r'^password_reset/$', auth_views.password_reset, name='password_reset'),
