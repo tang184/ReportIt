@@ -43,7 +43,9 @@
 							  {{ form.title }}
 							  <br>
 							  Target Agency:<br>
-							  {{ form.agent }}
+							  {% for ele in form.agent %}
+							  	{{ ele }}
+							  {% endfor %}
 							  <br>
 							  Content:<br>
 							  {{ form.content }}
