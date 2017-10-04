@@ -252,11 +252,6 @@ def editSpecificConcern(request):
 
 @login_required
 def removeSpecificConcern(request):
-    print ("remove concern!")
-    print (request)
-    print (request.POST)
-    print("============")
-
     current_reporter = Reporter.objects.filter(user=request.user)
 
     # User is not a reporter
@@ -285,9 +280,9 @@ def removeSpecificConcern(request):
 
             return render(request, 'webpage/viewPersonalConcern.html', locals())
 
-
+        # Remove the corresponding concern from db
         input_form = EditConcernForm(request.POST)
-        
+
         concern = concern.get()
 
         concern.delete()
