@@ -11,7 +11,7 @@ import django
 
 class Reporter(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    legal_name = models.CharField(verbose_name='Legal Name', max_length=100)
+    legal_name = models.CharField(verbose_name='Legal Name(Optional)', max_length=100, blank=True, null=True)
     gender = models.CharField(max_length = 10, blank=True, null=True)
     phone_number = models.CharField(verbose_name='Phone number(Optional)', max_length=100, blank=True, null=True)
     address = models.CharField(verbose_name='Address(Optional)', max_length=300, blank=True, null=True)

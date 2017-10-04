@@ -22,7 +22,7 @@ class ReporterSignUpForm(UserCreationForm):
 class ReporterAdditionalForm(forms.ModelForm):
     class Meta:
         model = Reporter
-        exclude = 'user','reporterimg', 'gender'
+        exclude = 'user','reporterimg', 'gender', 'historical_concern_count'
 
 
 class AgentSignUpForm(UserCreationForm):
