@@ -111,9 +111,8 @@ def submitConcern(request):
 
         current_reporter.historical_concern_count += 1
         current_reporter.save()
-        return render(request, 'webpage/dashboard.html')
 
-        
+        return HttpResponse(json.dumps("success"), content_type='application/json')
         
         # User is not a reporter, return error message
         

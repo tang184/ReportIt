@@ -54,8 +54,11 @@ $(document).ready(function() {
             dataType: "json",
             data: JSON.stringify(context),
             success: function(response) {
-            	console.log("success")
+            	console.log(response)
+            	window.location.replace("/account/dashboard");
+            	
             }
         });
+        
     });
 });
