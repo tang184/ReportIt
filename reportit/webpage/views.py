@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
+from django.contrib.auth.models import User, Group
 
 from .forms import ReporterSignUpForm, ReporterAdditionalForm, AgentSignUpForm, AdditionalForm, SubmitConcernForm, EditConcernForm
 from .models import Concern, Reporter, Agent
@@ -18,8 +19,10 @@ import codecs
 # Create your views here.
 
 
+
 @login_required
 def dashboard(request):
+
     return render(request, 'webpage/dashboard.html')
 
 def home(request):
@@ -48,6 +51,10 @@ def reporterSignup(request):
             model2.user = model1
             model2.save()
 
+            group = Group(name="Reporter")
+            group.save()
+            model1.groups.add(group)
+
             return redirect('/')
     else:
         form1 = ReporterSignUpForm()
@@ -67,6 +74,12 @@ def agentSignup(request):
             #print(model2)
             model2.user = model1
             model2.save()
+
+            group = Group(name="Agent")
+            group.save()
+            model1.groups.add(group)
+
+
             return redirect('/')
     else:
         form1 = AgentSignUpForm()

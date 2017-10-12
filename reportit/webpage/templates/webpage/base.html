@@ -26,6 +26,7 @@
 		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
 	</head>
 	<body>
+		{% load tags %}
 		<div id="page-wrapper">
 		{% block nav %}
 		<!-- Header -->
@@ -75,8 +76,10 @@
 							<li><a href="/account/dashboard/" class="list-group-item" name="profile" id="dashboard">Dashboard</a></li>
 
 						    <li><a href="/account/profile/" class="list-group-item" name="profile" id="profile">{{request.user.username}}'s Profile </a></li>
-						    
+						    {% if request.user|has_group:"Reporter" %}
 						      <li><a href="/account/submitConcern/" class="list-group-item">SubmitConcern</a></li>
+						    {% endif %}
+
 						      <li><a href="/account/viewConcern/" class="list-group-item">View My Concerns</a></li>
 						    </ul>
 						</div>
