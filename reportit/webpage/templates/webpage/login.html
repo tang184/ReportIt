@@ -44,6 +44,17 @@
 					<div class="btn forgetPassword">
 				        <a href="/password_reset/" name="forget_password" id="forget_password">Forget Password</a>
 				    </div>
+
+					<div class="social-login">
+						<h4 style="color:black;text-align:center;">- or -</h4>
+						<div class="social-login-buttons">
+							<a  style="color:blue;text-align:center;" class="btn btn-block btn-social btn-lg btn-google" id="google_login" href="{% url 'social:begin' 'google-oauth2' %}">
+    							<span class="fa fa-google"></span> Login with Google
+  							</a>
+						</div>
+
+					</div>
+
 				</div>
 
             </div>

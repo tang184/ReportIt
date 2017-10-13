@@ -39,6 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+     # used for third party login
+     #'widget_tweaks',
+    'social_django',
 
 ]
 
@@ -50,6 +53,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # used for third party login
+    'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
 
 ROOT_URLCONF = 'reportit.urls'
@@ -65,6 +70,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # used for third party login
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -73,6 +81,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'reportit.wsgi.application'
 
+#add for third party login
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.facebook.FacebookOAuth2',
+    'social_core.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
@@ -84,8 +98,21 @@ DATABASES = {
     }
 }
 
+
 # Login redirect
 LOGIN_REDIRECT_URL = '/account/dashboard'
+
+#default URL used for third paty login d\
+SOCIAL_AUTH_LOGIN_ERROR_URL = '/register/'
+#SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/oauthinfo/'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/account/dashboard'
+SOCIAL_AUTH_RAISE_EXCEPTIONS = False
+
+
+#used for third party login
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '526390079783-65f89qmpk4120cqgpps2pm4mvlth3f1f.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'UkY8l1aM01Y2cmJyRsSmNH2b'
+
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
@@ -133,3 +160,5 @@ if DEBUG:
     EMAIL_HOST_PASSWORD = '19941214'
     EMAIL_USE_TLS = True
     DEFAULT_FROM_EMAIL = 'ReportIt Team'
+
+
