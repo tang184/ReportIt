@@ -1,0 +1,123 @@
+{% extends "webpage/base.html" %}
+{% load static %}
+{% load util %}
+
+<section id="main" class="container">
+<header>
+<h2>My Profile</h2>
+<p>Just an assorted selection of elements.</p>
+</header>
+
+{% block content %}
+
+<section id="main" class="container">
+
+<header>
+	<h2>My Profile</h2>
+	<!-- <p>My profile content</p> -->
+</header>
+
+<div class="row">
+<div class="12u">
+
+<!-- Table -->
+<section class="box">
+		<form method="post" action="#">
+
+			<div class="row uniform 50%">
+				<div class="3u">Username: </div>
+				<div class="6u">
+					<input type="text" name="name" id="name" value="" placeholder="Name" disabled />
+				</div>
+			</div>
+			<div class="row uniform 50%">
+				<div class="3u">Email: </div>
+				<div class="6u">
+					<input type="email" name="email" id="email" value="" placeholder="Email" disabled/>
+				</div>
+			</div>
+			<div class="row uniform 50%">
+				<div class="3u">Gender: </div>
+				<div class="6u">
+					<input type="text" name="gender" id="gender" value="" placeholder="gender" />
+				</div>
+			</div>
+			<div class="row uniform 50%">
+				<div class="3u">Phone Number: </div>
+				<div class="6u">
+					<input type="text" name="phone" id="phone" value="" placeholder="Phone" />
+				</div>
+			</div>
+			<div class="row uniform 50%">
+				<div class="3u">Address: </div>
+				<div class="6u">
+					<input type="text" name="Address" id="Address" value="" placeholder="Address" />
+				</div>
+			</div>
+			<!-- <div class="row uniform 50%">
+				<div class="3u">Bio: </div>
+				<div class="6u">
+					<input type="text" name="Bio" id="Bio" value="" placeholder="Bio" />
+				</div>
+			</div> -->
+			<!-- <div class="row uniform 50%">
+				<div class="12u">
+					<div class="select-wrapper">
+						<select name="category" id="category">
+							<option value="">- Category -</option>
+							<option value="1">Manufacturing</option>
+							<option value="1">Shipping</option>
+							<option value="1">Administration</option>
+							<option value="1">Human Resources</option>
+						</select>
+					</div>
+				</div>
+			</div> -->
+			<!-- <div class="row uniform 50%">
+				<div class="4u 12u(narrower)">
+					<input type="radio" id="priority-low" name="priority" checked>
+					<label for="priority-low">Low Priority</label>
+				</div>
+				<div class="4u 12u(narrower)">
+					<input type="radio" id="priority-normal" name="priority">
+					<label for="priority-normal">Normal Priority</label>
+				</div>
+				<div class="4u 12u(narrower)">
+					<input type="radio" id="priority-high" name="priority">
+					<label for="priority-high">High Priority</label>
+				</div>
+			</div>
+			<div class="row uniform 50%">
+				<div class="6u 12u(narrower)">
+					<input type="checkbox" id="copy" name="copy">
+					<label for="copy">Email me a copy of this message</label>
+				</div>
+				<div class="6u 12u(narrower)">
+					<input type="checkbox" id="human" name="human" checked>
+					<label for="human">I am a human and not a robot</label>
+				</div>
+			</div> -->
+			<div class="row uniform 50%">
+				<div class="12u">Bio: </div>
+				<div class="12u">
+					<textarea name="message" id="message" placeholder="My bio" rows="6"></textarea>
+				</div>
+			</div>
+			<div class="row uniform">
+				<div class="12u">
+					<ul class="actions">
+						<li><input type="submit" value="Update" /></li>
+						<!-- <li><input type="reset" value="Cancel" class="alt" /></li> -->
+						<li><a href="edit" class="button alt small"/>Cancel</a></li>
+					</ul>
+				</div>
+			</div>
+		</form>
+</section>
+</div>
+</div>
+</section>
+
+{% endblock %}
+
+						

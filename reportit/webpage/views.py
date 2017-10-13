@@ -88,7 +88,10 @@ def agentSignup(request):
 
 
 def viewProfile(request):
-    return render(request, 'webpage/newprofile.html')
+    return render(request, 'webpage/profile.html')
+
+def editProfile(request):
+    return render(request, 'webpage/editprofile.html')
 
 
 @login_required
