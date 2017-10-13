@@ -37,12 +37,14 @@
 					<input type="email" name="email" id="email" value="" placeholder="Email" disabled/>
 				</div>
 			</div>
+			{% if request.user.reporter|to_class_name == 'Reporter' %}
 			<div class="row uniform 50%">
 				<div class="3u">Gender: </div>
 				<div class="6u">
 					<input type="text" name="gender" id="gender" value="" placeholder="gender" />
 				</div>
 			</div>
+			{% endif %}
 			<div class="row uniform 50%">
 				<div class="3u">Phone Number: </div>
 				<div class="6u">
