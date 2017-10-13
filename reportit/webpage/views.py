@@ -90,8 +90,25 @@ def agentSignup(request):
 def viewProfile(request):
     return render(request, 'webpage/profile.html')
 
+#@csrf_protect
 def editProfile(request):
-    return render(request, 'webpage/editprofile.html')
+    if request.method == 'GET':
+        return render(request, 'webpage/editprofile.html')
+    elif request.method == 'POST':
+        gender = request.POST['gender']
+        phone = request.POST['phone']
+        address = request.POST['address']
+        bio = request.POST['bio']
+        # print (gender, phone, address, bio)
+        user = request.user
+        user.reporter.address = address
+        user.reporter.gender = gender
+        user.reporter.phone_number = phone
+        user.reporter.about = bio
+        user.save()
+        return render(request, 'webpage/profile.html')
+
+    
 
 
 @login_required

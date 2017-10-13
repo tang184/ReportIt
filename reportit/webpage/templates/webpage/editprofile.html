@@ -22,8 +22,9 @@
 
 <!-- Table -->
 <section class="box">
-		<form method="post" action="#">
-
+		
+		<form method="post" action="">
+			{% csrf_token %}
 			<div class="row uniform 50%">
 				<div class="3u">Username: </div>
 				<div class="6u">
@@ -51,7 +52,7 @@
 			<div class="row uniform 50%">
 				<div class="3u">Address: </div>
 				<div class="6u">
-					<input type="text" name="Address" id="Address" value="" placeholder="Address" />
+					<input type="text" name="address" id="address" value="" placeholder="Address" />
 				</div>
 			</div>
 			<!-- <div class="row uniform 50%">
@@ -100,7 +101,7 @@
 			<div class="row uniform 50%">
 				<div class="12u">Bio: </div>
 				<div class="12u">
-					<textarea name="message" id="message" placeholder="My bio" rows="6"></textarea>
+					<textarea name="bio" id="bio" placeholder="My bio" rows="6"></textarea>
 				</div>
 			</div>
 			<div class="row uniform">
