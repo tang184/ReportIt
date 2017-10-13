@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.conf.urls import include, url
 from . import views
 from django.contrib.auth import views as auth_views
 
@@ -28,6 +28,8 @@ urlpatterns = [
     url(r'^reset/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',
         auth_views.password_reset_confirm, name='password_reset_confirm'),
     url(r'^reset/done/$', auth_views.password_reset_complete, name='password_reset_complete'),
+    #add for third party login
+    url(r'^oauth/', include('social_django.urls', namespace='social')),
 
     url(r'^getallagents$', views.getAllAgents, name = 'dashboard'),
 
