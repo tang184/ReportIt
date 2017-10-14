@@ -51,8 +51,9 @@ def reporterSignup(request):
             model2.user = model1
             model2.save()
 
-            group = Group(name="Reporter")
-            group.save()
+            group, created = Group.objects.get_or_create(name="Reporter")
+            if created:
+                group.save()
             model1.groups.add(group)
 
             return redirect('/')
