@@ -1,18 +1,111 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Profile Page</title>
-</head>
-<body>
-    {% if user.is_authenticated %}
-      <li><a href="/logout?next=/" name="logout" id="logout"> Log out</a></li>
-    {% else %}
-      <li><a href="/login" name="login" id="login">Login</a></li>
-      <li><a href="/reporterSignup" name="reporterSignup" id="reporterSignup">ReporterSignup</a></li>
-      <li><a href="/agentSignup"  name="agentSignup" id="agentSignup">AgentSignup</a></li>
-    {% endif %}
+{% extends "webpage/base.html" %}
+{% load static %}
+{% load util %}
 
-    This is a profile page
-</body>
-</html>
+<section id="main" class="container">
+<header>
+<h2>My Profile</h2>
+<p>Just an assorted selection of elements.</p>
+</header>
+
+{% block content %}
+
+<section id="main" class="container">
+
+<header>
+	<h2>My Profile</h2>
+	<!-- <p>My profile content</p> -->
+</header>
+
+<div class="row">
+<div class="12u">
+
+<!-- Table -->
+<section class="box">
+	<div class="table-wrapper">
+		<table>
+			<thead>
+				<tr>
+					<th>Name</th>
+
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Username</td>
+					<td>{{request.user.username}}</td>
+
+				</tr>
+				<!-- <tr>
+					<td>First Name</td>
+					<td>Vis ac commodo adipiscing arcu aliquet.</td>
+
+				</tr>
+				<tr>
+					<td>Last Name</td>
+					<td> Morbi faucibus arcu accumsan lorem.</td>
+
+				</tr> -->
+				{% if request.user.reporter|to_class_name == 'Reporter' %}
+				<tr>
+					<td>Gender</td>
+					<td>{{ request.user.reporter.gender }}</td>
+
+				</tr>
+				<tr>
+					<td>Phone Number</td>
+					<td>{{request.user.reporter.phone_number}}</td>
+
+				</tr>
+				<tr>
+					<td>Address</td>
+					<td>{{request.user.reporter.address}}</td>
+				</tr>
+				<tr>
+					<td>Bio</td>
+					<td>{{request.user.reporter.about}}</td>
+
+				</tr>
+				{% else %}
+				<tr>
+					<td>Phone Number</td>
+					<td>{{request.user.agent.phone_number}}</td>
+
+				</tr>
+				<tr>
+					<td>Address</td>
+					<td>{{request.user.agent.address}}</td>
+				</tr>
+				<tr>
+					<td>Bio</td>
+					<td>{{request.user.agent.about}}</td>
+
+				</tr>
+				{% endif %}
+				
+			</tbody>
+			<tfoot>
+				<tr>
+					<td>
+					<div class="12u">
+						<ul class="actions">
+							<li><a href="edit" class="button small"/>Edit</a></li>
+							<!-- <li><input type="reset" value="Cancel" class="alt" /></li> -->
+						</ul>
+					</div>
+					</td>
+					
+				</tr>
+			</tfoot>
+
+		</table>
+	</div>
+
+</section>
+</div>
+</div>
+</section>
+
+{% endblock %}
+
+						
