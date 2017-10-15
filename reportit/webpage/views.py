@@ -76,8 +76,9 @@ def agentSignup(request):
             model2.user = model1
             model2.save()
 
-            group = Group(name="Agent")
-            group.save()
+            group, created = Group.objects.get_or_create(name="Agent")
+            if created:
+                group.save()
             model1.groups.add(group)
 
 
