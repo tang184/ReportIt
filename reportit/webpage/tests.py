@@ -55,7 +55,7 @@ class AddTestCase(StaticLiveServerTestCase):
 		print("start first test")
 		pass
 
-	""" bad page """
+	""" bad page"""
 	def test_notlogin_dashboard(self):
 		browser = self.selenium
 		url = self.live_server_url + '/account/dashboard/'
@@ -73,7 +73,7 @@ class AddTestCase(StaticLiveServerTestCase):
 		pw = browser.find_element_by_name('password')
 		pw.send_keys("admin")
 		browser.find_element_by_name('login-submit').click()	
-		assert 'You have successfully logged in' in browser.page_source
+		assert 'ReportIt' in browser.title
 
 	def test_adminlogin_wrongpassword(self):
 		browser = self.selenium
@@ -99,8 +99,10 @@ class AddTestCase(StaticLiveServerTestCase):
 		assert 'You have successfully logged in' not in browser.title
 		assert 'username' in browser.page_source
 
+
+
 	""" reporter signup """
-	def test_reportersignup_good(self):
+	def test_reportersignup_good_withoptional(self):
 		browser = self.selenium
 		url = self.live_server_url + '/reporterSignup/'
 		browser.get(url)
@@ -112,12 +114,29 @@ class AddTestCase(StaticLiveServerTestCase):
 		pw.send_keys("pass1234")
 		pwc = browser.find_element_by_name('password2')
 		pwc.send_keys("pass1234")
+		ln = browser.find_element_by_name('legal_name')
+		ln.send_keys("Tom")
 		phone = browser.find_element_by_name('phone_number')
 		phone.send_keys("7652223333")
 		add = browser.find_element_by_name('address')
 		add.send_keys("first street")
 		abt = browser.find_element_by_name('about')
 		abt.send_keys("nice to meet you!")
+		browser.find_element_by_name('signup_submit').click()		
+		assert 'Reporter Signup' not in browser.title
+
+	def test_reportersignup_good_withoutoptional(self):
+		browser = self.selenium
+		url = self.live_server_url + '/reporterSignup/'
+		browser.get(url)
+		un = browser.find_element_by_id('id_username')
+		un.send_keys("cs408_2")
+		email = browser.find_element_by_name('email')
+		email.send_keys('321@qq.com')
+		pw = browser.find_element_by_name('password1')
+		pw.send_keys("pass1234")
+		pwc = browser.find_element_by_name('password2')
+		pwc.send_keys("pass1234")
 		browser.find_element_by_name('signup_submit').click()		
 		assert 'Reporter Signup' not in browser.title
 
@@ -133,6 +152,8 @@ class AddTestCase(StaticLiveServerTestCase):
 		pw.send_keys("pass1234")
 		pwc = browser.find_element_by_name('password2')
 		pwc.send_keys("pass1234")
+		ln = browser.find_element_by_name('legal_name')
+		ln.send_keys("Tom")
 		phone = browser.find_element_by_name('phone_number')
 		phone.send_keys("7652223333")
 		add = browser.find_element_by_name('address')
@@ -155,6 +176,8 @@ class AddTestCase(StaticLiveServerTestCase):
 		pw.send_keys("pass1234")
 		pwc = browser.find_element_by_name('password2')
 		pwc.send_keys("pass1234")
+		ln = browser.find_element_by_name('legal_name')
+		ln.send_keys("Tom")
 		phone = browser.find_element_by_name('phone_number')
 		phone.send_keys("7652223333")
 		add = browser.find_element_by_name('address')
@@ -163,7 +186,6 @@ class AddTestCase(StaticLiveServerTestCase):
 		abt.send_keys("nice to meet you!")
 		browser.find_element_by_name('signup_submit').click()		
 		assert 'Reporter Signup' in browser.title
-		assert 'Enter a valid email address.' in browser.page_source
 	
 	def test_reportersignup_dismatchpswd(self):
 		browser = self.selenium
@@ -177,14 +199,15 @@ class AddTestCase(StaticLiveServerTestCase):
 		pw.send_keys("pass1234")
 		pwc = browser.find_element_by_name('password2')
 		pwc.send_keys("pass123")
+		ln = browser.find_element_by_name('legal_name')
+		ln.send_keys("Tom")
 		phone = browser.find_element_by_name('phone_number')
 		phone.send_keys("7652223333")
 		add = browser.find_element_by_name('address')
 		add.send_keys("first street")
 		abt = browser.find_element_by_name('about')
 		abt.send_keys("nice to meet you!")
-		browser.find_element_by_name('signup_submit').click()	
-		assert 'The two password fields didn\'t match.'	in browser.page_source	
+		browser.find_element_by_name('signup_submit').click()		
 		assert 'Reporter Signup' in browser.title
 
 	def test_reportersignup_dupuser(self):
@@ -194,23 +217,25 @@ class AddTestCase(StaticLiveServerTestCase):
 		un = browser.find_element_by_id('id_username')
 		un.send_keys("admin")
 		email = browser.find_element_by_name('email')
-		email.send_keys('123@qq.com')
+		email.send_keys('admin@example.com')
 		pw = browser.find_element_by_name('password1')
 		pw.send_keys("pass1234")
 		pwc = browser.find_element_by_name('password2')
-		pwc.send_keys("pass123")
+		pwc.send_keys("pass1234")
+		ln = browser.find_element_by_name('legal_name')
+		ln.send_keys("Tom")
 		phone = browser.find_element_by_name('phone_number')
 		phone.send_keys("7652223333")
 		add = browser.find_element_by_name('address')
 		add.send_keys("first street")
 		abt = browser.find_element_by_name('about')
 		abt.send_keys("nice to meet you!")
-		browser.find_element_by_name('signup_submit').click()
-		assert 'A user with that username already exists.' in browser.page_source	
+		browser.find_element_by_name('signup_submit').click()	
 		assert 'Reporter Signup' in browser.title
-	
 
-	"""agent signup"""
+
+
+	""" agent signup """
 	def test_agentsignup_good(self):
 		browser = self.selenium
 		url = self.live_server_url + '/agentSignup/'
@@ -235,8 +260,8 @@ class AddTestCase(StaticLiveServerTestCase):
 		vfile.send_keys("http://www.google.com")
 		abt = browser.find_element_by_name('about')
 		abt.send_keys("nice to meet you!")
-		browser.find_element_by_name('signup_submit').click()		
-		assert 'Agent Signup' in browser.title
+		browser.find_element_by_name('signup_submit').click()
+		assert 'Agent Signup' not in browser.title
 
 	def test_agentsignup_invalidusername(self):
 		browser = self.selenium
@@ -316,8 +341,7 @@ class AddTestCase(StaticLiveServerTestCase):
 		vfile.send_keys("http://www.google.com")
 		abt = browser.find_element_by_name('about')
 		abt.send_keys("nice to meet you!")
-		browser.find_element_by_name('signup_submit').click()	
-		assert 'The two password fields didn\'t match.'	in browser.page_source
+		browser.find_element_by_name('signup_submit').click()
 		assert 'Agent Signup' in browser.title
 
 	def test_agentsignup_dupuser(self):
@@ -345,24 +369,46 @@ class AddTestCase(StaticLiveServerTestCase):
 		abt = browser.find_element_by_name('about')
 		abt.send_keys("nice to meet you!")
 		browser.find_element_by_name('signup_submit').click()
-		assert 'A user with that username already exists.' in browser.page_source
 		assert 'Agent Signup' in browser.title
 
 
-	"""submit concerns"""
+	""" submit concerns
 
 	def test_concern_good(self):
+		# signup
 		browser = self.selenium
+		url = self.live_server_url + '/reporterSignup/'
+		browser.get(url)
+		un = browser.find_element_by_id('id_username')
+		un.send_keys("cs408_2")
+		email = browser.find_element_by_name('email')
+		email.send_keys('321@qq.com')
+		pw = browser.find_element_by_name('password1')
+		pw.send_keys("pass1234")
+		pwc = browser.find_element_by_name('password2')
+		pwc.send_keys("pass1234")
+		browser.find_element_by_name('signup_submit').click()
+
+		# login
+		url = self.live_server_url + '/login/'
+		browser.get(url)
+		un = browser.find_element_by_name('username')
+		un.send_keys("cs408_2")
+		pw = browser.find_element_by_name('password')
+		pw.send_keys("pass1234")
+		browser.find_element_by_name('login-submit').click()
+
+		# submit concern
 		url = self.live_server_url + '/account/submitConcern/'
 		browser.get(url)
-		title = browser.find_element_by_id('id_title')
+		title = browser.find_element_by_name('title')
 		title.send_keys("concerns")
 		agency = browser.find_element_by_id('id_agent')
 		agency.send_keys("some agency")
-		content = browser.find_element_by_id('id_content')
+		content = browser.find_element_by_name('content')
 		content.send_keys("contents")
-		browser.find_element_by_name('concern_submit_button').click()
-		assert '/account/dashboard/' in browser.current_url
+		browser.find_element_by_id('concern_submit_button').click()
+		assert 'ReportIt' in browser.title
 
 	def test_concern_emptytitle(self):
 		browser = self.selenium
@@ -419,7 +465,7 @@ class AddTestCase(StaticLiveServerTestCase):
 		browser.find_element_by_name('concern_submit_button').click()
 		assert '/submitConcern/' in browser.current_url
 
-
+	"""
 
 	"""
 	def test_a_register_reporter(self):
