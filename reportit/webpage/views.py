@@ -113,11 +113,13 @@ def editProfile(request):
             user.reporter.gender = gender
             user.reporter.phone_number = phone
             user.reporter.about = bio
+            user.reporter.save()
             user.save()
         elif len(agent) != 0:
             user.agent.address = address
             user.agent.phone_number = phone
             user.agent.about = bio
+            user.agent.save()
             user.save()
         return render(request, 'webpage/profile.html')
 
