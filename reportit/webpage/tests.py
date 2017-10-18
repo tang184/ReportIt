@@ -105,7 +105,7 @@ class AddTestCase(StaticLiveServerTestCase):
 		url = self.live_server_url + '/reporterSignup/'
 		browser.get(url)
 		un = browser.find_element_by_id('id_username')
-		un.send_keys("user")
+		un.send_keys("cs408")
 		email = browser.find_element_by_name('email')
 		email.send_keys('123@qq.com')
 		pw = browser.find_element_by_name('password1')
@@ -210,7 +210,34 @@ class AddTestCase(StaticLiveServerTestCase):
 		assert 'Reporter Signup' in browser.title
 	
 
-	"""agent signup""" """
+	"""agent signup"""
+	def test_agentsignup_good(self):
+		browser = self.selenium
+		url = self.live_server_url + '/agentSignup/'
+		browser.get(url)
+		un = browser.find_element_by_id('id_username')
+		un.send_keys("agent1")
+		email = browser.find_element_by_name('email')
+		email.send_keys('123@qq.com')
+		pw = browser.find_element_by_name('password1')
+		pw.send_keys("pass1234")
+		pwc = browser.find_element_by_name('password2')
+		pwc.send_keys("pass1234")
+		lname = browser.find_element_by_name('legal_name')
+		lname.send_keys('Tom')
+		phone = browser.find_element_by_name('phone_number')
+		phone.send_keys("7652223333")
+		add = browser.find_element_by_name('address')
+		add.send_keys("first street")
+		logo = browser.find_element_by_name('agentimage')
+		logo.send_keys("http://www.google.com")
+		vfile = browser.find_element_by_name('agentverifile')
+		vfile.send_keys("http://www.google.com")
+		abt = browser.find_element_by_name('about')
+		abt.send_keys("nice to meet you!")
+		browser.find_element_by_name('signup_submit').click()		
+		assert 'Agent Signup' in browser.title
+
 	def test_agentsignup_invalidusername(self):
 		browser = self.selenium
 		url = self.live_server_url + '/agentSignup/'
@@ -223,18 +250,20 @@ class AddTestCase(StaticLiveServerTestCase):
 		pw.send_keys("pass1234")
 		pwc = browser.find_element_by_name('password2')
 		pwc.send_keys("pass1234")
+		lname = browser.find_element_by_name('legal_name')
+		lname.send_keys('Tom')
 		phone = browser.find_element_by_name('phone_number')
 		phone.send_keys("7652223333")
 		add = browser.find_element_by_name('address')
 		add.send_keys("first street")
 		logo = browser.find_element_by_name('agentimage')
-		# yet to test
+		logo.send_keys("http://www.google.com")
 		vfile = browser.find_element_by_name('agentverifile')
-		# yet to test
+		vfile.send_keys("http://www.google.com")
 		abt = browser.find_element_by_name('about')
 		abt.send_keys("nice to meet you!")
 		browser.find_element_by_name('signup_submit').click()		
-		assert 'ReportIt Agent Signup' in browser.title
+		assert 'Agent Signup' in browser.title
 
 	def test_agentsignup_invalidemail(self):
 		browser = self.selenium
@@ -248,18 +277,20 @@ class AddTestCase(StaticLiveServerTestCase):
 		pw.send_keys("pass1234")
 		pwc = browser.find_element_by_name('password2')
 		pwc.send_keys("pass1234")
+		lname = browser.find_element_by_name('legal_name')
+		lname.send_keys('Tom')
 		phone = browser.find_element_by_name('phone_number')
 		phone.send_keys("7652223333")
 		add = browser.find_element_by_name('address')
 		add.send_keys("first street")
 		logo = browser.find_element_by_name('agentimage')
-		# yet to test
+		logo.send_keys("http://www.google.com")
 		vfile = browser.find_element_by_name('agentverifile')
-		# yet to test
+		vfile.send_keys("http://www.google.com")
 		abt = browser.find_element_by_name('about')
 		abt.send_keys("nice to meet you!")
 		browser.find_element_by_name('signup_submit').click()		
-		assert 'ReportIt Agent Signup' in browser.title
+		assert 'Agent Signup' in browser.title
 
 	def test_agentsignup_dismatchpswd(self):
 		browser = self.selenium
@@ -273,19 +304,21 @@ class AddTestCase(StaticLiveServerTestCase):
 		pw.send_keys("pass1234")
 		pwc = browser.find_element_by_name('password2')
 		pwc.send_keys("pass1")
+		lname = browser.find_element_by_name('legal_name')
+		lname.send_keys('Tom')
 		phone = browser.find_element_by_name('phone_number')
 		phone.send_keys("7652223333")
 		add = browser.find_element_by_name('address')
 		add.send_keys("first street")
 		logo = browser.find_element_by_name('agentimage')
-		# yet to test
+		logo.send_keys("http://www.google.com")
 		vfile = browser.find_element_by_name('agentverifile')
-		# yet to test
+		vfile.send_keys("http://www.google.com")
 		abt = browser.find_element_by_name('about')
 		abt.send_keys("nice to meet you!")
 		browser.find_element_by_name('signup_submit').click()	
 		assert 'The two password fields didn\'t match.'	in browser.page_source
-		assert 'ReportIt Agent Signup' in browser.title
+		assert 'Agent Signup' in browser.title
 
 	def test_agentsignup_dupuser(self):
 		browser = self.selenium
@@ -299,22 +332,24 @@ class AddTestCase(StaticLiveServerTestCase):
 		pw.send_keys("pass1234")
 		pwc = browser.find_element_by_name('password2')
 		pwc.send_keys("pass1234")
+		lname = browser.find_element_by_name('legal_name')
+		lname.send_keys('Tom')
 		phone = browser.find_element_by_name('phone_number')
 		phone.send_keys("7652223333")
 		add = browser.find_element_by_name('address')
 		add.send_keys("first street")
 		logo = browser.find_element_by_name('agentimage')
-		# yet to test
+		logo.send_keys("http://www.google.com")
 		vfile = browser.find_element_by_name('agentverifile')
-		# yet to test
+		vfile.send_keys("http://www.google.com")
 		abt = browser.find_element_by_name('about')
 		abt.send_keys("nice to meet you!")
 		browser.find_element_by_name('signup_submit').click()
 		assert 'A user with that username already exists.' in browser.page_source
-		assert 'ReportIt Agent Signup' in browser.title
+		assert 'Agent Signup' in browser.title
 
 
-	""" """submit concerns""" """
+	"""submit concerns"""
 
 	def test_concern_good(self):
 		browser = self.selenium
@@ -384,7 +419,7 @@ class AddTestCase(StaticLiveServerTestCase):
 		browser.find_element_by_name('concern_submit_button').click()
 		assert '/submitConcern/' in browser.current_url
 
-	"""
+
 
 	"""
 	def test_a_register_reporter(self):
