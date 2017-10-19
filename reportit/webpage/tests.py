@@ -55,16 +55,18 @@ class AddTestCase(StaticLiveServerTestCase):
 		print("start first test")
 		pass
 
-	""" bad page"""
+	""" bad page
 	def test_notlogin_dashboard(self):
 		browser = self.selenium
 		url = self.live_server_url + '/account/dashboard/'
 		browser.get(url)
 		assert 'You have successfully logged in' not in browser.page_source
-	
-	""" login """
 
-	def test_adminlogin_profile(self):
+	"""
+	
+	""" login
+
+	def test_adminlogin1_profile(self):
 		browser = self.selenium
 		url = self.live_server_url + '/login/'
 		browser.get(url)
@@ -75,7 +77,7 @@ class AddTestCase(StaticLiveServerTestCase):
 		browser.find_element_by_name('login-submit').click()	
 		assert 'ReportIt' in browser.title
 
-	def test_adminlogin_wrongpassword(self):
+	def test_adminlogin2_wrongpassword(self):
 		browser = self.selenium
 		url = self.live_server_url + '/login/'
 		browser.get(url)
@@ -87,7 +89,7 @@ class AddTestCase(StaticLiveServerTestCase):
 		assert 'You have successfully logged in' not in browser.title
 		assert 'username' in browser.page_source
 
-	def test_adminlogin_notexist(self):
+	def test_adminlogin3_notexist(self):
 		browser = self.selenium
 		url = self.live_server_url + '/login/'
 		browser.get(url)
@@ -98,11 +100,11 @@ class AddTestCase(StaticLiveServerTestCase):
 		browser.find_element_by_name('login-submit').click()		
 		assert 'You have successfully logged in' not in browser.title
 		assert 'username' in browser.page_source
+	"""
 
 
-
-	""" reporter signup """
-	def test_reportersignup_good_withoptional(self):
+	""" reporter signup
+	def test_reportersignup1_good_withoptional(self):
 		browser = self.selenium
 		url = self.live_server_url + '/reporterSignup/'
 		browser.get(url)
@@ -125,7 +127,7 @@ class AddTestCase(StaticLiveServerTestCase):
 		browser.find_element_by_name('signup_submit').click()		
 		assert 'Reporter Signup' not in browser.title
 
-	def test_reportersignup_good_withoutoptional(self):
+	def test_reportersignup2_good_withoutoptional(self):
 		browser = self.selenium
 		url = self.live_server_url + '/reporterSignup/'
 		browser.get(url)
@@ -140,7 +142,7 @@ class AddTestCase(StaticLiveServerTestCase):
 		browser.find_element_by_name('signup_submit').click()		
 		assert 'Reporter Signup' not in browser.title
 
-	def test_reportersignup_invalidusername(self):
+	def test_reportersignup3_invalidusername(self):
 		browser = self.selenium
 		url = self.live_server_url + '/reporterSignup/'
 		browser.get(url)
@@ -164,7 +166,7 @@ class AddTestCase(StaticLiveServerTestCase):
 		assert 'Reporter Signup' in browser.title
 		
 	
-	def test_reportersignup_invalidemail(self):
+	def test_reportersignup4_invalidemail(self):
 		browser = self.selenium
 		url = self.live_server_url + '/reporterSignup/'
 		browser.get(url)
@@ -187,7 +189,7 @@ class AddTestCase(StaticLiveServerTestCase):
 		browser.find_element_by_name('signup_submit').click()		
 		assert 'Reporter Signup' in browser.title
 	
-	def test_reportersignup_dismatchpswd(self):
+	def test_reportersignup5_dismatchpswd(self):
 		browser = self.selenium
 		url = self.live_server_url + '/reporterSignup/'
 		browser.get(url)
@@ -210,7 +212,7 @@ class AddTestCase(StaticLiveServerTestCase):
 		browser.find_element_by_name('signup_submit').click()		
 		assert 'Reporter Signup' in browser.title
 
-	def test_reportersignup_dupuser(self):
+	def test_reportersignup6_dupuser(self):
 		browser = self.selenium
 		url = self.live_server_url + '/reporterSignup/'
 		browser.get(url)
@@ -233,10 +235,10 @@ class AddTestCase(StaticLiveServerTestCase):
 		browser.find_element_by_name('signup_submit').click()	
 		assert 'Reporter Signup' in browser.title
 
+	"""
 
-
-	""" agent signup """
-	def test_agentsignup_good(self):
+	""" agent signup
+	def test_agentsignup1_good(self):
 		browser = self.selenium
 		url = self.live_server_url + '/agentSignup/'
 		browser.get(url)
@@ -263,7 +265,7 @@ class AddTestCase(StaticLiveServerTestCase):
 		browser.find_element_by_name('signup_submit').click()
 		assert 'Agent Signup' not in browser.title
 
-	def test_agentsignup_invalidusername(self):
+	def test_agentsignup2_invalidusername(self):
 		browser = self.selenium
 		url = self.live_server_url + '/agentSignup/'
 		browser.get(url)
@@ -290,7 +292,7 @@ class AddTestCase(StaticLiveServerTestCase):
 		browser.find_element_by_name('signup_submit').click()		
 		assert 'Agent Signup' in browser.title
 
-	def test_agentsignup_invalidemail(self):
+	def test_agentsignup3_invalidemail(self):
 		browser = self.selenium
 		url = self.live_server_url + '/agentSignup/'
 		browser.get(url)
@@ -317,7 +319,7 @@ class AddTestCase(StaticLiveServerTestCase):
 		browser.find_element_by_name('signup_submit').click()		
 		assert 'Agent Signup' in browser.title
 
-	def test_agentsignup_dismatchpswd(self):
+	def test_agentsignup4_dismatchpswd(self):
 		browser = self.selenium
 		url = self.live_server_url + '/agentSignup/'
 		browser.get(url)
@@ -344,7 +346,7 @@ class AddTestCase(StaticLiveServerTestCase):
 		browser.find_element_by_name('signup_submit').click()
 		assert 'Agent Signup' in browser.title
 
-	def test_agentsignup_dupuser(self):
+	def test_agentsignup5_dupuser(self):
 		browser = self.selenium
 		url = self.live_server_url + '/agentSignup/'
 		browser.get(url)
@@ -371,10 +373,195 @@ class AddTestCase(StaticLiveServerTestCase):
 		browser.find_element_by_name('signup_submit').click()
 		assert 'Agent Signup' in browser.title
 
+	"""
 
 	""" submit concerns
 
-	def test_concern_good(self):
+	def test_concern1_good(self):
+		browser = self.selenium
+		# signup
+		url = self.live_server_url + '/reporterSignup/'
+		browser.get(url)
+		un = browser.find_element_by_id('id_username')
+		un.send_keys("cs408_2")
+		email = browser.find_element_by_name('email')
+		email.send_keys('321@qq.com')
+		pw = browser.find_element_by_name('password1')
+		pw.send_keys("pass1234")
+		pwc = browser.find_element_by_name('password2')
+		pwc.send_keys("pass1234")
+		browser.find_element_by_name('signup_submit').click()
+
+		# login
+		url = self.live_server_url + '/login/'
+		browser.get(url)
+		un = browser.find_element_by_name('username')
+		un.send_keys("cs408_2")
+		pw = browser.find_element_by_name('password')
+		pw.send_keys("pass1234")
+		browser.find_element_by_name('login-submit').click()
+
+		# submit concern: here need button name
+		url = self.live_server_url + '/account/submitConcern/'
+		browser.get(url)
+		title = browser.find_element_by_name('title')
+		title.send_keys("concerns")
+		# here need agent drop down box name
+		agency = browser.find_element_by_id('id_agent')
+		agency.send_keys("some agency")
+		content = browser.find_element_by_name('content')
+		content.send_keys("contents")
+		browser.find_element_by_id('concern_submit_button').click()
+		assert 'ReportIt' in browser.title
+
+	def test_concern2_emptytitle(self):
+		browser = self.selenium
+		# signup
+		url = self.live_server_url + '/reporterSignup/'
+		browser.get(url)
+		un = browser.find_element_by_id('id_username')
+		un.send_keys("cs408_2")
+		email = browser.find_element_by_name('email')
+		email.send_keys('321@qq.com')
+		pw = browser.find_element_by_name('password1')
+		pw.send_keys("pass1234")
+		pwc = browser.find_element_by_name('password2')
+		pwc.send_keys("pass1234")
+		browser.find_element_by_name('signup_submit').click()
+
+		# login
+		url = self.live_server_url + '/login/'
+		browser.get(url)
+		un = browser.find_element_by_name('username')
+		un.send_keys("cs408_2")
+		pw = browser.find_element_by_name('password')
+		pw.send_keys("pass1234")
+		browser.find_element_by_name('login-submit').click()
+
+		url = self.live_server_url + '/account/submitConcern/'
+		browser.get(url)
+		title = browser.find_element_by_id('id_title')
+		title.send_keys("")
+		agency = browser.find_element_by_id('id_agent')
+		agency.send_keys("some agency")
+		content = browser.find_element_by_id('id_content')
+		content.send_keys("contents")
+		browser.find_element_by_name('concern_submit_button').click()
+		assert '/submitConcern/' in browser.current_url
+		assert 'should not be empty' in browser.page_source
+
+	def test_concern3_emptyagent(self):
+		browser = self.selenium
+		# signup
+		url = self.live_server_url + '/reporterSignup/'
+		browser.get(url)
+		un = browser.find_element_by_id('id_username')
+		un.send_keys("cs408_2")
+		email = browser.find_element_by_name('email')
+		email.send_keys('321@qq.com')
+		pw = browser.find_element_by_name('password1')
+		pw.send_keys("pass1234")
+		pwc = browser.find_element_by_name('password2')
+		pwc.send_keys("pass1234")
+		browser.find_element_by_name('signup_submit').click()
+
+		# login
+		url = self.live_server_url + '/login/'
+		browser.get(url)
+		un = browser.find_element_by_name('username')
+		un.send_keys("cs408_2")
+		pw = browser.find_element_by_name('password')
+		pw.send_keys("pass1234")
+		browser.find_element_by_name('login-submit').click()
+
+		url = self.live_server_url + '/account/submitConcern/'
+		browser.get(url)
+		title = browser.find_element_by_id('id_title')
+		title.send_keys("title")
+		agency = browser.find_element_by_id('id_agent')
+		agency.send_keys("")
+		content = browser.find_element_by_id('id_content')
+		content.send_keys("contents")
+		browser.find_element_by_name('concern_submit_button').click()
+		assert '/submitConcern/' in browser.current_url
+		assert 'should not be empty' in browser.page_source
+
+	def test_concern4_emptycontent(self):
+		browser = self.selenium
+		# signup
+		url = self.live_server_url + '/reporterSignup/'
+		browser.get(url)
+		un = browser.find_element_by_id('id_username')
+		un.send_keys("cs408_2")
+		email = browser.find_element_by_name('email')
+		email.send_keys('321@qq.com')
+		pw = browser.find_element_by_name('password1')
+		pw.send_keys("pass1234")
+		pwc = browser.find_element_by_name('password2')
+		pwc.send_keys("pass1234")
+		browser.find_element_by_name('signup_submit').click()
+
+		# login
+		url = self.live_server_url + '/login/'
+		browser.get(url)
+		un = browser.find_element_by_name('username')
+		un.send_keys("cs408_2")
+		pw = browser.find_element_by_name('password')
+		pw.send_keys("pass1234")
+		browser.find_element_by_name('login-submit').click()
+
+		url = self.live_server_url + '/account/submitConcern/'
+		browser.get(url)
+		title = browser.find_element_by_id('id_title')
+		title.send_keys("title")
+		agency = browser.find_element_by_id('id_agent')
+		agency.send_keys("some agency")
+		content = browser.find_element_by_id('id_content')
+		content.send_keys("")
+		browser.find_element_by_name('concern_submit_button').click()
+		assert '/submitConcern/' in browser.current_url
+		assert 'should not be empty' in browser.page_source
+
+	def test_concern5_badtitle(self):
+		browser = self.selenium
+		# signup
+		url = self.live_server_url + '/reporterSignup/'
+		browser.get(url)
+		un = browser.find_element_by_id('id_username')
+		un.send_keys("cs408_2")
+		email = browser.find_element_by_name('email')
+		email.send_keys('321@qq.com')
+		pw = browser.find_element_by_name('password1')
+		pw.send_keys("pass1234")
+		pwc = browser.find_element_by_name('password2')
+		pwc.send_keys("pass1234")
+		browser.find_element_by_name('signup_submit').click()
+
+		# login
+		url = self.live_server_url + '/login/'
+		browser.get(url)
+		un = browser.find_element_by_name('username')
+		un.send_keys("cs408_2")
+		pw = browser.find_element_by_name('password')
+		pw.send_keys("pass1234")
+		browser.find_element_by_name('login-submit').click()
+
+		url = self.live_server_url + '/account/submitConcern/'
+		browser.get(url)
+		title = browser.find_element_by_id('id_title')
+		title.send_keys("!!!")
+		agency = browser.find_element_by_id('id_agent')
+		agency.send_keys("some agency")
+		content = browser.find_element_by_id('id_content')
+		content.send_keys("some contents")
+		browser.find_element_by_name('concern_submit_button').click()
+		assert '/submitConcern/' in browser.current_url
+
+	"""
+
+	""" Edit Profile """
+
+	def test_editprofile1_immd_good(self):
 		# signup
 		browser = self.selenium
 		url = self.live_server_url + '/reporterSignup/'
@@ -398,74 +585,74 @@ class AddTestCase(StaticLiveServerTestCase):
 		pw.send_keys("pass1234")
 		browser.find_element_by_name('login-submit').click()
 
-		# submit concern
-		url = self.live_server_url + '/account/submitConcern/'
-		browser.get(url)
-		title = browser.find_element_by_name('title')
-		title.send_keys("concerns")
-		agency = browser.find_element_by_id('id_agent')
-		agency.send_keys("some agency")
-		content = browser.find_element_by_name('content')
-		content.send_keys("contents")
-		browser.find_element_by_id('concern_submit_button').click()
-		assert 'ReportIt' in browser.title
+		# edit
+		browser.find_element_by_name('profile').click()
+		# here need button name
+		browser.find_element_by_name('edit_button').click()
+		gen = browser.find_element_by_name('gender')
+		gen.send_keys("female")
+		phone = browser.find_element_by_name('phone')
+		phone.send_keys("7651111111")
+		add = browser.find_element_by_name('address')
+		add.send_keys("first street")
+		bio = browser.find_element_by_name('bio')
+		bio.send_keys("hello!")
+		# here need button name
+		browser.find_element_by_name('update_button').click()
+		assert 'female' in browser.page_source
+		assert '7651111111' in browser.page_source
+		assert 'first street' in browser.page_source
+		assert 'hello!' in browser.page_source
 
-	def test_concern_emptytitle(self):
+	def test_editprofile2_goback_good(self):
 		browser = self.selenium
-		url = self.live_server_url + '/account/submitConcern/'
-		browser.get(url)
-		title = browser.find_element_by_id('id_title')
-		title.send_keys("")
-		agency = browser.find_element_by_id('id_agent')
-		agency.send_keys("some agency")
-		content = browser.find_element_by_id('id_content')
-		content.send_keys("contents")
-		browser.find_element_by_name('concern_submit_button').click()
-		assert '/submitConcern/' in browser.current_url
-		assert 'should not be empty' in browser.page_source
-
-	def test_concern_emptyagent(self):
+		# signup
 		browser = self.selenium
-		url = self.live_server_url + '/account/submitConcern/'
+		url = self.live_server_url + '/reporterSignup/'
 		browser.get(url)
-		title = browser.find_element_by_id('id_title')
-		title.send_keys("title")
-		agency = browser.find_element_by_id('id_agent')
-		agency.send_keys("")
-		content = browser.find_element_by_id('id_content')
-		content.send_keys("contents")
-		browser.find_element_by_name('concern_submit_button').click()
-		assert '/submitConcern/' in browser.current_url
-		assert 'should not be empty' in browser.page_source
+		un = browser.find_element_by_id('id_username')
+		un.send_keys("cs408_2")
+		email = browser.find_element_by_name('email')
+		email.send_keys('321@qq.com')
+		pw = browser.find_element_by_name('password1')
+		pw.send_keys("pass1234")
+		pwc = browser.find_element_by_name('password2')
+		pwc.send_keys("pass1234")
+		browser.find_element_by_name('signup_submit').click()
 
-	def test_concern_emptycontent(self):
-		browser = self.selenium
-		url = self.live_server_url + '/account/submitConcern/'
+		# login
+		url = self.live_server_url + '/login/'
 		browser.get(url)
-		title = browser.find_element_by_id('id_title')
-		title.send_keys("title")
-		agency = browser.find_element_by_id('id_agent')
-		agency.send_keys("some agency")
-		content = browser.find_element_by_id('id_content')
-		content.send_keys("")
-		browser.find_element_by_name('concern_submit_button').click()
-		assert '/submitConcern/' in browser.current_url
-		assert 'should not be empty' in browser.page_source
+		un = browser.find_element_by_name('username')
+		un.send_keys("cs408_2")
+		pw = browser.find_element_by_name('password')
+		pw.send_keys("pass1234")
+		browser.find_element_by_name('login-submit').click()
 
-	def test_concern_badtitle(self):
-		browser = self.selenium
-		url = self.live_server_url + '/account/submitConcern/'
-		browser.get(url)
-		title = browser.find_element_by_id('id_title')
-		title.send_keys("!!!")
-		agency = browser.find_element_by_id('id_agent')
-		agency.send_keys("some agency")
-		content = browser.find_element_by_id('id_content')
-		content.send_keys("some contents")
-		browser.find_element_by_name('concern_submit_button').click()
-		assert '/submitConcern/' in browser.current_url
+		# edit
+		browser.find_element_by_name('profile').click()
+		assert 'You have successfully logged in!' in browser.page_source
+		# here need button name
+		browser.find_element_by_name('edit_button').click()
+		gen = browser.find_element_by_name('gender')
+		gen.send_keys("female")
+		phone = browser.find_element_by_name('phone')
+		phone.send_keys("7651111111")
+		add = browser.find_element_by_name('address')
+		add.send_keys("first street")
+		bio = browser.find_element_by_name('bio')
+		bio.send_keys("hello!")
+		# here need button name
+		browser.find_element_by_name('update_button').click()
 
-	"""
+		# back to dashboard
+		browser.find_element_by_name('dashboard').click()
+		# go to profile page again
+		browser.find_element_by_name('profile').click()
+		assert 'female' in browser.page_source
+		assert '7651111111' in browser.page_source
+		assert 'first street' in browser.page_source
+		assert 'hello!' in browser.page_source
 
 	"""
 	def test_a_register_reporter(self):
