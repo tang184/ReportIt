@@ -402,8 +402,7 @@ class AddTestCase(StaticLiveServerTestCase):
 		browser.find_element_by_name('login-submit').click()
 
 		# submit concern: here need button name
-		url = self.live_server_url + '/account/submitConcern/'
-		browser.get(url)
+		browser.find_element_by_name('submitconcern').click()
 		title = browser.find_element_by_name('title')
 		title.send_keys("concerns")
 		# here need agent drop down box name
@@ -438,8 +437,7 @@ class AddTestCase(StaticLiveServerTestCase):
 		pw.send_keys("pass1234")
 		browser.find_element_by_name('login-submit').click()
 
-		url = self.live_server_url + '/account/submitConcern/'
-		browser.get(url)
+		browser.find_element_by_name('submitconcern').click()
 		title = browser.find_element_by_id('id_title')
 		title.send_keys("")
 		agency = browser.find_element_by_id('id_agent')
@@ -474,8 +472,7 @@ class AddTestCase(StaticLiveServerTestCase):
 		pw.send_keys("pass1234")
 		browser.find_element_by_name('login-submit').click()
 
-		url = self.live_server_url + '/account/submitConcern/'
-		browser.get(url)
+		browser.find_element_by_name('submitconcern').click()
 		title = browser.find_element_by_id('id_title')
 		title.send_keys("title")
 		agency = browser.find_element_by_id('id_agent')
@@ -510,8 +507,7 @@ class AddTestCase(StaticLiveServerTestCase):
 		pw.send_keys("pass1234")
 		browser.find_element_by_name('login-submit').click()
 
-		url = self.live_server_url + '/account/submitConcern/'
-		browser.get(url)
+		browser.find_element_by_name('submitconcern').click()
 		title = browser.find_element_by_id('id_title')
 		title.send_keys("title")
 		agency = browser.find_element_by_id('id_agent')
@@ -546,8 +542,7 @@ class AddTestCase(StaticLiveServerTestCase):
 		pw.send_keys("pass1234")
 		browser.find_element_by_name('login-submit').click()
 
-		url = self.live_server_url + '/account/submitConcern/'
-		browser.get(url)
+		browser.find_element_by_name('submitconcern').click()
 		title = browser.find_element_by_id('id_title')
 		title.send_keys("!!!")
 		agency = browser.find_element_by_id('id_agent')
@@ -558,6 +553,149 @@ class AddTestCase(StaticLiveServerTestCase):
 		assert '/submitConcern/' in browser.current_url
 
 	"""
+
+	""" actions to my concerns """
+	def test_myconcerns1_view(self):
+		browser = self.selenium
+		# signup
+		url = self.live_server_url + '/reporterSignup/'
+		browser.get(url)
+		un = browser.find_element_by_id('id_username')
+		un.send_keys("cs408_2")
+		email = browser.find_element_by_name('email')
+		email.send_keys('321@qq.com')
+		pw = browser.find_element_by_name('password1')
+		pw.send_keys("pass1234")
+		pwc = browser.find_element_by_name('password2')
+		pwc.send_keys("pass1234")
+		browser.find_element_by_name('signup_submit').click()
+
+		# login
+		url = self.live_server_url + '/login/'
+		browser.get(url)
+		un = browser.find_element_by_name('username')
+		un.send_keys("cs408_2")
+		pw = browser.find_element_by_name('password')
+		pw.send_keys("pass1234")
+		browser.find_element_by_name('login-submit').click()
+
+		# submit concern: here need button name
+		browser.find_element_by_name('submitconcern').click()
+		title = browser.find_element_by_name('title')
+		title.send_keys("title for my concern")
+		# here need agent drop down box name
+		agency = browser.find_element_by_id('id_agent')
+		agency.send_keys("some agency")
+		content = browser.find_element_by_name('content')
+		content.send_keys("noise is loud")
+		browser.find_element_by_id('concern_submit_button').click()
+		assert 'ReportIt' in browser.title
+
+		# view my concerns
+		browser.find_element_by_name('viewmyconcerns').click()
+		assert 'title for my concern' in browser.page_source
+		browser.find_element_by_id('view').click()
+		assert 'noise is loud' in browser.page_source
+
+
+	def test_myconcerns2_remove(self):
+		browser = self.selenium
+		# signup
+		url = self.live_server_url + '/reporterSignup/'
+		browser.get(url)
+		un = browser.find_element_by_id('id_username')
+		un.send_keys("cs408_2")
+		email = browser.find_element_by_name('email')
+		email.send_keys('321@qq.com')
+		pw = browser.find_element_by_name('password1')
+		pw.send_keys("pass1234")
+		pwc = browser.find_element_by_name('password2')
+		pwc.send_keys("pass1234")
+		browser.find_element_by_name('signup_submit').click()
+
+		# login
+		url = self.live_server_url + '/login/'
+		browser.get(url)
+		un = browser.find_element_by_name('username')
+		un.send_keys("cs408_2")
+		pw = browser.find_element_by_name('password')
+		pw.send_keys("pass1234")
+		browser.find_element_by_name('login-submit').click()
+
+		# submit concern: here need button name
+		browser.find_element_by_name('submitconcern').click()
+		title = browser.find_element_by_name('title')
+		title.send_keys("title for my concern")
+		# here need agent drop down box name
+		agency = browser.find_element_by_id('id_agent')
+		agency.send_keys("some agency")
+		content = browser.find_element_by_name('content')
+		content.send_keys("noise is loud")
+		browser.find_element_by_id('concern_submit_button').click()
+		assert 'ReportIt' in browser.title
+
+		# view my concerns
+		browser.find_element_by_name('viewmyconcerns').click()
+		assert 'title for my concern' in browser.page_source
+		browser.find_element_by_id('remove').click()
+		assert 'Successfully deleted the concern!' in browser.page_source
+
+	def test_myconcerns3_edit(self):
+		browser = self.selenium
+		# signup
+		url = self.live_server_url + '/reporterSignup/'
+		browser.get(url)
+		un = browser.find_element_by_id('id_username')
+		un.send_keys("cs408_2")
+		email = browser.find_element_by_name('email')
+		email.send_keys('321@qq.com')
+		pw = browser.find_element_by_name('password1')
+		pw.send_keys("pass1234")
+		pwc = browser.find_element_by_name('password2')
+		pwc.send_keys("pass1234")
+		browser.find_element_by_name('signup_submit').click()
+
+		# login
+		url = self.live_server_url + '/login/'
+		browser.get(url)
+		un = browser.find_element_by_name('username')
+		un.send_keys("cs408_2")
+		pw = browser.find_element_by_name('password')
+		pw.send_keys("pass1234")
+		browser.find_element_by_name('login-submit').click()
+
+		# submit concern: here need button name
+		browser.find_element_by_name('submitconcern').click()
+		title = browser.find_element_by_name('title')
+		title.send_keys("title for my concern")
+		# here need agent drop down box name
+		agency = browser.find_element_by_id('id_agent')
+		agency.send_keys("some agency")
+		content = browser.find_element_by_name('content')
+		content.send_keys("noise is loud")
+		browser.find_element_by_id('concern_submit_button').click()
+		assert 'ReportIt' in browser.title
+
+		# view my concerns
+		browser.find_element_by_name('viewmyconcerns').click()
+		assert 'title for my concern' in browser.page_source
+		browser.find_element_by_id('view').click()
+		assert 'noise is loud' in browser.page_source
+		browser.find_element_by_name('edit').click()
+		# here we need to input Agent as well
+		title = browser.find_element_by_name('title')
+		title.send_keys("loud construction noise")
+		content = browser.find_element_by_name('content')
+		content.send_keys("construction noise is loud")
+		browser.find_element_by_id('concern_submit_button').click()
+		assert 'Successfully edited the concern!' in browser.page_source
+
+		# go to dashboard
+		browser.find_element_by_name('dashboard').click()
+		# back to view my concerns
+		browser.find_element_by_name('viewmyconcerns').click()
+		assert 'loud construction noise' in browser.page_source
+
 
 	""" Edit Profile """
 
@@ -645,9 +783,9 @@ class AddTestCase(StaticLiveServerTestCase):
 		# here need button name
 		browser.find_element_by_name('update_button').click()
 
-		# back to dashboard
+		# go to dashboard
 		browser.find_element_by_name('dashboard').click()
-		# go to profile page again
+		# back to profile page again
 		browser.find_element_by_name('profile').click()
 		assert 'female' in browser.page_source
 		assert '7651111111' in browser.page_source
