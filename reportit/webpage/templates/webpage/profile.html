@@ -49,39 +49,24 @@
 				{% if request.user.reporter|to_class_name == 'Reporter' %}
 				<tr>
 					<td>Gender</td>
-					<td>{{ request.user.reporter.gender }}</td>
-
-				</tr>
-				<tr>
-					<td>Phone Number</td>
-					<td>{{request.user.reporter.phone_number}}</td>
-
-				</tr>
-				<tr>
-					<td>Address</td>
-					<td>{{request.user.reporter.address}}</td>
-				</tr>
-				<tr>
-					<td>Bio</td>
-					<td>{{request.user.reporter.about}}</td>
-
-				</tr>
-				{% else %}
-				<tr>
-					<td>Phone Number</td>
-					<td>{{request.user.agent.phone_number}}</td>
-
-				</tr>
-				<tr>
-					<td>Address</td>
-					<td>{{request.user.agent.address}}</td>
-				</tr>
-				<tr>
-					<td>Bio</td>
-					<td>{{request.user.agent.about}}</td>
+					<td>{{ profile_user.gender }}</td>
 
 				</tr>
 				{% endif %}
+				<tr>
+					<td>Phone Number</td>
+					<td>{{profile_user.phone_number}}</td>
+
+				</tr>
+				<tr>
+					<td>Address</td>
+					<td>{{profile_user.address}}</td>
+				</tr>
+				<tr>
+					<td>Bio</td>
+					<td>{{profile_user.about}}</td>
+
+				</tr>
 				
 			</tbody>
 			<tfoot>

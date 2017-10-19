@@ -90,38 +90,52 @@ def agentSignup(request):
 
 
 def viewProfile(request):
-    return render(request, 'webpage/profile.html')
+    reporter = Reporter.objects.filter(user=request.user)
+    agent = Agent.objects.filter(user=request.user)
+    # User is a reporter
+    profile_user = request.user.reporter
+    if len(reporter) == 0:
+        profile_user = request.user.agent
+    context = {
+        'profile_user' : profile_user,
+    }
+
+    return render(request, 'webpage/profile.html', context)
 
 #@csrf_protect
 def editProfile(request):
+
+    reporter = Reporter.objects.filter(user=request.user)
+    agent = Agent.objects.filter(user=request.user)
+    user = request.user
+    # User is a reporter
+    profile_user = None
+    
+
+    if len(reporter) != 0:
+        profile_user = request.user.reporter
+    elif len(agent) !=0:
+        profile_user = request.user.agent
+
+    context = {
+        'profile_user' : profile_user,
+    }
     if request.method == 'GET':
-        return render(request, 'webpage/editprofile.html')
+        return render(request, 'webpage/editprofile.html', context)
     elif request.method == 'POST':
-        
         phone = request.POST['phone']
         address = request.POST['address']
         bio = request.POST['bio']
-        #print (gender, phone, address, bio)
-        user = request.user
-        #print (user.__class__.__name__)
-        reporter = Reporter.objects.filter(user=request.user)
-        agent = Agent.objects.filter(user=request.user)
-        # User is not a reporter
+
         if len(reporter) != 0:
-            gender = request.POST['gender']   
-            user.reporter.address = address
-            user.reporter.gender = gender
-            user.reporter.phone_number = phone
-            user.reporter.about = bio
-            user.reporter.save()
-            user.save()
-        elif len(agent) != 0:
-            user.agent.address = address
-            user.agent.phone_number = phone
-            user.agent.about = bio
-            user.agent.save()
-            user.save()
-        return render(request, 'webpage/profile.html')
+            profile_user.gender = request.POST['gender']
+        profile_user.address = address
+        profile_user.phone_number = phone
+        profile_user.about = bio
+        profile_user.save()
+        user.save()
+
+        return render(request, 'webpage/profile.html', context)
 
     
 
