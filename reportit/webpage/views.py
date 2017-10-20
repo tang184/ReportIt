@@ -101,7 +101,8 @@ def viewProfile(request):
     reporter = Reporter.objects.filter(user=request.user)
     agent = Agent.objects.filter(user=request.user)
     # User is a reporter
-    profile_user = request.user.reporter
+    if len(reporter) != 0:
+        profile_user = request.user.reporter
     if len(reporter) == 0:
         profile_user = request.user.agent
     context = {
