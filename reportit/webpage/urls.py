@@ -15,6 +15,8 @@ urlpatterns = [
     url(r'^account/profile/edit$', views.editProfile, name = 'editprofile'),
 
     url(r'^account/submitConcern/', views.submitConcern, name = 'submitConcern'),
+    url(r'^account/uploadVerification/', views.uploadVerification, name = 'uploadVerification'),
+    url(r'^account/sign_s3?', views.sign_s3, name = 'sign_s3'),
     url(r'^account/viewSpecificConcern/', views.viewSpecificConcern, name = 'viewSpecificConcern'),
     url(r'^account/removeSpecificConcern/', views.removeSpecificConcern, name = 'removeSpecificConcern'),
     url(r'^account/editSpecificConcern/', views.editSpecificConcern, name = 'editSpecificConcern'),

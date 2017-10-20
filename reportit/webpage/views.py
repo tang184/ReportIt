@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, Group
 
 from .forms import ReporterSignUpForm, ReporterAdditionalForm, AgentSignUpForm, AdditionalForm, SubmitConcernForm, EditConcernForm
-from .models import Concern, Reporter, Agent
+from .models import Concern, Reporter, Agent, File
 
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
@@ -15,7 +15,13 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 import json
 import codecs
-
+import os
+import boto3
+import hmac
+# from time import gmtime, strftime
+import datetime
+import base64
+import hashlib
 # Create your views here.
 
 
@@ -361,6 +367,191 @@ def removeSpecificConcern(request):
         concern = Concern.objects.filter(reporter=current_reporter)
 
         return render(request, 'webpage/viewPersonalConcern.html', locals())
+
+@login_required
+def uploadVerification(request):
+
+    return render(request, 'webpage/uploadVerification.html', locals())
+
+"""
+    For local usage, remember to invoke .env file to add env var
+"""
+# @login_required
+# def sign_s3(request):
+#     bucket_name = os.environ.get('S3_BUCKET_NAME')
+#     access_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
+#     s3_zone = os.environ.get('S3_Zone')
+
+#     if (bucket_name == None or access_key == None): 
+#         print ("\n\n==============")
+#         print ("Cannot store file into S3. Please ensure S3 credential is in env!")
+#         print ("==============\n\n")
+
+#     s3_bucket = boto3.client('s3') 
+#     file_name = request.GET.get('file_name')
+#     file_type = request.GET.get('file_type')
+
+#     uploader = Agent.objects.filter(user=request.user)
+#     # uploaders = Agent.objects.all()
+#     # uploader = None
+#     # for ele in uploaders:
+#     #     if (ele.user.username == request.user.username):
+#     #         uploader = ele
+
+#     #         print ("Found!", uploader == None)            
+#     #         break
+#     #     else:
+#     #         print (ele.user.username, request.user.username, request.user.username == ele.user.username)
+
+#     if (uploader != None):
+#         uploader = uploader.get()
+
+#         # Save for reference
+#         file = File.objects.create(uploader=uploader)
+#         file.file_name = file_name
+#         file.file_type = file_type
+#         file.save()
+
+
+#         # Upload to S3
+#         presigned_post = s3_bucket.generate_presigned_post(
+#             Bucket=bucket_name,
+#             Key=access_key,
+#             Fields={"acl": "public-read", "Content-Type": file_type},
+#             Conditions=[
+#                 {"acl": "public-read"},
+#                 {"Content-Type": file_type}
+#             ],
+#             ExpiresIn = 3600
+#             )
+
+#         # Customize file_name
+#         file_name = file_name.replace(' ', '+')
+
+#         context = {
+#             'data': presigned_post,
+#             # 'url': 'https://%s.s3.amazonaws.com/%s' % (bucket_name, file_name)
+#             'url': 'https://s3-%s.amazonaws.com/%s/%s' % (s3_zone, bucket_name, file_name)
+#         }
+#         print ("Success!", context['url'])
+#         # return redirect('/')
+#         return JsonResponse(context)
+#         # return json.dumps(context)
+
+
+"""
+    For local usage, remember to invoke .env file to add env var
+"""
+@login_required
+def sign_s3(request):
+    bucket_name = os.environ.get('S3_BUCKET_NAME')
+    access_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
+    s3_zone = os.environ.get('S3_Zone')
+
+    aws_service = "s3"
+    # date = strftime("%Y%m%d", gmtime())
+    now = datetime.datetime.now()
+    date = str(now.year) + str(now.month) + str(now.day)
+    valid_duration = datetime.timedelta(days=1)
+    expiration_date = valid_duration + now
+    expiration_date = expiration_date.isoformat()
+
+
+    x_amz_algorithm = 'AWS4-HMAC-SHA256' # Use AWS signature v4
+    x_amz_credential = "%s/%s/%s/%s/aws4_request" % (access_key, date, s3_zone, aws_service)
+    x_amz_date = date + "T" + str(now.hour) + str(now.minute) + str(now.second) + 'Z'
+    x_amz_meta = "14365123651274"
+
+    print ("credential=" + x_amz_credential)
+
+    if (bucket_name == None or access_key == None): 
+        print ("\n\n==============")
+        print ("Insufficient S3 info. Please indicate S3 credential in env!")
+        print ("==============\n\n")
+
+    s3_bucket = boto3.client('s3') 
+    file_name = request.GET.get('file_name')
+    file_type = request.GET.get('file_type')
+
+    uploader = Agent.objects.filter(user=request.user)
+
+    if (uploader != None):
+        uploader = uploader.get()
+
+        # Save for reference
+        file = File.objects.create(uploader=uploader)
+        file.file_name = file_name
+        file.file_type = file_type
+        file.save()
+
+        # condition_context = {
+        #     "expiration_date": expiration_date,
+        #     "bucket": s3_bucket,
+        #     "acl": "public-read",
+        #     "success_action_redirect": "http://www.google.com",
+        #     "x-amz-meta": x_amz_meta,
+
+        #     # "x-amz-server-side-encryption": "AES256",
+
+        #     "x-amz-credential": x_amz_credential,
+        #     "x-amz-algorithm": x_amz_algorithm,
+        #     "x-amz-date": x_amz_date
+
+        # }
+
+        # policy = """
+        #     {
+        #         "expiration": "%(expiration_date)s",
+        #         "conditions": [
+        #             "bucket": "%(bucket)s",
+        #             "acl": "%(acl)s",
+        #             "success_action_redirect": "%(success_action_redirect)s",
+        #             "x-amz-meta-uuid": "%(x-amz-meta)s",
+        #             "x-amz-credential": "%(x-amz-credential)s",
+        #             "x-amz-algorithm": "%(x-amz-algorithm)s",
+        #             "x-amz-date": "%(x-amz-date)s"
+        #         ]
+        #     }
+        # """ % condition_context
+
+        # encoded_policy = str.encode(policy.replace(" ", ""))
+        # policy_to_submit = base64.b64encode(encoded_policy)
+
+        # encoded_secret = str.encode(access_key)
+        # signature = base64.b64encode(hmac.new(encoded_secret, policy_to_submit, hashlib.sha1).digest())
+
+        # data = {
+        #     "policy": policy,
+        #     "signature": signature,
+        #     "key": access_key
+
+        # }
+
+        s3_ob = boto3.client('s3')
+        presigned_post = s3_ob.generate_presigned_post(
+                Bucket = bucket_name,
+                Key = file_name,
+                Fields = {
+                    "acl": "public-read",
+                    "Content-Type": file_type
+                },
+                Conditions = [
+                    {"acl": "public-read"},
+                    {"Content-Type": file_type}
+                ],
+                ExpiresIn = 3600
+            )
+
+        json_context = {
+                'data': presigned_post,
+                'url': 'https//%s.s3.amazonaws.com/%s' % (bucket_name, file_name)
+            }
+
+        return JsonResponse(json_context)
+    else:
+        print ("\n\nINVALID\n\n")
+        return redirect('/')
+
 
 def notFound(request):
     return render(request, 'webpage/404.html')

@@ -34,11 +34,10 @@ class Agent(models.Model):
     about = models.CharField(verbose_name='About', max_length=300, default=None)
 
     def __str__(self):
-        return str(self.legal_name)
+        return "legal name: " + str(self.legal_name) + ", user name: " + str(self.user.username)
 
 
 class Concern(models.Model):
-
     reporter = models.ForeignKey(Reporter, on_delete=models.CASCADE)
     target_agent = models.ManyToManyField(Agent)
     title = models.CharField(max_length=500)
@@ -52,3 +51,12 @@ class Concern(models.Model):
 
     def __str__(self):
         return str(self.reporter.user.username) + ", " + self.title
+
+class File(models.Model):
+    uploader = models.ForeignKey(Agent, on_delete=models.CASCADE)
+    file_name = models.CharField(max_length=1000)
+    file_type = models.CharField(max_length=100)
+    upload_time = models.DateTimeField(default=django.utils.timezone.now)
+
+    def __str__(self):
+        return str(self.uploader.legal_name) + "'s " + str(self.file_name) + str(self.file_type) + " at " + str(self.upload_time)
