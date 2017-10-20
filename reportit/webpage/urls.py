@@ -15,10 +15,20 @@ urlpatterns = [
     url(r'^account/profile/edit$', views.editProfile, name = 'editprofile'),
 
     url(r'^account/submitConcern/', views.submitConcern, name = 'submitConcern'),
+
+    url(r'^account/uploadVerification/', views.uploadVerification, name = 'uploadVerification'),
+    url(r'^account/sign_s3?', views.sign_s3, name = 'sign_s3'),
+
+    url(r'^account/searchConcern/', views.searchConcern, name = 'submitConcern'),
+
     url(r'^account/viewSpecificConcern/', views.viewSpecificConcern, name = 'viewSpecificConcern'),
     url(r'^account/removeSpecificConcern/', views.removeSpecificConcern, name = 'removeSpecificConcern'),
+    url(r'^account/upvoteSpecificConcern/', views.upvoteSpecificConcern, name = 'upvoteSpecificConcern'),
+    url(r'^account/downvoteSpecificConcern/', views.downvoteSpecificConcern, name = 'downvoteSpecificConcern'),
+    url(r'^account/resolveSpecificConcern/', views.resolveSpecificConcern, name = 'resolveSpecificConcern'),
     url(r'^account/editSpecificConcern/', views.editSpecificConcern, name = 'editSpecificConcern'),
     url(r'^account/viewConcern/', views.viewConcern, name = 'viewConcern'),
+    url(r'^account/viewAllConcerns/', views.viewAllConcerns, name = 'viewConcern'),
     url(r'^account/dashboard$', views.dashboard, name = 'dashboard'),
     url(r'^account$', views.dashboard, name = 'dashboard'),
 

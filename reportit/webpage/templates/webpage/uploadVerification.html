@@ -1,0 +1,37 @@
+{% extends "webpage/base.html" %}
+{% load static %}
+
+{% block content %}
+  <section id="main" class="container">
+        <header>
+          <h2>Hello! {{request.user.username}}</h2>
+          <p>You have successfully logged in!</p>
+        </header>
+        <div class="row">
+          <div class="12u">
+
+            <input type="file" id="file_input">
+            <p id="status"> Please select a file</p>
+
+            <form method="POST" action="/account/uploadVerification/">
+              {% csrf_token %}
+
+              {% if uploadSuccess %}
+                  <div id="success-msg" class="alert alert-danger alert-dismissible" role="alert">Your verification file has been successfully uploaded!</div>
+              {% endif %}
+
+              <input type="hidden" id="file-url" name="file" type="file">
+              <input type="submit" value="Upload file">
+            </form>
+        
+            This is a file upload page
+            Here, you can upload your verification file.
+          </div>
+        </div>
+      </section>
+
+{% endblock %}
+
+{% block scripts %}
+  <script src="{% static 'assets/js/fileUpload.js' %}"></script>
+{% endblock %}

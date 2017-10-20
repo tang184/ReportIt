@@ -1,0 +1,74 @@
+{% extends "webpage/base.html" %}
+{% load static %}
+{% block css %}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/css/select2.min.css" rel="stylesheet" />
+<style type="text/css">
+.select2-container--default .select2-selection--multiple {
+	background-color:#f8f8f8;
+}
+
+</style>
+{% endblock %}
+
+
+
+{% block content %}
+		<section id="main" class="container">
+			<header>
+				<h2>Search Concern</h2>
+				<p>Search your concerns here</p>
+			</header>
+			<div class="row">
+				<div class="12u">
+
+			<!-- Table -->
+					<section class="box">
+						<div class="table-wrapper">
+						<div class="main-login main-center">
+							
+							<form method="post" action="/account/searchConcern/">
+								{% csrf_token %}
+								Search Content:<br>
+
+							  	<input type="text" name="search" required id="search" maxlength="500" />
+
+    							<button type="submit" id="search_button" class="btn btn-primary btn-lg btn-block login-button">Submit</button>							
+							
+							</form> 
+							<!--
+							
+							<form id="submitconcern">
+							  Title:<br>
+							  <input type="text" name="title" required id="id_title" maxlength="500" />
+							  <br>
+							  Target Agency:<br>
+							  <select id="selectagent" name="agent" multiple="multiple" required style="background-color:inherit">
+							  	{% for o in agent_legalnames %}
+								    <option value="{{o}}">{{o}}</option>
+								{% endfor %}								  
+								</select>							  
+							Content:<br>
+							  <textarea name="content" rows="4" cols="50" required id="id_content" maxlength="500"></textarea>
+							  <br><br>
+							
+							
+							</form> 
+							
+
+							<button type="submit" id="concern_submit_button" class="btn btn-primary btn-lg btn-block login-button">Submit</button>
+							-->
+						</div>
+						</div>
+					</section>
+				</div>
+			</div>
+		</section>
+{% endblock %}
+
+
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
+<script src="{% static 'assets/js/concern.js' %}"></script>
+
+
+{% endblock %}
