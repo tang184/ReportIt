@@ -412,7 +412,7 @@ def editSpecificConcern(request):
 @login_required
 def removeSpecificConcern(request):
     current_reporter = Reporter.objects.filter(user=request.user)
-
+    current_agent = Agent.objects.filter(user=request.user)
     # User is not a reporter
     if (len(current_reporter) == 0):
         if (len(current_agent) == 0):
@@ -434,6 +434,13 @@ def removeSpecificConcern(request):
 
             deleteSuccess = True
             concern = Concern.objects.filter()
+            v = list(concern)
+            concern = []
+
+            for i in range(len(v)):
+                p = v[i].target_agent.all().filter(user=request.user)
+                if (len(p) != 0):
+                    concern.append(v[i])
             return render(request, 'webpage/viewPersonalConcern.html', locals())
     else:
         current_reporter = current_reporter.get()
