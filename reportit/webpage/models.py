@@ -50,5 +50,8 @@ class Concern(models.Model):
     isSolved = models.BooleanField(default=False)
     submitted_time = models.DateTimeField(default=django.utils.timezone.now)
 
+    respond = models.CharField(max_length=500, null=True)
+
+
     def __str__(self):
         return str(self.reporter.user.username) + ", " + self.title

@@ -83,7 +83,13 @@
 
 									{% csrf_token %}
 
-									<button type="submit" id="concern_submit_button" class="btn btn-info ">Upvote</button>
+									<button type="submit" id="upvote_submit_button" class="btn btn-info ">Upvote</button>
+									</form>
+
+									<form method="post" action="/account/downvoteSpecificConcern/id?={{ concern.id }}">
+
+									{% csrf_token %}
+									<button type="submit" id="downvote_submit_button" class="btn btn-warning ">Downvote</button>
 									</form> 
 
 								{% endif %}

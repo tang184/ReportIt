@@ -38,6 +38,14 @@
         <div id="require-signup" class="alert alert-danger alert-dismissible" role="alert">Successfully edited the concern!</div>
         {% endif %}
 
+        {% if UpvoteSuccess %}
+        <div id="require-signup" class="alert alert-danger alert-dismissible" role="alert">Successfully upvote the concern!</div>
+        {% endif %}
+
+        {% if DownvoteSuccess %}
+        <div id="require-signup" class="alert alert-danger alert-dismissible" role="alert">Successfully downvote the concern!</div>
+        {% endif %}
+
         {% if deleteSuccess %}
         <div id="require-signup" class="alert alert-danger alert-dismissible" role="alert">Successfully deleted the concern!</div>
         {% endif %}
