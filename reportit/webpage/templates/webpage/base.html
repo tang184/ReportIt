@@ -73,20 +73,20 @@
 						<div class="panel-body">
 							<ul class="list-group" style="list-style-type:none">
 
-							<li><a href="/account/dashboard/" class="list-group-item" name="profile" id="dashboard">Dashboard</a></li>
+							<li><a href="/account/dashboard/" class="list-group-item" name="dashboard" id="dashboard">Dashboard</a></li>
 
 						    <li><a href="/account/profile/" class="list-group-item" name="profile" id="profile">{{request.user.username}}'s Profile </a></li>
 						    {% if request.user|has_group:"Reporter" %}
-						      <li><a href="/account/submitConcern/" class="list-group-item">SubmitConcern</a></li>
+						      <li><a href="/account/submitConcern/" class="list-group-item" name="submitconcern">SubmitConcern</a></li>
 						    {% elif request.user|has_group:"Agent" %}
-						    	<li><a href="/account/uploadVerification/" class="list-group-item">Upload Verification File</a></li>
+						    	<li><a href="/account/uploadVerification/" class="list-group-item" name="update">Upload Verification File</a></li>
 						    {% endif %}
 
-						      <li><a href="/account/viewConcern/" class="list-group-item">View My Concerns</a></li>
+						      <li><a href="/account/viewConcern/" class="list-group-item" name="viewmyconcerns" id="viewmyconcerns">View My Concerns</a></li>
 
-						      <li><a href="/account/viewAllConcerns/" class="list-group-item">View All Concerns</a></li>
+						      <li><a href="/account/viewAllConcerns/" class="list-group-item" name="viewallconcerns">View All Concerns</a></li>
 
-						      <li><a href="/account/searchConcern/" class="list-group-item">Search Concern</a></li>
+						      <li><a href="/account/searchConcern/" class="list-group-item" name="searchconcern">Search Concern</a></li>
 						    </ul>
 						</div>
 					</div>
