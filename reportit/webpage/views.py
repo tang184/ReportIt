@@ -22,6 +22,9 @@ import datetime
 import base64
 import hashlib
 
+from fuzzywuzzy import fuzz
+from fuzzywuzzy import process
+
 # Create your views here.
 
 
@@ -95,36 +98,52 @@ def agentSignup(request):
 
 
 def viewProfile(request):
-    return render(request, 'webpage/profile.html')
+    reporter = Reporter.objects.filter(user=request.user)
+    agent = Agent.objects.filter(user=request.user)
+    # User is a reporter
+    profile_user = request.user.reporter
+    if len(reporter) == 0:
+        profile_user = request.user.agent
+    context = {
+        'profile_user' : profile_user,
+    }
+
+    return render(request, 'webpage/profile.html', context)
 
 #@csrf_protect
 def editProfile(request):
+
+    reporter = Reporter.objects.filter(user=request.user)
+    agent = Agent.objects.filter(user=request.user)
+    user = request.user
+    # User is a reporter
+    profile_user = None
+    
+
+    if len(reporter) != 0:
+        profile_user = request.user.reporter
+    elif len(agent) !=0:
+        profile_user = request.user.agent
+
+    context = {
+        'profile_user' : profile_user,
+    }
     if request.method == 'GET':
-        return render(request, 'webpage/editprofile.html')
+        return render(request, 'webpage/editprofile.html', context)
     elif request.method == 'POST':
-        
         phone = request.POST['phone']
         address = request.POST['address']
         bio = request.POST['bio']
-        #print (gender, phone, address, bio)
-        user = request.user
-        #print (user.__class__.__name__)
-        reporter = Reporter.objects.filter(user=request.user)
-        agent = Agent.objects.filter(user=request.user)
-        # User is not a reporter
+
         if len(reporter) != 0:
-            gender = request.POST['gender']   
-            user.reporter.address = address
-            user.reporter.gender = gender
-            user.reporter.phone_number = phone
-            user.reporter.about = bio
-            user.save()
-        elif len(agent) != 0:
-            user.agent.address = address
-            user.agent.phone_number = phone
-            user.agent.about = bio
-            user.save()
-        return render(request, 'webpage/profile.html')
+            profile_user.gender = request.POST['gender']
+        profile_user.address = address
+        profile_user.phone_number = phone
+        profile_user.about = bio
+        profile_user.save()
+        user.save()
+
+        return render(request, 'webpage/profile.html', context)
 
     
 
@@ -199,6 +218,40 @@ def submitConcern(request):
         }
         return render(request, 'webpage/concern.html', context)
 
+def match(elem):
+    print(elem)
+    return elem[1]
+
+@login_required
+def searchConcern(request):
+    if request.method == 'POST':
+
+        body = (request.POST)
+        search = body['search']
+
+        #print(search)
+
+        concern = Concern.objects.all()
+
+        concern = list(concern)
+
+        for i in range(len(concern)):
+            for j in range(i + 1, len(concern)):
+                if (fuzz.ratio(search, concern[i].content) < fuzz.ratio(search, concern[j].content)):
+                    p = concern[i]
+                    concern[i] = concern[j]
+                    concern[j] = p
+
+
+        print(concern)
+
+
+        fuzz.ratio("this is a test", "this is a test!")
+        return render(request, 'webpage/viewSearchConcern.html', locals())
+        
+    else:
+        return render(request, 'webpage/search.html')
+
 @login_required
 def viewConcern(request):
     current_reporter = Reporter.objects.filter(user=request.user)
@@ -212,9 +265,20 @@ def viewConcern(request):
 
     return render(request, 'webpage/viewPersonalConcern.html', locals())
 
+
+
+@login_required
+def viewAllConcerns(request):
+    current_reporter = Reporter.objects.filter(user=request.user)
+
+    concern = Concern.objects.all()
+
+    return render(request, 'webpage/viewAllConcerns.html', locals())
+
 @login_required
 def viewSpecificConcern(request):
     current_reporter = Reporter.objects.filter(user=request.user)
+
 
     # User is not a reporter
     if (len(current_reporter) == 0):
@@ -229,9 +293,9 @@ def viewSpecificConcern(request):
         return render(request, 'webpage/reporterSignup.html', context)
 
     else:
-        current_reporter = current_reporter.get()
+        #current_reporter = current_reporter.get()
         concern_id = request.GET.get('')
-        concern = Concern.objects.filter(reporter=current_reporter,concern_id=concern_id)
+        concern = Concern.objects.filter(id=concern_id)
 
         # Specific conern id does not exist (or has been deleted)
         if (len(concern) != 1):
@@ -264,7 +328,7 @@ def editSpecificConcern(request):
     else:
         current_reporter = current_reporter.get()
         concern_id = request.GET.get('')
-        concern = Concern.objects.filter(reporter=current_reporter,concern_id=concern_id)
+        concern = Concern.objects.filter(reporter=current_reporter,id=concern_id)
 
         # Specific conern id does not exist (or has been deleted)
         if (len(concern) != 1):
@@ -343,7 +407,7 @@ def removeSpecificConcern(request):
     else:
         current_reporter = current_reporter.get()
         concern_id = request.GET.get('')
-        concern = Concern.objects.filter(reporter=current_reporter,concern_id=concern_id)
+        concern = Concern.objects.filter(reporter=current_reporter,id=concern_id)
 
         # Specific conern id does not exist (or has been deleted)
         if (len(concern) != 1):
@@ -366,6 +430,7 @@ def removeSpecificConcern(request):
         concern = Concern.objects.filter(reporter=current_reporter)
 
         return render(request, 'webpage/viewPersonalConcern.html', locals())
+
 
 @login_required
 def uploadVerification(request):
@@ -438,6 +503,99 @@ def sign_s3(request):
     else:
         print ("\n\nINVALID\n\n")
         return redirect('/')
+
+
+
+@login_required
+def upvoteSpecificConcern(request):
+    current_reporter = Reporter.objects.filter(user=request.user)
+
+    # User is not a reporter
+    if (len(current_reporter) == 0):
+        form1 = ReporterSignUpForm()
+        form2 = ReporterAdditionalForm()
+        context = {
+            'form1': form1,
+            'form2': form2,
+            'notReporter': True
+        }
+
+        return render(request, 'webpage/reporterSignup.html', context)
+    else:
+        current_reporter = current_reporter.get()
+        concern_id = request.GET.get('')
+        concern = Concern.objects.filter(id=concern_id)
+
+        # Specific conern id does not exist (or has been deleted)
+        if (len(concern) != 1):
+            concern = Concern.objects.filter(reporter=current_reporter)
+            concernNotExist = True
+
+            if (len(concern) > 1):
+                print ("Error! Multiple concern tends to have identical id! Combination is: " + str(request.user) + str(concern_id))
+
+            return render(request, 'webpage/viewAllConcerns.html', locals())
+
+
+        concern = concern.get()
+
+        concern.upvote_count += 1
+
+        concern.save()
+
+        id = concern_id
+
+        UpvoteSuccess = True
+
+        concern = Concern.objects.filter()
+
+        return render(request, 'webpage/viewAllConcerns.html', locals())
+
+
+@login_required
+def downvoteSpecificConcern(request):
+    current_reporter = Reporter.objects.filter(user=request.user)
+
+    # User is not a reporter
+    if (len(current_reporter) == 0):
+        form1 = ReporterSignUpForm()
+        form2 = ReporterAdditionalForm()
+        context = {
+            'form1': form1,
+            'form2': form2,
+            'notReporter': True
+        }
+
+        return render(request, 'webpage/reporterSignup.html', context)
+    else:
+        current_reporter = current_reporter.get()
+        concern_id = request.GET.get('')
+        concern = Concern.objects.filter(id=concern_id)
+
+        # Specific conern id does not exist (or has been deleted)
+        if (len(concern) != 1):
+            concern = Concern.objects.filter(reporter=current_reporter)
+            concernNotExist = True
+
+            if (len(concern) > 1):
+                print ("Error! Multiple concern tends to have identical id! Combination is: " + str(request.user) + str(concern_id))
+
+            return render(request, 'webpage/viewAllConcerns.html', locals())
+
+
+        concern = concern.get()
+
+        concern.upvote_count -= 1
+
+        concern.save()
+
+        id = concern_id
+
+        DownvoteSuccess = True
+
+        concern = Concern.objects.filter()
+
+        return render(request, 'webpage/viewAllConcerns.html', locals())
 
 
 def notFound(request):

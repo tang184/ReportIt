@@ -40,27 +40,78 @@
 						<div class="table-wrapper">
 							{% if concern != Null %}
 							<table class="table table-striped">
-								<ul>
-									<thread>
-										<tr>
-											<th> {{ concern.title }} </th>
-											<th></th>
-										</tr>
-									</thread>
-									<tbody>
-										<td> {{ concern.content }} </td>
-										<td>
 
-											<form method="post" action="/account/editSpecificConcern/id?={{ concern.concern_id }}">
 
-											{% csrf_token %}
+								<div class="col-md-6">
 
-											<button type="submit" id="concern_submit_button" class="btn btn-primary ">Edit</button>
-											</form> 
+								<div style="margin:10px">
+								<label>Concern Title</label>{{ concern.title }}
+								</div>
+								<div style="margin:10px">
+								<label>Reporter</label>{{ concern.reporter.user }}
+								</div>
+								<div style="margin:10px">
+								<label>Report Agent</label>
+								{% for ele in concern.target_agent.all %}
 
-										</td>
-									</tbody>
-								</ul>
+						    	{{ ele.legal_name }}, 
+
+						    	{% endfor %}
+						   		</div>
+								<div style="margin:10px">
+								<label>Concern Content</label>{{ concern.content }}						
+								</div>
+
+								<div style="margin:10px">
+								<label>Upvote Count</label>{{ concern.upvote_count }}						
+								</div>
+
+								<div style="margin:10px">
+								<label>Resolved</label>{{ concern.isSolved }}						
+								</div>
+
+								<div style="margin:10px">
+								<label>Respond</label>{{ concern.respond }}						
+								</div>
+
+									
+								{% if user == concern.reporter.user %}
+								
+
+									<form method="post" action="/account/editSpecificConcern/id?={{ concern.id }}">
+
+									{% csrf_token %}
+
+									<button type="submit" id="concern_submit_button" class="btn btn-primary ">Edit</button>
+									</form> 
+
+								{% else %}
+
+									<form method="post" action="/account/upvoteSpecificConcern/id?={{ concern.id }}">
+
+									{% csrf_token %}
+
+									<button type="submit" id="upvote_submit_button" class="btn btn-info ">Upvote</button>
+									</form>
+
+									<form method="post" action="/account/downvoteSpecificConcern/id?={{ concern.id }}">
+
+									{% csrf_token %}
+									<button type="submit" id="downvote_submit_button" class="btn btn-warning ">Downvote</button>
+									</form> 
+
+								{% endif %}
+								</div>
+
+								<div class="col-md-6">
+									{% if concern.image %}
+										<img src="{% static 'images/not-available.jpg' %}">
+									{% else %}
+										<img src="{% static 'images/not-available.jpg' %}">
+									{% endif %}
+								</div>
+								
+								
 							</table>
 							{% else %}
 							<a> No data has been retriven! </a>
