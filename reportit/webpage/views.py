@@ -210,6 +210,16 @@ def submitConcern(request):
         }
         return render(request, 'webpage/concern.html', context)
 
+
+
+@login_required
+def searchConcern(request):
+    if request.method == 'POST':
+        print("hello world")
+        
+    else:
+        return render(request, 'webpage/search.html')
+
 @login_required
 def viewConcern(request):
     current_reporter = Reporter.objects.filter(user=request.user)

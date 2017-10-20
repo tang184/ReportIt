@@ -66,6 +66,14 @@
 								<label>Upvote Count</label>{{ concern.upvote_count }}						
 								</div>
 
+								<div style="margin:10px">
+								<label>Resolved</label>{{ concern.isSolved }}						
+								</div>
+
+								<div style="margin:10px">
+								<label>Respond</label>{{ concern.respond }}						
+								</div>
+
 									
 								{% if user == concern.reporter.user %}
 								
