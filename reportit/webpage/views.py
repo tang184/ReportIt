@@ -16,6 +16,9 @@ from django.http import JsonResponse
 import json
 import codecs
 
+from fuzzywuzzy import fuzz
+from fuzzywuzzy import process
+
 # Create your views here.
 
 
@@ -210,15 +213,35 @@ def submitConcern(request):
         }
         return render(request, 'webpage/concern.html', context)
 
-
+def match(elem):
+    print(elem)
+    return elem[1]
 
 @login_required
 def searchConcern(request):
     if request.method == 'POST':
-        print("hello world")
-        current_reporter = Reporter.objects.filter(user=request.user)
+
+        body = (request.POST)
+        search = body['search']
+
+        #print(search)
 
         concern = Concern.objects.all()
+
+        concern = list(concern)
+
+        for i in range(len(concern)):
+            for j in range(i + 1, len(concern)):
+                if (fuzz.ratio(search, concern[i].content) < fuzz.ratio(search, concern[j].content)):
+                    p = concern[i]
+                    concern[i] = concern[j]
+                    concern[j] = p
+
+
+        print(concern)
+
+
+        fuzz.ratio("this is a test", "this is a test!")
         return render(request, 'webpage/viewSearchConcern.html', locals())
         
     else:
@@ -250,6 +273,7 @@ def viewAllConcerns(request):
 @login_required
 def viewSpecificConcern(request):
     current_reporter = Reporter.objects.filter(user=request.user)
+
 
     # User is not a reporter
     if (len(current_reporter) == 0):
