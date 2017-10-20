@@ -18,10 +18,10 @@ import codecs
 import os
 import boto3
 import hmac
-# from time import gmtime, strftime
 import datetime
 import base64
 import hashlib
+
 # Create your views here.
 
 
@@ -370,73 +370,8 @@ def removeSpecificConcern(request):
 
 @login_required
 def uploadVerification(request):
-
+    print ("Request to upload verification=" + str(request.POST))
     return render(request, 'webpage/uploadVerification.html', locals())
-
-"""
-    For local usage, remember to invoke .env file to add env var
-"""
-# @login_required
-# def sign_s3(request):
-#     bucket_name = os.environ.get('S3_BUCKET_NAME')
-#     access_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
-#     s3_zone = os.environ.get('S3_Zone')
-
-#     if (bucket_name == None or access_key == None): 
-#         print ("\n\n==============")
-#         print ("Cannot store file into S3. Please ensure S3 credential is in env!")
-#         print ("==============\n\n")
-
-#     s3_bucket = boto3.client('s3') 
-#     file_name = request.GET.get('file_name')
-#     file_type = request.GET.get('file_type')
-
-#     uploader = Agent.objects.filter(user=request.user)
-#     # uploaders = Agent.objects.all()
-#     # uploader = None
-#     # for ele in uploaders:
-#     #     if (ele.user.username == request.user.username):
-#     #         uploader = ele
-
-#     #         print ("Found!", uploader == None)            
-#     #         break
-#     #     else:
-#     #         print (ele.user.username, request.user.username, request.user.username == ele.user.username)
-
-#     if (uploader != None):
-#         uploader = uploader.get()
-
-#         # Save for reference
-#         file = File.objects.create(uploader=uploader)
-#         file.file_name = file_name
-#         file.file_type = file_type
-#         file.save()
-
-
-#         # Upload to S3
-#         presigned_post = s3_bucket.generate_presigned_post(
-#             Bucket=bucket_name,
-#             Key=access_key,
-#             Fields={"acl": "public-read", "Content-Type": file_type},
-#             Conditions=[
-#                 {"acl": "public-read"},
-#                 {"Content-Type": file_type}
-#             ],
-#             ExpiresIn = 3600
-#             )
-
-#         # Customize file_name
-#         file_name = file_name.replace(' ', '+')
-
-#         context = {
-#             'data': presigned_post,
-#             # 'url': 'https://%s.s3.amazonaws.com/%s' % (bucket_name, file_name)
-#             'url': 'https://s3-%s.amazonaws.com/%s/%s' % (s3_zone, bucket_name, file_name)
-#         }
-#         print ("Success!", context['url'])
-#         # return redirect('/')
-#         return JsonResponse(context)
-#         # return json.dumps(context)
 
 
 """
@@ -448,21 +383,20 @@ def sign_s3(request):
     access_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
     s3_zone = os.environ.get('S3_Zone')
 
-    aws_service = "s3"
-    # date = strftime("%Y%m%d", gmtime())
-    now = datetime.datetime.now()
-    date = str(now.year) + str(now.month) + str(now.day)
-    valid_duration = datetime.timedelta(days=1)
-    expiration_date = valid_duration + now
-    expiration_date = expiration_date.isoformat()
+    """
+        HTTP uploading mechanism to AWS S3. Saved for future reference
+    """
+    # aws_service = "s3"
+    # now = datetime.datetime.now()
+    # date = str(now.year) + str(now.month) + str(now.day)
+    # valid_duration = datetime.timedelta(days=1)
+    # expiration_date = valid_duration + now
+    # expiration_date = expiration_date.isoformat()
 
-
-    x_amz_algorithm = 'AWS4-HMAC-SHA256' # Use AWS signature v4
-    x_amz_credential = "%s/%s/%s/%s/aws4_request" % (access_key, date, s3_zone, aws_service)
-    x_amz_date = date + "T" + str(now.hour) + str(now.minute) + str(now.second) + 'Z'
-    x_amz_meta = "14365123651274"
-
-    print ("credential=" + x_amz_credential)
+    # x_amz_algorithm = 'AWS4-HMAC-SHA256' # Use AWS signature v4
+    # x_amz_credential = "%s/%s/%s/%s/aws4_request" % (access_key, date, s3_zone, aws_service)
+    # x_amz_date = date + "T" + str(now.hour) + str(now.minute) + str(now.second) + 'Z'
+    # x_amz_meta = "14365123651274"
 
     if (bucket_name == None or access_key == None): 
         print ("\n\n==============")
@@ -472,16 +406,22 @@ def sign_s3(request):
     s3_bucket = boto3.client('s3') 
     file_name = request.GET.get('file_name')
     file_type = request.GET.get('file_type')
+    url = 'https://%s.s3.amazonaws.com/%s' % (bucket_name, file_name)
 
-    uploader = Agent.objects.filter(user=request.user)
+    uploaders = Agent.objects.filter(user=request.user)
 
-    if (uploader != None):
-        uploader = uploader.get()
+    if (uploaders != None):
+        uploader = uploaders.get()
 
-        # Save for reference
-        file = File.objects.create(uploader=uploader)
+        # Uploading multiple item would override previous one
+        if (len(uploaders) > 1):
+            file = File.objects.filter(uploader=uploader)
+        else:
+            file = File.objects.create(uploader=uploader)
+
         file.file_name = file_name
         file.file_type = file_type
+        file.url = url.replace(" ", "+")
         file.save()
 
         # condition_context = {
@@ -544,7 +484,7 @@ def sign_s3(request):
 
         json_context = {
                 'data': presigned_post,
-                'url': 'https//%s.s3.amazonaws.com/%s' % (bucket_name, file_name)
+                'url': url
             }
 
         return JsonResponse(json_context)

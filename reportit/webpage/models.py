@@ -56,6 +56,7 @@ class File(models.Model):
     uploader = models.ForeignKey(Agent, on_delete=models.CASCADE)
     file_name = models.CharField(max_length=1000)
     file_type = models.CharField(max_length=100)
+    url = models.CharField(max_length=1000,default="")
     upload_time = models.DateTimeField(default=django.utils.timezone.now)
 
     def __str__(self):
