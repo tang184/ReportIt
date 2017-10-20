@@ -216,6 +216,10 @@ def submitConcern(request):
 def searchConcern(request):
     if request.method == 'POST':
         print("hello world")
+        current_reporter = Reporter.objects.filter(user=request.user)
+
+        concern = Concern.objects.all()
+        return render(request, 'webpage/viewSearchConcern.html', locals())
         
     else:
         return render(request, 'webpage/search.html')

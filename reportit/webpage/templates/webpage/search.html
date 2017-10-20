@@ -27,8 +27,9 @@
 						<div class="main-login main-center">
 							
 							<form method="post" action="/account/searchConcern/">
-							{% csrf_token %}
-							Search Content:<br>
+								{% csrf_token %}
+								Search Content:<br>
+								
 							  	<input type="text" name="search" required id="search" maxlength="500" />
 
     							<button type="submit" id="concern_submit_button" class="btn btn-primary btn-lg btn-block login-button">Submit</button>							
