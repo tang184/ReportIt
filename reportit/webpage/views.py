@@ -369,7 +369,7 @@ def removeSpecificConcern(request):
 
 @login_required
 def uploadVerification(request):
-    print ("Request to upload verification=" + str(request.POST))
+    print ("(" + str(len(request.POST)) + ")" + "Request to upload verification=" + str(request.POST))
     return render(request, 'webpage/uploadVerification.html', locals())
 
 
@@ -397,11 +397,13 @@ def sign_s3(request):
     if (uploaders != None):
         uploader = uploaders.get()
 
+        files = File.objects.filter(uploader=uploader)
+
         # Uploading multiple item would override previous one
-        if (len(uploaders) > 1):
-            file = File.objects.filter(uploader=uploader)
-        else:
+        if (len(files) == 0):
             file = File.objects.create(uploader=uploader)
+        else:
+            file = files.get()
 
         file.file_name = file_name
         file.file_type = file_type
