@@ -1,0 +1,117 @@
+{% extends "webpage/base.html" %}
+{% load static %}
+
+
+{% block content %}
+
+{% if not user.is_authenticated %}
+<div class="row">
+    <div class="12u">
+
+      <!-- Text -->
+        <section class="box">
+          <header>
+            <h3>Please Log in</h3>
+          <hr />
+				<ul class="actions">
+					<li><a href="/login" class="button special">Log In</a></li>
+					<li><a href="/reporterSignup" class="button">Reporter Signup</a></li>
+					<li><a href="/agentSignup" class="button alt">Agent Signup</a></li>
+				</ul>
+
+        </section>
+
+    </div>
+  </div>
+{% else %}
+	<!-- Main -->
+	<section id="main" class="container">
+		<header>
+			<h2>My Concerns</h2>
+			<p>All of the concerns that have been published.</p>
+		</header>
+		{% if concernNotExist %}
+        <div id="require-signup" class="alert alert-danger alert-dismissible" role="alert">Cannot find your concern!</div>
+        {% endif %}
+
+        {% if editSuccess %}
+        <div id="require-signup" class="alert alert-danger alert-dismissible" role="alert">Successfully edited the concern!</div>
+        {% endif %}
+
+        {% if deleteSuccess %}
+        <div id="require-signup" class="alert alert-danger alert-dismissible" role="alert">Successfully deleted the concern!</div>
+        {% endif %}
+
+		<div class="row">
+			<div class="12u">
+				<!-- Table -->
+					<section class="box">
+						<div class="table-wrapper">
+							{% if concern != Null %}
+							<table class="table table-striped">
+								<ul>
+									<thread>
+										<tr>
+											<th> Reporter </th>
+											<th> Agent </th>
+											<th> Title </th>
+											<!-- <th> Content </th> -->
+											<th> Time submitted </th>
+
+											<th> </th>
+											<th> </th>
+										</tr>
+									</thread>
+									<tbody>
+									  {% for item in concern %}
+									  <tr>
+										    <td> {{ item.reporter }} </td>
+
+										    <td>
+										    	{% for ele in item.target_agent.all %}
+
+										    	{{ ele.legal_name }}, 
+
+										    	{% endfor %}
+										    </td>
+
+										    <td> {{ item.title }} </td>
+										   <!--  <td> {{ item.content }} </td> -->
+										   <td> {{ item.submitted_time }} </td>
+
+										   <td> 	
+											<form method="post" action="/account/viewSpecificConcern/id?={{ item.concern_id }}">
+
+											{% csrf_token %}
+
+											<button type="submit" id="concern_submit_button" class="btn btn-primary ">View</button>
+											</form> 
+										   </td>
+
+										   {% if user == item.reporter.user %}
+										   <td>
+											<form method="post" action="/account/removeSpecificConcern/id?={{ item.concern_id }}">
+
+											{% csrf_token %}
+
+											<button type="submit" id="concern_submit_button" class="btn btn-primary ">Remove</button>
+											</form> 
+										   </td>
+										   {% endif %}
+
+									  </tr>
+									  {% endfor %}
+									</tbody>
+								</ul>
+							{% endif %}
+							</table>
+						</div>
+
+					</section>
+
+			</div>
+		</div>
+
+{% endif %}
+{% endblock %}
+

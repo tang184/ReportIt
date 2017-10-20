@@ -19,6 +19,7 @@ urlpatterns = [
     url(r'^account/removeSpecificConcern/', views.removeSpecificConcern, name = 'removeSpecificConcern'),
     url(r'^account/editSpecificConcern/', views.editSpecificConcern, name = 'editSpecificConcern'),
     url(r'^account/viewConcern/', views.viewConcern, name = 'viewConcern'),
+    url(r'^account/viewAllConcerns/', views.viewAllConcerns, name = 'viewConcern'),
     url(r'^account/dashboard$', views.dashboard, name = 'dashboard'),
     url(r'^account$', views.dashboard, name = 'dashboard'),
 

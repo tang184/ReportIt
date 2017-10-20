@@ -223,6 +223,16 @@ def viewConcern(request):
 
     return render(request, 'webpage/viewPersonalConcern.html', locals())
 
+
+
+@login_required
+def viewAllConcerns(request):
+    current_reporter = Reporter.objects.filter(user=request.user)
+
+    concern = Concern.objects.all()
+
+    return render(request, 'webpage/viewAllConcerns.html', locals())
+
 @login_required
 def viewSpecificConcern(request):
     current_reporter = Reporter.objects.filter(user=request.user)
