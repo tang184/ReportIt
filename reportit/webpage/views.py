@@ -269,7 +269,7 @@ def viewConcern(request):
 
 @login_required
 def viewAllConcerns(request):
-    current_reporter = Reporter.objects.filter(user=request.user)
+    #current_reporter = Reporter.objects.filter(user=request.user)
 
     concern = Concern.objects.all()
 
@@ -278,19 +278,25 @@ def viewAllConcerns(request):
 @login_required
 def viewSpecificConcern(request):
     current_reporter = Reporter.objects.filter(user=request.user)
-
+    current_agent = Agent.objects.filter(user=request.user)
 
     # User is not a reporter
     if (len(current_reporter) == 0):
-        form1 = ReporterSignUpForm()
-        form2 = ReporterAdditionalForm()
-        context = {
-            'form1': form1,
-            'form2': form2,
-            'notReporter': True
-        }
+        if (len(current_agent) == 0):
+            form1 = ReporterSignUpForm()
+            form2 = ReporterAdditionalForm()
+            context = {
+                'form1': form1,
+                'form2': form2,
+                'notReporter': True
+            }
 
-        return render(request, 'webpage/reporterSignup.html', context)
+            return render(request, 'webpage/reporterSignup.html', context)
+        else:
+            concern_id = request.GET.get('')
+            concern = Concern.objects.filter(id=concern_id)
+            concern = concern.get()
+            return render(request, 'webpage/viewSpecificConcern.html', locals())
 
     else:
         #current_reporter = current_reporter.get()
