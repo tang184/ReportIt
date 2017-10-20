@@ -103,11 +103,15 @@ DATABASES = {
 LOGIN_REDIRECT_URL = '/account/dashboard'
 
 #default URL used for third paty login d\
-SOCIAL_AUTH_LOGIN_ERROR_URL = '/register/'
-#SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/oauthinfo/'
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/account/dashboard'
+SOCIAL_AUTH_LOGIN_ERROR_URL = '/redicrect_error/'
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/oauthinfo/'
+#SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/account/dashboard'
 SOCIAL_AUTH_RAISE_EXCEPTIONS = False
 
+SOCIAL_AUTH_USERNAME_FORM_URL = '/login-form/'
+SOCIAL_AUTH_USERNAME_FORM_HTML = '/webpage/templates/webpage/reporterSignup.html'
+
+#SOCIAL_AUTH_USER_MODEL = 'webpage.Reporter'
 
 #used for third party login
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '526390079783-65f89qmpk4120cqgpps2pm4mvlth3f1f.apps.googleusercontent.com'
