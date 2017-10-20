@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, Group
 
 from .forms import ReporterSignUpForm, ReporterAdditionalForm, AgentSignUpForm, AdditionalForm, SubmitConcernForm, EditConcernForm
-from .models import Concern, Reporter, Agent
+from .models import Concern, Reporter, Agent, File
 
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
@@ -15,12 +15,17 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 import json
 import codecs
+import os
+import boto3
+import hmac
+import datetime
+import base64
+import hashlib
 
 from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 
 # Create your views here.
-
 
 
 @login_required
@@ -428,6 +433,80 @@ def removeSpecificConcern(request):
 
 
 @login_required
+def uploadVerification(request):
+    if (len(request.POST) == 2):
+        uploadSuccess = True
+    else:
+        uploadSuccess = False
+        
+    return render(request, 'webpage/uploadVerification.html', locals())
+
+
+"""
+    For local usage, remember to invoke .env file to add env var
+"""
+@login_required
+def sign_s3(request):
+    bucket_name = os.environ.get('S3_BUCKET_NAME')
+    access_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
+    s3_zone = os.environ.get('S3_Zone')
+
+    if (bucket_name == None or access_key == None): 
+        print ("\n\n==============")
+        print ("Insufficient S3 info. Please indicate S3 credential in env!")
+        print ("==============\n\n")
+
+    s3_bucket = boto3.client('s3') 
+    file_name = request.GET.get('file_name')
+    file_type = request.GET.get('file_type')
+    url = 'https://%s.s3.amazonaws.com/%s' % (bucket_name, file_name)
+
+    uploaders = Agent.objects.filter(user=request.user)
+
+    if (uploaders != None):
+        uploader = uploaders.get()
+
+        files = File.objects.filter(uploader=uploader)
+
+        # Uploading multiple item would override previous one
+        if (len(files) == 0):
+            file = File.objects.create(uploader=uploader)
+        else:
+            file = files.get()
+
+        file.file_name = file_name
+        file.file_type = file_type
+        file.url = url.replace(" ", "+")
+        file.save()
+
+        s3_ob = boto3.client('s3')
+        presigned_post = s3_ob.generate_presigned_post(
+                Bucket = bucket_name,
+                Key = file_name,
+                Fields = {
+                    "acl": "public-read",
+                    "Content-Type": file_type
+                },
+                Conditions = [
+                    {"acl": "public-read"},
+                    {"Content-Type": file_type}
+                ],
+                ExpiresIn = 3600
+            )
+
+        json_context = {
+                'data': presigned_post,
+                'url': url
+            }
+
+        return JsonResponse(json_context)
+    else:
+        print ("\n\nINVALID\n\n")
+        return redirect('/')
+
+
+
+@login_required
 def upvoteSpecificConcern(request):
     current_reporter = Reporter.objects.filter(user=request.user)
 
@@ -517,6 +596,7 @@ def downvoteSpecificConcern(request):
         concern = Concern.objects.filter()
 
         return render(request, 'webpage/viewAllConcerns.html', locals())
+
 
 def notFound(request):
     return render(request, 'webpage/404.html')
