@@ -80,7 +80,7 @@
 										   <td> {{ item.submitted_time }} </td>
 
 										   <td> 	
-											<form method="post" action="/account/viewSpecificConcern/id?={{ item.concern_id }}">
+											<form method="post" action="/account/viewSpecificConcern/id?={{ item.id }}">
 
 											{% csrf_token %}
 
@@ -90,7 +90,7 @@
 
 										   {% if user == item.reporter.user %}
 										   <td>
-											<form method="post" action="/account/removeSpecificConcern/id?={{ item.concern_id }}">
+											<form method="post" action="/account/removeSpecificConcern/id?={{ item.id }}">
 
 											{% csrf_token %}
 

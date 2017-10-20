@@ -250,9 +250,9 @@ def viewSpecificConcern(request):
         return render(request, 'webpage/reporterSignup.html', context)
 
     else:
-        current_reporter = current_reporter.get()
+        #current_reporter = current_reporter.get()
         concern_id = request.GET.get('')
-        concern = Concern.objects.filter(reporter=current_reporter,concern_id=concern_id)
+        concern = Concern.objects.filter(id=concern_id)
 
         # Specific conern id does not exist (or has been deleted)
         if (len(concern) != 1):
@@ -285,7 +285,7 @@ def editSpecificConcern(request):
     else:
         current_reporter = current_reporter.get()
         concern_id = request.GET.get('')
-        concern = Concern.objects.filter(reporter=current_reporter,concern_id=concern_id)
+        concern = Concern.objects.filter(reporter=current_reporter,id=concern_id)
 
         # Specific conern id does not exist (or has been deleted)
         if (len(concern) != 1):
@@ -364,7 +364,7 @@ def removeSpecificConcern(request):
     else:
         current_reporter = current_reporter.get()
         concern_id = request.GET.get('')
-        concern = Concern.objects.filter(reporter=current_reporter,concern_id=concern_id)
+        concern = Concern.objects.filter(reporter=current_reporter,id=concern_id)
 
         # Specific conern id does not exist (or has been deleted)
         if (len(concern) != 1):
