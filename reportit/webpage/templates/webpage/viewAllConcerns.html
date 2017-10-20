@@ -98,7 +98,7 @@
 
 										   
 										   <td>
-										   	{% if user == item.reporter.user %}
+										   	{% if user == item.reporter.user%}
 											<form method="post" action="/account/removeSpecificConcern/id?={{ item.id }}">
 
 											{% csrf_token %}

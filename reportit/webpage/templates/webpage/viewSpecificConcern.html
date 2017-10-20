@@ -85,6 +85,35 @@
 									<button type="submit" id="concern_submit_button" class="btn btn-primary ">Edit</button>
 									</form> 
 
+									<form method="post" action="/account/resolveSpecificConcern/id?={{ concern.id }}">
+
+									{% csrf_token %}
+									<button type="submit" id="resolve_submit_button" class="btn btn-primary ">Mark as Solve</button>
+									</form> 
+
+								{% elif isagent %}
+
+									<form method="post" action="/account/respondSpecificConcern/id?={{ concern.id }}">
+
+									{% csrf_token %}
+
+									<button type="submit" id="upvote_submit_button" class="btn btn-info ">Respond</button>
+									</form>
+
+									<form method="post" action="/account/resolveSpecificConcern/id?={{ concern.id }}">
+
+									{% csrf_token %}
+									<button type="submit" id="resolve_submit_button" class="btn btn-primary ">Mark as Solve</button>
+									</form> 
+
+
+									<form method="post" action="/account/duplicateSpecificConcern/id?={{ concern.id }}">
+
+									{% csrf_token %}
+									<button type="submit" id="downvote_submit_button" class="btn btn-warning ">Mark as Duplicate</button>
+									</form> 
+
+
 								{% else %}
 
 									<form method="post" action="/account/upvoteSpecificConcern/id?={{ concern.id }}">
