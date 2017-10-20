@@ -22,6 +22,9 @@ import datetime
 import base64
 import hashlib
 
+from django.db import models
+
+# Create your views here.
 from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 
@@ -69,6 +72,10 @@ def reporterSignup(request):
         form1 = ReporterSignUpForm()
         form2 = ReporterAdditionalForm()
     return render(request, 'webpage/reporterSignup.html', {'form1': form1, 'form2': form2})
+
+#def reporterSignup_from_google(request):
+
+
 
 def agentSignup(request):
     if request.method == 'POST':
@@ -698,6 +705,32 @@ def resolveSpecificConcern(request):
         return render(request, 'webpage/viewAllConcerns.html', locals())
 
 
+
+def temp_for_google_sign_in(request):
+    return HttpResponseRedirect('/oauthinfo2')
+
+dict = {}
+
+def google_sign_in(request):
+    user_object = request.user
+    #print(request)
+    #print(request.user)
+    global dict
+    if request.user in dict.keys():
+        dict[request.user] += 1
+    else:
+        dict[request.user] = 1
+        #if user_object.last_login == None:
+        #if User.objects.filter(username=request.user.username).exists():
+        print("successfully in")
+        group, created = Group.objects.get_or_create(name="Reporter")
+        if created:
+            group.save()
+        user_object.groups.add(group)
+        reporter = Reporter(user = user_object)
+        reporter.save()
+        print ("successfully saved")
+    return HttpResponseRedirect('/account/dashboard')
 
 def notFound(request):
     return render(request, 'webpage/404.html')
