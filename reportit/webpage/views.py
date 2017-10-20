@@ -30,6 +30,11 @@ from fuzzywuzzy import process
 
 # Create your views here.
 
+Testing_mode = True # Comment out this to enable real upload to s3
+
+# Testing mode = False
+
+
 
 @login_required
 def dashboard(request):
@@ -481,7 +486,9 @@ def removeSpecificConcern(request):
 
 @login_required
 def uploadVerification(request):
-    if (len(request.POST) == 2):
+    files = File.objects.filter(uploader=request.user)
+
+    if (len(files) > 1):
         uploadSuccess = True
     else:
         uploadSuccess = False
@@ -546,7 +553,10 @@ def sign_s3(request):
                 'url': url
             }
 
-        return JsonResponse(json_context)
+        if (Testing_mode):
+            return JsonResponse()
+        else:
+            return JsonResponse(json_context)
     else:
         print ("\n\nINVALID\n\n")
         return redirect('/')
