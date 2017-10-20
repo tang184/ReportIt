@@ -388,6 +388,52 @@ def removeSpecificConcern(request):
 
         return render(request, 'webpage/viewPersonalConcern.html', locals())
 
+
+@login_required
+def upvoteSpecificConcern(request):
+    current_reporter = Reporter.objects.filter(user=request.user)
+
+    # User is not a reporter
+    if (len(current_reporter) == 0):
+        form1 = ReporterSignUpForm()
+        form2 = ReporterAdditionalForm()
+        context = {
+            'form1': form1,
+            'form2': form2,
+            'notReporter': True
+        }
+
+        return render(request, 'webpage/reporterSignup.html', context)
+    else:
+        current_reporter = current_reporter.get()
+        concern_id = request.GET.get('')
+        concern = Concern.objects.filter(id=concern_id)
+
+        # Specific conern id does not exist (or has been deleted)
+        if (len(concern) != 1):
+            concern = Concern.objects.filter(reporter=current_reporter)
+            concernNotExist = True
+
+            if (len(concern) > 1):
+                print ("Error! Multiple concern tends to have identical id! Combination is: " + str(request.user) + str(concern_id))
+
+            return render(request, 'webpage/viewAllConcerns.html', locals())
+
+
+        concern = concern.get()
+
+        concern.upvote_count += 1
+
+        concern.save()
+
+        id = concern_id
+
+        UpvoteSuccess = True
+
+        concern = Concern.objects.filter()
+
+        return render(request, 'webpage/viewAllConcerns.html', locals())
+
 def notFound(request):
     return render(request, 'webpage/404.html')
 

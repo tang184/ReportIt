@@ -17,6 +17,7 @@ urlpatterns = [
     url(r'^account/submitConcern/', views.submitConcern, name = 'submitConcern'),
     url(r'^account/viewSpecificConcern/', views.viewSpecificConcern, name = 'viewSpecificConcern'),
     url(r'^account/removeSpecificConcern/', views.removeSpecificConcern, name = 'removeSpecificConcern'),
+    url(r'^account/upvoteSpecificConcern/', views.upvoteSpecificConcern, name = 'upvoteSpecificConcern'),
     url(r'^account/editSpecificConcern/', views.editSpecificConcern, name = 'editSpecificConcern'),
     url(r'^account/viewConcern/', views.viewConcern, name = 'viewConcern'),
     url(r'^account/viewAllConcerns/', views.viewAllConcerns, name = 'viewConcern'),
