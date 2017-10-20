@@ -25,7 +25,6 @@ import hashlib
 # Create your views here.
 
 
-
 @login_required
 def dashboard(request):
 
@@ -383,21 +382,6 @@ def sign_s3(request):
     access_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
     s3_zone = os.environ.get('S3_Zone')
 
-    """
-        HTTP uploading mechanism to AWS S3. Saved for future reference
-    """
-    # aws_service = "s3"
-    # now = datetime.datetime.now()
-    # date = str(now.year) + str(now.month) + str(now.day)
-    # valid_duration = datetime.timedelta(days=1)
-    # expiration_date = valid_duration + now
-    # expiration_date = expiration_date.isoformat()
-
-    # x_amz_algorithm = 'AWS4-HMAC-SHA256' # Use AWS signature v4
-    # x_amz_credential = "%s/%s/%s/%s/aws4_request" % (access_key, date, s3_zone, aws_service)
-    # x_amz_date = date + "T" + str(now.hour) + str(now.minute) + str(now.second) + 'Z'
-    # x_amz_meta = "14365123651274"
-
     if (bucket_name == None or access_key == None): 
         print ("\n\n==============")
         print ("Insufficient S3 info. Please indicate S3 credential in env!")
@@ -423,49 +407,6 @@ def sign_s3(request):
         file.file_type = file_type
         file.url = url.replace(" ", "+")
         file.save()
-
-        # condition_context = {
-        #     "expiration_date": expiration_date,
-        #     "bucket": s3_bucket,
-        #     "acl": "public-read",
-        #     "success_action_redirect": "http://www.google.com",
-        #     "x-amz-meta": x_amz_meta,
-
-        #     # "x-amz-server-side-encryption": "AES256",
-
-        #     "x-amz-credential": x_amz_credential,
-        #     "x-amz-algorithm": x_amz_algorithm,
-        #     "x-amz-date": x_amz_date
-
-        # }
-
-        # policy = """
-        #     {
-        #         "expiration": "%(expiration_date)s",
-        #         "conditions": [
-        #             "bucket": "%(bucket)s",
-        #             "acl": "%(acl)s",
-        #             "success_action_redirect": "%(success_action_redirect)s",
-        #             "x-amz-meta-uuid": "%(x-amz-meta)s",
-        #             "x-amz-credential": "%(x-amz-credential)s",
-        #             "x-amz-algorithm": "%(x-amz-algorithm)s",
-        #             "x-amz-date": "%(x-amz-date)s"
-        #         ]
-        #     }
-        # """ % condition_context
-
-        # encoded_policy = str.encode(policy.replace(" ", ""))
-        # policy_to_submit = base64.b64encode(encoded_policy)
-
-        # encoded_secret = str.encode(access_key)
-        # signature = base64.b64encode(hmac.new(encoded_secret, policy_to_submit, hashlib.sha1).digest())
-
-        # data = {
-        #     "policy": policy,
-        #     "signature": signature,
-        #     "key": access_key
-
-        # }
 
         s3_ob = boto3.client('s3')
         presigned_post = s3_ob.generate_presigned_post(

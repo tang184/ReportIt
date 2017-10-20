@@ -3,6 +3,7 @@ db.sqlite3
 .env
 venv/
 webpage/migrations/
+saved_data.json
 
 *.pyc
 *.DS_Store
