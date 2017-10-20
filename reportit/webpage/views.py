@@ -255,10 +255,24 @@ def searchConcern(request):
 @login_required
 def viewConcern(request):
     current_reporter = Reporter.objects.filter(user=request.user)
+    current_agent = Agent.objects.filter(user=request.user)
 
     if (len(current_reporter) == 0):
         # User is not a reporter, display ALL concerns
-        concern = Concern.objects.all()
+        if (len(current_agent) == 0):
+            concern = Concern.objects.all()
+        else:
+            concern = Concern.objects.filter()
+            v = list(concern)
+            concern = []
+
+            for i in range(len(v)):
+                p = v[i].target_agent.all().filter(user=request.user)
+                if (len(p) != 0):
+                    concern.append(v[i])
+
+
+            return render(request, 'webpage/viewPersonalConcern.html', locals())
     else:
         current_reporter = current_reporter.get()
         concern = Concern.objects.filter(reporter=current_reporter)
@@ -401,15 +415,26 @@ def removeSpecificConcern(request):
 
     # User is not a reporter
     if (len(current_reporter) == 0):
-        form1 = ReporterSignUpForm()
-        form2 = ReporterAdditionalForm()
-        context = {
-            'form1': form1,
-            'form2': form2,
-            'notReporter': True
-        }
+        if (len(current_agent) == 0):
+            form1 = ReporterSignUpForm()
+            form2 = ReporterAdditionalForm()
+            context = {
+                'form1': form1,
+                'form2': form2,
+                'notReporter': True
+            }
 
-        return render(request, 'webpage/reporterSignup.html', context)
+            return render(request, 'webpage/reporterSignup.html', context)
+        else:
+            concern_id = request.GET.get('')
+            concern = Concern.objects.filter(id=concern_id)
+            concern = concern.get()
+
+            concern.delete()
+
+            deleteSuccess = True
+            concern = Concern.objects.filter()
+            return render(request, 'webpage/viewPersonalConcern.html', locals())
     else:
         current_reporter = current_reporter.get()
         concern_id = request.GET.get('')
