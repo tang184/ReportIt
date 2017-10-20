@@ -15,6 +15,11 @@
 
             <form method="POST" action="/account/uploadVerification/">
               {% csrf_token %}
+
+              {% if uploadSuccess %}
+                  <div id="success-msg" class="alert alert-danger alert-dismissible" role="alert">Your verification file has been successfully uploaded!</div>
+              {% endif %}
+
               <input type="hidden" id="file-url" name="file" type="file">
               <input type="submit" value="Upload file">
             </form>

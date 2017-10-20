@@ -369,7 +369,11 @@ def removeSpecificConcern(request):
 
 @login_required
 def uploadVerification(request):
-    print ("(" + str(len(request.POST)) + ")" + "Request to upload verification=" + str(request.POST))
+    if (len(request.POST) == 2):
+        uploadSuccess = True
+    else:
+        uploadSuccess = False
+        
     return render(request, 'webpage/uploadVerification.html', locals())
 
 
