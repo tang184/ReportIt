@@ -674,7 +674,7 @@ class AddTestCase(StaticLiveServerTestCase):
 
 	"""
 
-	""" actions to my concerns """
+	""" actions to my concerns
 	def test_myconcerns1_view(self):
 		browser = self.selenium
 		# agent signup
@@ -809,6 +809,7 @@ class AddTestCase(StaticLiveServerTestCase):
 		browser.find_element_by_id('remove').click()
 		assert 'Successfully deleted the concern!' in browser.page_source
 
+
 	def test_myconcerns3_edit(self):
 		browser = self.selenium
 		# agent signup
@@ -885,11 +886,12 @@ class AddTestCase(StaticLiveServerTestCase):
 		browser.find_element_by_id('concern_submit_button').click()
 		# wait for submit form
 		wait = WebDriverWait(browser, 10)
-		element = wait.until(EC.text_to_be_present_in_element((By.ID, 'dashboard')))
+		element = wait.until(EC.presence_of_element_located((By.ID, "view")))
 		assert 'Successfully edited the concern!' in browser.page_source
 
+	"""
 
-	""" Edit Profile
+	""" Edit Profile """
 
 	def test_editprofile1_immd_good(self):
 		# signup
@@ -983,8 +985,6 @@ class AddTestCase(StaticLiveServerTestCase):
 		assert '7651111111' in browser.page_source
 		assert 'first street' in browser.page_source
 		assert 'hello!' in browser.page_source
-
-	"""
 
 	"""
 	def test_a_register_reporter(self):
