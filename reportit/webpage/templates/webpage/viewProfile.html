@@ -109,12 +109,12 @@
 							<tbody>
 							  {% for item in concern %}
 							  <tr>
-								    <td> {{ item.reporter }} </td>
+								    <td> <a href="/account/viewprofile/username?={{ item.reporter.user }}">{{ item.reporter }}</a> </td>
 
 								    <td>
 								    	{% for ele in item.target_agent.all %}
 
-								    	{{ ele.legal_name }}, 
+								    	<a href="/account/viewprofile/username?={{ ele.user }}">{{ ele.legal_name }}</a>, 
 
 								    	{% endfor %}
 								    </td>

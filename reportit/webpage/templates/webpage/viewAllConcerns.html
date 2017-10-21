@@ -28,7 +28,7 @@
 	<section id="main" class="container">
 		<header>
 			<h2>View All Concerns</h2>
-			<p>All of the concerns that have been published.</p>
+			<p>All of the concerns that have been not been solved.</p>
 		</header>
 		{% if concernNotExist %}
         <div id="require-signup" class="alert alert-danger alert-dismissible" role="alert">Cannot find your concern!</div>
@@ -73,12 +73,12 @@
 									<tbody>
 									  {% for item in concern %}
 									  <tr>
-										    <td> {{ item.reporter }} </td>
+										    <td> <a href="/account/viewprofile/username?={{ item.reporter.user }}">{{ item.reporter }}</a> </td>
 
 										    <td>
 										    	{% for ele in item.target_agent.all %}
 
-										    	{{ ele.legal_name }}, 
+										    	<a href="/account/viewprofile/username?={{ ele.user }}">{{ ele.legal_name }}</a>, 
 
 										    	{% endfor %}
 										    </td>

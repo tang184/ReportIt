@@ -25,6 +25,7 @@ urlpatterns = [
     url(r'^account/upvoteSpecificConcern/', views.upvoteSpecificConcern, name = 'upvoteSpecificConcern'),
     url(r'^account/downvoteSpecificConcern/', views.downvoteSpecificConcern, name = 'downvoteSpecificConcern'),
     url(r'^account/resolveSpecificConcern/', views.resolveSpecificConcern, name = 'resolveSpecificConcern'),
+    url(r'^account/unsolveSpecificConcern/', views.unsolveSpecificConcern, name = 'unsolveSpecificConcern'),
     url(r'^account/editSpecificConcern/', views.editSpecificConcern, name = 'editSpecificConcern'),
     url(r'^account/viewConcern/', views.viewConcern, name = 'viewConcern'),
     url(r'^account/viewAllConcerns/', views.viewAllConcerns, name = 'viewConcern'),
