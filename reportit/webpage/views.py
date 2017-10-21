@@ -118,6 +118,46 @@ def viewProfile(request):
 
     return render(request, 'webpage/profile.html', context)
 
+
+def viewpeopleProfile(request):
+    username = request.GET.get('')
+
+    current_user = User.objects.filter(username=username)
+    current_reporter = Reporter.objects.filter(user=current_user)
+    current_agent = Agent.objects.filter(user=current_user)
+
+
+    if (len(current_reporter) == 0):
+        # User is not a reporter
+        if (len(current_agent) == 0):
+            reporter = Reporter.objects.filter(user=request.user)
+            agent = Agent.objects.filter(user=request.user)
+            # User is a reporter
+            if len(reporter) != 0:
+                profile_user = request.user.reporter
+            if len(reporter) == 0:
+                profile_user = request.user.agent
+            context = {
+                'profile_user' : profile_user,
+            }
+        else:
+            current_agent = current_agent.get()
+            #print(current_agent.user.username)
+            isagent = True
+            context = {
+                'profile_user' : current_agent,
+                'isagent' : isagent,
+            }
+    else:
+        current_reporter = current_reporter.get()
+        isagent = False
+        context = {
+            'profile_user' : current_reporter,
+            'isagent' : isagent,
+        }
+        
+    return render(request, 'webpage/viewProfile.html', context)
+
 #@csrf_protect
 def editProfile(request):
 

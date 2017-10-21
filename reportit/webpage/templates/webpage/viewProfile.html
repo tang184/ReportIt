@@ -1,0 +1,85 @@
+{% extends "webpage/base.html" %}
+{% load static %}
+{% load util %}
+
+
+{% block content %}
+
+<section id="main" class="container">
+
+<header>
+	{% if isagent %}
+	<h2>{{profile_user.legal_name}}'s Profile</h2>
+	{% else %}
+	<h2>{{profile_user.user.username}}'s Profile</h2>
+	{% endif %}
+	<!-- <p>My profile content</p> -->
+</header>
+
+<div class="row">
+<div class="12u">
+
+<!-- Table -->
+<section class="box">
+	<div class="table-wrapper">
+		<table>
+
+			<tbody>
+				{% if not isagent %}
+				<tr>
+					<td>Username</td>
+					<td>{{profile_user.user.username}}</td>
+
+				</tr>
+				{% endif %}
+
+				<tr>
+					<td>Legal Name</td>
+					<td>{{profile_user.legal_name}}</td>
+
+				</tr>
+				<!-- <tr>
+					<td>First Name</td>
+					<td>Vis ac commodo adipiscing arcu aliquet.</td>
+
+				</tr>
+				<tr>
+					<td>Last Name</td>
+					<td> Morbi faucibus arcu accumsan lorem.</td>
+
+				</tr> -->
+				{% if not isagent %}
+				<tr>
+					<td>Gender</td>
+					<td>{{ profile_user.gender }}</td>
+
+				</tr>
+				{% endif %}
+				<tr>
+					<td>Phone Number</td>
+					<td>{{profile_user.phone_number}}</td>
+
+				</tr>
+				<tr>
+					<td>Address</td>
+					<td>{{profile_user.address}}</td>
+				</tr>
+				<tr>
+					<td>Bio</td>
+					<td>{{profile_user.about}}</td>
+
+				</tr>
+				
+			</tbody>
+
+		</table>
+	</div>
+
+</section>
+</div>
+</div>
+</section>
+
+{% endblock %}
+
+						

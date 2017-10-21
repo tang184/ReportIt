@@ -11,9 +11,8 @@ urlpatterns = [
     url(r'^agentSignup/$', views.agentSignup, name = 'agentSignup'),
     url(r'^account/profile/$', views.viewProfile, name = 'profile'),
     url(r'^account/dashboard/$', views.dashboard, name = 'dashboard'),
-    url(r'^account/profile/$', views.viewProfile, name = 'profile'),
     url(r'^account/profile/edit$', views.editProfile, name = 'editprofile'),
-
+    url(r'^account/viewprofile/', views.viewpeopleProfile, name = 'profile'),
     url(r'^account/submitConcern/', views.submitConcern, name = 'submitConcern'),
 
     url(r'^account/uploadVerification/', views.uploadVerification, name = 'uploadVerification'),
