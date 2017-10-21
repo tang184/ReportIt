@@ -78,6 +78,72 @@
 </section>
 </div>
 </div>
+
+
+
+<div class="row">
+	<div class="12u">
+
+		<!-- Table -->
+			<section class="box">
+				<div class="table-wrapper">
+					{% if isagent %}
+					<h2>{{profile_user.legal_name}}'s Concerns</h2>
+					{% else %}
+					<h2>{{profile_user.user.username}}'s Concerns</h2>
+					{% endif %}
+					{% if concern != Null %}
+					<table class="table table-striped">
+						<ul>
+							<thread>
+								<tr>
+									<th> Reporter </th>
+									<th> Agent </th>
+									<th> Title </th>
+									<!-- <th> Content </th> -->
+									<th> Time submitted </th>
+
+									<th> View</th>
+								</tr>
+							</thread>
+							<tbody>
+							  {% for item in concern %}
+							  <tr>
+								    <td> {{ item.reporter }} </td>
+
+								    <td>
+								    	{% for ele in item.target_agent.all %}
+
+								    	{{ ele.legal_name }}, 
+
+								    	{% endfor %}
+								    </td>
+
+								    <td> {{ item.title }} </td>
+								   <!--  <td> {{ item.content }} </td> -->
+								   <td> {{ item.submitted_time }} </td>
+
+								   <td> 	
+									<form method="post" action="/account/viewSpecificConcern/id?={{ item.id }}">
+
+									{% csrf_token %}
+
+									<button type="submit" id="concern_submit_button" class="btn btn-primary ">View</button>
+									</form> 
+								   </td>
+
+							  </tr>
+							  {% endfor %}
+							</tbody>
+						</ul>
+					{% endif %}
+					</table>
+				</div>
+
+			</section>
+
+	</div>
+</div>
 </section>
 
 {% endblock %}

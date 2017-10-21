@@ -144,16 +144,31 @@ def viewpeopleProfile(request):
             current_agent = current_agent.get()
             #print(current_agent.user.username)
             isagent = True
+
+            concern = Concern.objects.filter()
+            v = list(concern)
+            concern = []
+
+            for i in range(len(v)):
+                p = v[i].target_agent.all().filter(user=current_user)
+                if (len(p) != 0):
+                    concern.append(v[i])
+            #print(concern)
+
             context = {
                 'profile_user' : current_agent,
                 'isagent' : isagent,
+                'concern': concern,
             }
     else:
         current_reporter = current_reporter.get()
         isagent = False
+
+        concern = Concern.objects.filter(reporter=current_reporter)
         context = {
             'profile_user' : current_reporter,
             'isagent' : isagent,
+            'concern': concern,
         }
         
     return render(request, 'webpage/viewProfile.html', context)

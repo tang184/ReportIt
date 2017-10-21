@@ -48,13 +48,13 @@
 								<label>Concern Title</label>{{ concern.title }}
 								</div>
 								<div style="margin:10px">
-								<label>Reporter</label>{{ concern.reporter.user }}
+								<label>Reporter</label><a href="/account/viewprofile/username?={{ concern.reporter.user }}">{{ concern.reporter.user }}</a>
 								</div>
 								<div style="margin:10px">
 								<label>Report Agent</label>
 								{% for ele in concern.target_agent.all %}
 
-						    	{{ ele.legal_name }}, 
+						    	<a href="/account/viewprofile/username?={{ ele.user }}">{{ ele.legal_name }}</a>, 
 
 						    	{% endfor %}
 						   		</div>
