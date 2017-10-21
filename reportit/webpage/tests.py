@@ -56,27 +56,27 @@ class AddTestCase(StaticLiveServerTestCase):
 		print("start first test")
 		pass
 
-	""" bad page
+	""" bad page """
 	def test_notlogin_dashboard(self):
 		browser = self.selenium
 		url = self.live_server_url + '/account/dashboard/'
 		browser.get(url)
 		assert 'You have successfully logged in' not in browser.page_source
 
-	"""
+
 	
-	""" login
+	""" login """
 
 	def test_adminlogin1_profile(self):
 		browser = self.selenium
 		url = self.live_server_url + '/login/'
 		browser.get(url)
-		un = browser.find_element_by_name('username')
+		un = browser.find_element_by_id('id_username')
 		un.send_keys("admin")
 		pw = browser.find_element_by_name('password')
 		pw.send_keys("admin")
 		browser.find_element_by_name('login-submit').click()	
-		assert 'ReportIt' in browser.title
+		assert 'You have successfully logged in' in browser.page_source
 
 	def test_adminlogin2_wrongpassword(self):
 		browser = self.selenium
@@ -101,10 +101,11 @@ class AddTestCase(StaticLiveServerTestCase):
 		browser.find_element_by_name('login-submit').click()		
 		assert 'You have successfully logged in' not in browser.title
 		assert 'username' in browser.page_source
-	"""
 
 
-	""" reporter signup
+
+
+	""" reporter signup """
 	def test_reportersignup1_good_withoptional(self):
 		browser = self.selenium
 		url = self.live_server_url + '/reporterSignup/'
@@ -236,9 +237,9 @@ class AddTestCase(StaticLiveServerTestCase):
 		browser.find_element_by_name('signup_submit').click()	
 		assert 'Reporter Signup' in browser.title
 
-	"""
 
-	""" agent signup
+
+	""" agent signup """
 	def test_agentsignup1_good(self):
 		browser = self.selenium
 		url = self.live_server_url + '/agentSignup/'
@@ -374,9 +375,9 @@ class AddTestCase(StaticLiveServerTestCase):
 		browser.find_element_by_name('signup_submit').click()
 		assert 'Agent Signup' in browser.title
 
-	"""
 
-	""" submit concerns
+
+	""" submit concerns """
 
 	def test_concern1_good(self):
 		browser = self.selenium
@@ -672,9 +673,8 @@ class AddTestCase(StaticLiveServerTestCase):
 		browser.find_element_by_id('concern_submit_button').click()
 		assert '/submitConcern/' in browser.current_url
 
-	"""
 
-	""" actions to my concerns
+	""" actions to my concerns """
 	def test_myconcerns1_view(self):
 		browser = self.selenium
 		# agent signup
@@ -810,7 +810,7 @@ class AddTestCase(StaticLiveServerTestCase):
 		assert 'Successfully deleted the concern!' in browser.page_source
 
 
-	def test_myconcerns3_edit(self):
+	"""def test_myconcerns3_edit(self):
 		browser = self.selenium
 		# agent signup
 		url = self.live_server_url + '/agentSignup/'
@@ -887,9 +887,9 @@ class AddTestCase(StaticLiveServerTestCase):
 		# wait for submit form
 		wait = WebDriverWait(browser, 10)
 		element = wait.until(EC.presence_of_element_located((By.ID, "view")))
-		assert 'Successfully edited the concern!' in browser.page_source
+		#assert 'Successfully edited the concern!' in browser.page_source"""
 
-	"""
+
 
 	""" Edit Profile """
 
@@ -985,6 +985,77 @@ class AddTestCase(StaticLiveServerTestCase):
 		assert '7651111111' in browser.page_source
 		assert 'first street' in browser.page_source
 		assert 'hello!' in browser.page_source
+
+
+	""" agent view directed concerns """
+	def test_agentviewconcern1_good(self):
+		browser = self.selenium
+		# reporter send concerns
+		self.test_concern1_good()
+		# reporter logout, agent login
+		url = self.live_server_url + '/login/'
+		browser.get(url)
+		un = browser.find_element_by_name('username')
+		un.send_keys("agent1")
+		pswd = browser.find_element_by_name('password')
+		pswd.send_keys("pass1234")
+		browser.find_element_by_name('login-submit').click()
+		browser.find_element_by_name('viewmyconcerns').click()
+		assert "concerns" in browser.page_source
+
+	def test_agentviewconcern2_resolve(self):
+		browser = self.selenium
+		# reporter send concerns
+		self.test_concern1_good()
+		# reporter logout, agent login
+		url = self.live_server_url + '/login/'
+		browser.get(url)
+		un = browser.find_element_by_name('username')
+		un.send_keys("agent1")
+		pswd = browser.find_element_by_name('password')
+		pswd.send_keys("pass1234")
+		browser.find_element_by_name('login-submit').click()
+		browser.find_element_by_name('viewmyconcerns').click()
+		assert "concerns" in browser.page_source
+		browser.find_element_by_name('view').click()
+		browser.find_element_by_id('resolve_submit_button').click()
+		browser.find_element_by_name('view').click()
+		assert 'True' in browser.page_source
+
+
+	""" view all concerns """
+	def test_viewallconcerns1_reporter(self):
+		browser = self.selenium
+		# reporter login
+		# reporter submit concerns
+		self.test_concern1_good()
+		wait = WebDriverWait(browser, 10)
+		element = wait.until(EC.presence_of_element_located((By.ID, 'welcome')))
+		browser.find_element_by_name('submitconcern').click()
+		title = browser.find_element_by_name('title')
+		title.send_keys("construction noise")
+		agent = Select(browser.find_element_by_name('agent'))
+		agent.select_by_index(0)
+		content = browser.find_element_by_name('content')
+		content.send_keys("very very loud")
+		browser.find_element_by_id('concern_submit_button').click()
+
+		"""url = self.live_server_url + '/account/submitConcern/'
+		browser.get(url)
+		title = browser.find_element_by_name('title')
+		title.send_keys("broken bench")
+		agent = Select(browser.find_element_by_name('agent'))
+		agent.select_by_index(0)
+		content = browser.find_element_by_name('content')
+		content.send_keys("bench in park is broken")
+		browser.find_element_by_id('concern_submit_button').click()"""
+
+		# view all concerns
+		browser.find_element_by_name('viewallconcerns').click()
+		assert 'concerns' in browser.page_source
+		assert 'construction noise' in browser.page_source
+		#assert 'broken bench' in browser.page_source
+
 
 	"""
 	def test_a_register_reporter(self):
