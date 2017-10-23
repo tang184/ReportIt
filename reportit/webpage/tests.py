@@ -1026,7 +1026,8 @@ class AddTestCase(StaticLiveServerTestCase):
 	""" view all concerns """
 	def test_viewallconcerns1_reporter(self):
 		browser = self.selenium
-		# reporter login
+		# agent signup
+		# reporter signup and login
 		# reporter submit concerns
 		self.test_concern1_good()
 		wait = WebDriverWait(browser, 10)
@@ -1046,6 +1047,30 @@ class AddTestCase(StaticLiveServerTestCase):
 		assert 'construction noise' in browser.page_source
 		#assert 'broken bench' in browser.page_source
 
+	def test_viewallconcerns2_agent(self):
+		elf.test_concern1_good()
+		wait = WebDriverWait(browser, 10)
+		element = wait.until(EC.presence_of_element_located((By.ID, 'welcome')))
+		browser.find_element_by_name('submitconcern').click()
+		title = browser.find_element_by_name('title')
+		title.send_keys("construction noise")
+		agent = Select(browser.find_element_by_name('agent'))
+		agent.select_by_index(0)
+		content = browser.find_element_by_name('content')
+		content.send_keys("very very loud")
+		browser.find_element_by_id('concern_submit_button').click()
+
+		# view all concerns
+		browser.find_element_by_name('viewallconcerns').click()
+		#self.test_viewallconcerns1_reporter()
+		# agent login
+		url = self.live_server_url + '/login/'
+		browser.get(url)
+		un = browser.find_element_by_name('username')
+		un.send_keys("agent1")
+		pswd = browser.find_element_by_name('password')
+		pswd.send_keys("pass1234")
+		browser.find_element_by_name('login-submit').click()
 
 	"""
 	def test_a_register_reporter(self):
