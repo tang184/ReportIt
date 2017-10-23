@@ -69,12 +69,13 @@ class AddTestCase(StaticLiveServerTestCase):
 
 	def test_adminlogin1_profile(self):
 		browser = self.selenium
+		self.test_agentsignup1_good()
 		url = self.live_server_url + '/login/'
 		browser.get(url)
 		un = browser.find_element_by_id('id_username')
-		un.send_keys("admin")
+		un.send_keys("agent1")
 		pw = browser.find_element_by_name('password')
-		pw.send_keys("admin")
+		pw.send_keys("pass1234")
 		browser.find_element_by_name('login-submit').click()	
 		assert 'You have successfully logged in' in browser.page_source
 
@@ -810,7 +811,8 @@ class AddTestCase(StaticLiveServerTestCase):
 		assert 'Successfully deleted the concern!' in browser.page_source
 
 
-	"""def test_myconcerns3_edit(self):
+	""" THIS IS COMMETED BECAUSE OF AGENT SELECTION NOT WORKING IN EDIT
+	def test_myconcerns3_edit(self):
 		browser = self.selenium
 		# agent signup
 		url = self.live_server_url + '/agentSignup/'
@@ -1048,21 +1050,10 @@ class AddTestCase(StaticLiveServerTestCase):
 		#assert 'broken bench' in browser.page_source
 
 	def test_viewallconcerns2_agent(self):
-		elf.test_concern1_good()
-		wait = WebDriverWait(browser, 10)
-		element = wait.until(EC.presence_of_element_located((By.ID, 'welcome')))
-		browser.find_element_by_name('submitconcern').click()
-		title = browser.find_element_by_name('title')
-		title.send_keys("construction noise")
-		agent = Select(browser.find_element_by_name('agent'))
-		agent.select_by_index(0)
-		content = browser.find_element_by_name('content')
-		content.send_keys("very very loud")
-		browser.find_element_by_id('concern_submit_button').click()
-
-		# view all concerns
-		browser.find_element_by_name('viewallconcerns').click()
-		#self.test_viewallconcerns1_reporter()
+		# agent signup
+		# reporter signup and login
+		# reporter submit concerns
+		self.test_viewallconcerns1_reporter()
 		# agent login
 		url = self.live_server_url + '/login/'
 		browser.get(url)
@@ -1071,6 +1062,11 @@ class AddTestCase(StaticLiveServerTestCase):
 		pswd = browser.find_element_by_name('password')
 		pswd.send_keys("pass1234")
 		browser.find_element_by_name('login-submit').click()
+
+		# agent view all concerns
+		browser.find_element_by_name('viewallconcerns').click()
+		assert 'concerns' in browser.page_source
+		assert 'construction noise' in browser.page_source
 
 	"""
 	def test_a_register_reporter(self):
