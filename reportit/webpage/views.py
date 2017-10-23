@@ -30,9 +30,9 @@ from fuzzywuzzy import process
 
 # Create your views here.
 
-Testing_mode = True # Comment out this to enable real upload to s3
+# Testing_mode = True # Comment out this to enable real upload to s3
 
-# Testing mode = False
+Testing_mode = False
 
 
 
@@ -517,7 +517,7 @@ def sign_s3(request):
 
     uploaders = Agent.objects.filter(user=request.user)
 
-    if (uploaders != None):
+    if (len(uploaders) > 0):
         uploader = uploaders.get()
 
         files = File.objects.filter(uploader=uploader)
@@ -559,7 +559,39 @@ def sign_s3(request):
             return JsonResponse(json_context)
     else:
         print ("\n\nINVALID\n\n")
-        return redirect('/')
+
+        # Save the uploaded file
+        file = File.objects.create()
+
+        file.file_name = file_name
+        file.file_type = file_type
+        file.url = url.replace(" ", "+")
+        file.save()
+
+        s3_ob = boto3.client('s3')
+        presigned_post = s3_ob.generate_presigned_post(
+                Bucket = bucket_name,
+                Key = file_name,
+                Fields = {
+                    "acl": "public-read",
+                    "Content-Type": file_type
+                },
+                Conditions = [
+                    {"acl": "public-read"},
+                    {"Content-Type": file_type}
+                ],
+                ExpiresIn = 3600
+            )
+
+        json_context = {
+                'data': presigned_post,
+                'url': url
+            }
+
+        if (Testing_mode):
+            return JsonResponse()
+        else:
+            return JsonResponse(json_context)
 
 
 

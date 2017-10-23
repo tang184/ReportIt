@@ -27,7 +27,7 @@
 	               	</div>
 	            </div>
 				<div class="main-login main-center">
-					<form class="form-horizontal" method="post" action="#">
+					<form class="form-horizontal" method="post" action="#" id="register_form">
 						{% csrf_token %}
 
 						{% for field in form1 %}
@@ -56,23 +56,41 @@
 					  </p>
 					{% endfor %}
 
-
-						<div class="form-group ">
-							<button type="submit" class="btn btn-primary login-button"  name="signup_submit" id="signup_submit">Register</button>
-						</div>
-						<div class="btn login">
-				            <a href="/login" name="login" id="login">Login</a>
-				         </div>
-						<div class="btn homepage">
-				            <a href="/" name="homepage" id="homepage">Homepage</a>
-				         </div>
-				         <div class="btn reporter">
-				            <a href="/reporterSignup" name="reporter" id="reporter">Reporter Signup</a>
-				         </div>
 					</form>
+
+		            <form method="POST" action="/">
+		              {% csrf_token %}
+<!-- 
+		              {% if uploadSuccess %}
+		                  <div id="success-msg" class="alert alert-danger alert-dismissible" role="alert">Your verification file has been successfully uploaded!</div>
+		              {% endif %}
+		              	 -->
+
+		              	 <label>Verification file</label>
+						<input type="file" id="file_input">
+						<!-- <input type="hidden" id="file-url" name="file" type="file">
+						<input type="submit" value="Upload file"> -->
+		            </form>
+
+					<div class="form-group ">
+						<input type="button" class="btn btn-primary login-button"  name="signup_submit" id="signup_submit" onclick="register_submit()" value="Submit">
+					</div>
+					<div class="btn login">
+			            <a href="/login" name="login" id="login">Login</a>
+			         </div>
+					<div class="btn homepage">
+			            <a href="/" name="homepage" id="homepage">Homepage</a>
+			         </div>
+			         <div class="btn reporter">
+			            <a href="/reporterSignup" name="reporter" id="reporter">Reporter Signup</a>
+			         </div>
 				</div>
 			</div>
 		</div>
 
 	</body>
+
+{% block scripts %}
+  <script src="{% static 'assets/js/register_page.js' %}"></script>
+{% endblock %}
 </html>

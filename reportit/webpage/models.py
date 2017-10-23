@@ -29,8 +29,8 @@ class Agent(models.Model):
     legal_name = models.CharField(blank=False, verbose_name='Legal Name', max_length=100)
     phone_number = models.CharField(verbose_name='Phone number', max_length=100)
     address = models.CharField(verbose_name='Address', max_length=300)
-    agentimage = models.CharField(verbose_name='Agent Badge Logo', max_length=300, validators=[validateURL], default=None)
-    agentverifile = models.CharField(verbose_name='Agent verification file', max_length=300, validators=[validateURL], default=None)
+    # agentimage = models.CharField(verbose_name='Agent Badge Logo', max_length=300, validators=[validateURL], default=None)
+    # agentverifile = models.CharField(verbose_name='Agent verification file', max_length=300, validators=[validateURL], default=None)
     about = models.CharField(verbose_name='About', max_length=300, default=None)
 
     def __str__(self):
@@ -56,11 +56,12 @@ class Concern(models.Model):
         return str(self.reporter.user.username) + ", " + self.title
 
 class File(models.Model):
-    uploader = models.ForeignKey(Agent, on_delete=models.CASCADE)
+    uploader = models.ForeignKey(Agent, on_delete=models.CASCADE, null=True)
     file_name = models.CharField(max_length=1000)
     file_type = models.CharField(max_length=100)
     url = models.CharField(max_length=1000,default="")
     upload_time = models.DateTimeField(default=django.utils.timezone.now)
 
     def __str__(self):
-        return str(self.uploader.legal_name) + "'s " + str(self.file_name) + str(self.file_type) + " at " + str(self.upload_time)
+        # return str(self.uploader.legal_name) + "'s " + str(self.file_name) + str(self.file_type) + " at " + str(self.upload_time)
+        return str(self.file_name) + str(self.file_type) + " at " + str(self.upload_time)
