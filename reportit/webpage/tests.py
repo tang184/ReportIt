@@ -1040,16 +1040,6 @@ class AddTestCase(StaticLiveServerTestCase):
 		content.send_keys("very very loud")
 		browser.find_element_by_id('concern_submit_button').click()
 
-		"""url = self.live_server_url + '/account/submitConcern/'
-		browser.get(url)
-		title = browser.find_element_by_name('title')
-		title.send_keys("broken bench")
-		agent = Select(browser.find_element_by_name('agent'))
-		agent.select_by_index(0)
-		content = browser.find_element_by_name('content')
-		content.send_keys("bench in park is broken")
-		browser.find_element_by_id('concern_submit_button').click()"""
-
 		# view all concerns
 		browser.find_element_by_name('viewallconcerns').click()
 		assert 'concerns' in browser.page_source
