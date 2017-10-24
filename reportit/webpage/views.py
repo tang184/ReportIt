@@ -6,6 +6,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, Group
 
+from django.core.mail import EmailMessage
+
 from .forms import ReporterSignUpForm, ReporterAdditionalForm, AgentSignUpForm, AdditionalForm, SubmitConcernForm, EditConcernForm
 from .models import Concern, Reporter, Agent, File
 
@@ -180,15 +182,30 @@ def submitConcern(request):
         total_agent = Agent.objects.all()
 
 
+        target_agents = []
         for ele in total_agent:
             if (ele.legal_name in json_data['selectagent']):
                 new_concern.target_agent.add(ele)
+                target_agents.append(ele)
 
         
         new_concern.save()
 
+        list_of_agents = []
+        for item in target_agents:
+            agent_email = str(item.user.email)
+            print (agent_email)
+            list_of_agents.append(agent_email)
+
+        #send email to agent
+        email = EmailMessage('A New Concern Has Been Submitted to You', 'A New Concern Has Been Submitted to You',
+                                 to = list_of_agents)
+        email.send()
+        print ("email sent successfully")
+
         current_reporter.historical_concern_count += 1
         current_reporter.save()
+
 
         return HttpResponse(json.dumps("success"), content_type='application/json')
         
@@ -706,12 +723,12 @@ def resolveSpecificConcern(request):
 
 
 
-def temp_for_google_sign_in(request):
+def temp_for_third_party_sign_in(request):
     return HttpResponseRedirect('/oauthinfo2')
 
 dict = {}
 
-def google_sign_in(request):
+def third_party_sign_in(request):
     user_object = request.user
     #print(request)
     #print(request.user)
@@ -731,6 +748,7 @@ def google_sign_in(request):
         reporter.save()
         print ("successfully saved")
     return HttpResponseRedirect('/account/dashboard')
+
 
 def notFound(request):
     return render(request, 'webpage/404.html')
