@@ -82,7 +82,7 @@
 
 									{% csrf_token %}
 
-									<button type="submit" id="edit" class="btn btn-primary " name="edit">Edit</button>
+									<button type="submit" id="edit" class="btn btn-primary " name="edit">Edit Concern</button>
 									</form> 
 
 									{% if not concern.isSolved %}
@@ -102,6 +102,13 @@
 									</form> 
 
 									{% endif %}
+
+									<form method="post" action="/account/respondConcern/id?={{ concern.id }}">
+
+									{% csrf_token %}
+									<textarea rows="4" cols="50" name="respond" id="respond" maxlength="500" /></textarea>
+									<button type="submit" id="unsolve_submit_button" class="btn btn-warning ">Respond</button>
+									</form>
 
 								{% elif isagent %}
 
@@ -124,6 +131,14 @@
 									{% csrf_token %}
 									<button type="submit" id="downvote_submit_button" class="btn btn-warning ">Mark as Duplicate</button>
 									</form> 
+
+
+									<form method="post" action="/account/respondConcern/id?={{ concern.id }}">
+
+									{% csrf_token %}
+									<textarea rows="4" cols="50" name="respond" id="respond" maxlength="500" /></textarea>
+									<button type="submit" id="unsolve_submit_button" class="btn btn-warning ">Respond</button>
+									</form>
 
 
 								{% else %}
