@@ -112,10 +112,30 @@ def viewProfile(request):
     # User is a reporter
     if len(reporter) != 0:
         profile_user = request.user.reporter
-    if len(reporter) == 0:
+        isagent = False
+
+        concern = Concern.objects.filter(reporter=profile_user)
+        
+
+    else:
         profile_user = request.user.agent
+            #print(current_agent.user.username)
+        isagent = True
+
+        concern = Concern.objects.filter()
+        v = list(concern)
+        concern = []
+
+        for i in range(len(v)):
+            p = v[i].target_agent.all().filter(user=profile_user.user)
+            if (len(p) != 0):
+                concern.append(v[i])
+        #print(concern)       
+        
     context = {
         'profile_user' : profile_user,
+        'isagent' : isagent,
+        'concern': concern,
     }
 
     return render(request, 'webpage/profile.html', context)
@@ -355,7 +375,7 @@ def viewConcern(request):
         return render(request, 'webpage/viewPersonalConcern.html', locals())
     else:
         current_reporter = current_reporter.get()
-        concern = Concern.objects.filter(reporter=current_reporter)
+        concern = Concern.objects.filter(reporter=current_reporter, isSolved=False)
 
     return render(request, 'webpage/viewPersonalConcern.html', locals())
 
