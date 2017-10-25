@@ -41,8 +41,8 @@ urlpatterns = [
     url(r'^reset/done/$', auth_views.password_reset_complete, name='password_reset_complete'),
     #add for third party login
     url(r'^oauth/', include('social_django.urls', namespace='social')),
-    url(r'^oauthinfo/', views.temp_for_google_sign_in, name='temp_for_google_sign_in'),
-    url(r'^oauthinfo2/', views.google_sign_in, name='google_sign_in'),
+    url(r'^oauthinfo/', views.temp_for_third_party_sign_in, name='temp_for_third_party_sign_in'),
+    url(r'^oauthinfo2/', views.third_party_sign_in, name='third_party_sign_in'),
 
     url(r'^getallagents$', views.getAllAgents, name = 'dashboard'),
 
