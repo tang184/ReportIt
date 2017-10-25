@@ -340,9 +340,9 @@ def viewConcern(request):
     if (len(current_reporter) == 0):
         # User is not a reporter, display ALL concerns
         if (len(current_agent) == 0):
-            concern = Concern.objects.all()
+            concern = Concern.objects.all(isSolved=False)
         else:
-            concern = Concern.objects.filter()
+            concern = Concern.objects.filter(isSolved=False)
             v = list(concern)
             concern = []
 
@@ -352,7 +352,7 @@ def viewConcern(request):
                     concern.append(v[i])
 
 
-            return render(request, 'webpage/viewPersonalConcern.html', locals())
+        return render(request, 'webpage/viewPersonalConcern.html', locals())
     else:
         current_reporter = current_reporter.get()
         concern = Concern.objects.filter(reporter=current_reporter)
@@ -713,7 +713,7 @@ def upvoteSpecificConcern(request):
 
         # Specific conern id does not exist (or has been deleted)
         if (len(concern) != 1):
-            concern = Concern.objects.filter(reporter=current_reporter)
+            concern = Concern.objects.filter(isSolved=False)
             concernNotExist = True
 
             if (len(concern) > 1):
@@ -732,7 +732,7 @@ def upvoteSpecificConcern(request):
 
         UpvoteSuccess = True
 
-        concern = Concern.objects.filter()
+        concern = Concern.objects.filter(isSolved=False)
 
         return render(request, 'webpage/viewAllConcerns.html', locals())
 
@@ -759,7 +759,7 @@ def downvoteSpecificConcern(request):
 
         # Specific conern id does not exist (or has been deleted)
         if (len(concern) != 1):
-            concern = Concern.objects.filter(reporter=current_reporter)
+            concern = Concern.objects.filter(isSolved=False)
             concernNotExist = True
 
             if (len(concern) > 1):
@@ -778,7 +778,7 @@ def downvoteSpecificConcern(request):
 
         DownvoteSuccess = True
 
-        concern = Concern.objects.filter()
+        concern = Concern.objects.filter(isSolved=False)
 
         return render(request, 'webpage/viewAllConcerns.html', locals())
 
@@ -824,7 +824,7 @@ def resolveSpecificConcern(request):
 
         # Specific conern id does not exist (or has been deleted)
         if (len(concern) != 1):
-            concern = Concern.objects.filter(reporter=current_reporter)
+            concern = Concern.objects.filter(isSolved=False)
             concernNotExist = True
 
             if (len(concern) > 1):
@@ -838,7 +838,7 @@ def resolveSpecificConcern(request):
         concern.isSolved = True
         concern.save()
 
-        concern = Concern.objects.filter()
+        concern = Concern.objects.filter(isSolved=False)
 
         return render(request, 'webpage/viewAllConcerns.html', locals())
 
@@ -898,7 +898,7 @@ def unsolveSpecificConcern(request):
         concern.isSolved = False
         concern.save()
 
-        concern = Concern.objects.filter()
+        concern = Concern.objects.filter(isSolved=False)
 
         return render(request, 'webpage/viewAllConcerns.html', locals())
 

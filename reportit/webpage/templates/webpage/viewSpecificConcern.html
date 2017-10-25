@@ -112,12 +112,7 @@
 
 								{% elif isagent %}
 
-									<form method="post" action="/account/respondSpecificConcern/id?={{ concern.id }}">
-
-									{% csrf_token %}
-
-									<button type="submit" id="upvote_submit_button" class="btn btn-info ">Respond</button>
-									</form>
+									
 
 									<form method="post" action="/account/resolveSpecificConcern/id?={{ concern.id }}">
 
@@ -129,7 +124,7 @@
 									<form method="post" action="/account/duplicateSpecificConcern/id?={{ concern.id }}">
 
 									{% csrf_token %}
-									<button type="submit" id="downvote_submit_button" class="btn btn-warning ">Mark as Duplicate</button>
+									<button type="submit" id="downvote_submit_button" class="btn btn-danger ">Mark as Duplicate</button>
 									</form> 
 
 
@@ -137,7 +132,7 @@
 
 									{% csrf_token %}
 									<textarea rows="4" cols="50" name="respond" id="respond" maxlength="500" /></textarea>
-									<button type="submit" id="unsolve_submit_button" class="btn btn-warning ">Respond</button>
+									<button type="submit" id="unsolve_submit_button" class="btn btn-warning ">Respond Concern</button>
 									</form>
 
 
