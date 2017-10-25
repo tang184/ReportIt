@@ -16,6 +16,15 @@
 	<!-- <p>My profile content</p> -->
 </header>
 
+{% if isagent %}
+<center><img src="{{profile_user.agentimage}}" height="100" width="100" align="middle"></img></center>
+
+{% else %}
+
+<center><img src="{{profile_user.reporterimg}}" height="100" width="100" align="middle"></img></center>
+
+{% endif %}
+
 <div class="row">
 <div class="12u">
 

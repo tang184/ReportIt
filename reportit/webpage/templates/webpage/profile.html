@@ -16,20 +16,21 @@
 	<h2>My Profile</h2>
 	<!-- <p>My profile content</p> -->
 </header>
-
+{% if request.user.reporter|to_class_name == 'Reporter' %}
+<center><img src="{{profile_user.reporterimg}}" height="100" width="100" align="middle"></img></center>
+{% else %}
+<center><img src="{{profile_user.agentimage}}" height="100" width="100" align="middle"></img></center>
+{% endif %}
 <div class="row">
 <div class="12u">
+
+
 
 <!-- Table -->
 <section class="box">
 	<div class="table-wrapper">
 		<table>
-			<thead>
-				<tr>
-					<th>Name</th>
-
-				</tr>
-			</thead>
+			
 			<tbody>
 				<tr>
 					<td>Username</td>
