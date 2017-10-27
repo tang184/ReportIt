@@ -254,6 +254,7 @@ def submitConcern(request):
         new_concern = Concern.objects.create(reporter=current_reporter, concern_id=concern_id)
         new_concern.content = json_data['content']
         new_concern.title = json_data['title']
+        new_concern.image = json_data['image']
         total_agent = Agent.objects.all()
 
 

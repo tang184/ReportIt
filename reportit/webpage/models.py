@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from django_markdown.models import MarkdownField
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
@@ -16,7 +15,7 @@ class Reporter(models.Model):
     phone_number = models.CharField(verbose_name='Phone number(Optional)', max_length=100, blank=True, null=True)
     address = models.CharField(verbose_name='Address(Optional)', max_length=300, blank=True, null=True)
     reporterimg = models.CharField(verbose_name='Reporter Image(Optional)', max_length=300, blank=True,
-                                   default="http://127.0.0.1:8000/static/images/default_avatar.png",
+                                   default="http://localhost:8000/static/images/default_avatar.png",
                                    validators=[validateURL])
     about = models.CharField(verbose_name='About(Optional)', max_length=300, blank=True, null=True)
     historical_concern_count = models.IntegerField(blank=True, default=0)
@@ -43,7 +42,7 @@ class Concern(models.Model):
     title = models.CharField(max_length=500)
     # content = MarkdownField(blank=False)
     content = models.CharField(max_length=500)
-
+    image = models.CharField(max_length=500, default="http://localhost:8000/static/images/not-available.jpg")
     concern_id = models.IntegerField(default=-1, blank=True) # For now, total count is used as id of concern
     upvote_count = models.IntegerField(default=0)
     isSolved = models.BooleanField(default=False)

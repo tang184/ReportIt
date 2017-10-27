@@ -27,8 +27,8 @@
 	<!-- Main -->
 	<section id="main" class="container">
 		<header>
-			<h2>My Concerns</h2>
-			<p>Concern</p>
+			<h2>{{ concern.title }}</h2>
+			<p>Reporter: {{concern.reporter.user}}</p>
 		</header>
 
 
@@ -156,10 +156,10 @@
 								</div>
 
 								<div class="col-md-6">
-									{% if concern.image %}
+									{% if not concern.image %}
 										<img src="{% static 'images/not-available.jpg' %}">
 									{% else %}
-										<img src="{% static 'images/not-available.jpg' %}">
+										<img height="300px" width="300px" src="{{concern.image}}">
 									{% endif %}
 								</div>
 								
