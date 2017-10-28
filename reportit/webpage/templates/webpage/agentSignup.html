@@ -17,7 +17,7 @@
 
 		<title>Agent Signup</title>
 	</head>
-	<body>
+	<body onload="fileElement()">
 		<div class="container">
 			<div class="row main">
 				<div class="panel-heading">
@@ -57,20 +57,10 @@
 					{% endfor %}
 
 					</form>
-
-		            <form method="POST" action="/">
-		              {% csrf_token %}
-<!-- 
-		              {% if uploadSuccess %}
-		                  <div id="success-msg" class="alert alert-danger alert-dismissible" role="alert">Your verification file has been successfully uploaded!</div>
-		              {% endif %}
-		              	 -->
-
-		              	 <label>Verification file</label>
-						<input type="file" id="file_input">
-						<!-- <input type="hidden" id="file-url" name="file" type="file">
-						<input type="submit" value="Upload file"> -->
-		            </form>
+					
+	              	<label>Verification file</label>
+					<input type="file" id="file_input">
+					<!-- <input type="hidden" id="file-url" name="file" type="file"> -->
 
 					<div class="form-group ">
 						<input type="button" class="btn btn-primary login-button"  name="signup_submit" id="signup_submit" onclick="register_submit()" value="Submit">

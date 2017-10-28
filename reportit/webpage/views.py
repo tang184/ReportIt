@@ -83,6 +83,7 @@ def reporterSignup(request):
 
 
 def agentSignup(request):
+    print (request, request.POST, request.GET)
     if request.method == 'POST':
         form1 = AgentSignUpForm(request.POST)
         #print (form1)
@@ -486,14 +487,21 @@ def removeSpecificConcern(request):
 
 @login_required
 def uploadVerification(request):
-    files = File.objects.filter(uploader=request.user)
 
-    if (len(files) > 1):
-        uploadSuccess = True
+    agents = Agent.objects.filter(user=request.user)
+
+    if (len(agents) != 1):
+        return render(request, 'webpage/dashboard.html')
     else:
-        uploadSuccess = False
-        
-    return render(request, 'webpage/uploadVerification.html', locals())
+        agent = agents.get()
+        files = File.objects.filter(uploader=agent)
+
+        if (len(files) > 1):
+            uploadSuccess = True
+        else:
+            uploadSuccess = False
+            
+        return render(request, 'webpage/uploadVerification.html', locals())
 
 
 """
@@ -517,81 +525,43 @@ def sign_s3(request):
 
     uploaders = Agent.objects.filter(user=request.user)
 
-    if (len(uploaders) > 0):
-        uploader = uploaders.get()
+    files = File.objects.filter(url=url.replace(" ", "+"))
 
-        files = File.objects.filter(uploader=uploader)
-
-        # Uploading multiple item would override previous one
-        if (len(files) == 0):
-            file = File.objects.create(uploader=uploader)
-        else:
-            file = files.get()
-
-        file.file_name = file_name
-        file.file_type = file_type
-        file.url = url.replace(" ", "+")
-        file.save()
-
-        s3_ob = boto3.client('s3')
-        presigned_post = s3_ob.generate_presigned_post(
-                Bucket = bucket_name,
-                Key = file_name,
-                Fields = {
-                    "acl": "public-read",
-                    "Content-Type": file_type
-                },
-                Conditions = [
-                    {"acl": "public-read"},
-                    {"Content-Type": file_type}
-                ],
-                ExpiresIn = 3600
-            )
-
-        json_context = {
-                'data': presigned_post,
-                'url': url
-            }
-
-        if (Testing_mode):
-            return JsonResponse()
-        else:
-            return JsonResponse(json_context)
+    # Uploading multiple item would override previous one
+    if (len(files) == 0):
+        file = File.objects.create(uploader=None)
     else:
-        print ("\n\nINVALID\n\n")
+        file = files.get()
 
-        # Save the uploaded file
-        file = File.objects.create()
+    file.file_name = file_name
+    file.file_type = file_type
+    file.url = url.replace(" ", "+")
+    file.save()
 
-        file.file_name = file_name
-        file.file_type = file_type
-        file.url = url.replace(" ", "+")
-        file.save()
+    s3_ob = boto3.client('s3')
+    presigned_post = s3_ob.generate_presigned_post(
+            Bucket = bucket_name,
+            Key = file_name,
+            Fields = {
+                "acl": "public-read",
+                "Content-Type": file_type
+            },
+            Conditions = [
+                {"acl": "public-read"},
+                {"Content-Type": file_type}
+            ],
+            ExpiresIn = 3600
+        )
 
-        s3_ob = boto3.client('s3')
-        presigned_post = s3_ob.generate_presigned_post(
-                Bucket = bucket_name,
-                Key = file_name,
-                Fields = {
-                    "acl": "public-read",
-                    "Content-Type": file_type
-                },
-                Conditions = [
-                    {"acl": "public-read"},
-                    {"Content-Type": file_type}
-                ],
-                ExpiresIn = 3600
-            )
+    json_context = {
+            'data': presigned_post,
+            'url': url
+        }
 
-        json_context = {
-                'data': presigned_post,
-                'url': url
-            }
-
-        if (Testing_mode):
-            return JsonResponse()
-        else:
-            return JsonResponse(json_context)
+    if (Testing_mode):
+        return JsonResponse()
+    else:
+        return JsonResponse(json_context)
 
 
 
