@@ -7,8 +7,6 @@ function register_submit() {
 	var reg_form = document.getElementById("register_form");
 	var token = document.getElementsByName("csrfmiddlewaretoken");
 	var file_url = document.getElementById('id_agentverifile').value;
-	alert(file_url);
-
 
 	var files = document.getElementById("file_input").files;
 	var file = files[0];
@@ -16,7 +14,6 @@ function register_submit() {
 		return alert("Please upload your verification file!");
 	}	
 
-	alert(reg_form['agentverifile']);
 	console.log(reg_form['agentverifile']);
 
 	reg_form.submit();
