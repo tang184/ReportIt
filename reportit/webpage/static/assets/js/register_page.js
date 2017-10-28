@@ -63,5 +63,5 @@ function uploadFile(file, s3Data, url) {
 
 	var file = document.getElementById('id_agentverifile');
 	file.value = url.replace(" ", "+");
-	file.disabled = false;
+	// file.disabled = false;
 }

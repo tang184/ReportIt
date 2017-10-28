@@ -24,11 +24,11 @@ import hashlib
 
 from django.db import models
 
-# Create your views here.
 from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 
-# Create your views here.
+import hashlib
+
 
 # Testing_mode = True # Comment out this to enable real upload to s3
 
@@ -175,7 +175,7 @@ def submitConcern(request):
     if request.method == 'POST':
         #reader = codecs.getreader("utf-8")
         json_data = json.loads(request.body.decode('utf-8'))
-        print(json_data)
+        # print(json_data)
         current_reporter = Reporter.objects.filter(user=request.user)
         current_reporter = current_reporter.get()
 
@@ -521,6 +521,13 @@ def sign_s3(request):
     s3_bucket = boto3.client('s3') 
     file_name = request.GET.get('file_name')
     file_type = request.GET.get('file_type')
+
+    # hash the file name
+    full_name = file_name + file_type
+    name = full_name.encode()
+    encode = hashlib.md5(name)
+    file_name = encode.hexdigest()
+    
     url = 'https://%s.s3.amazonaws.com/%s' % (bucket_name, file_name)
 
     uploaders = Agent.objects.filter(user=request.user)
@@ -734,14 +741,14 @@ def google_sign_in(request):
         dict[request.user] = 1
         #if user_object.last_login == None:
         #if User.objects.filter(username=request.user.username).exists():
-        print("successfully in")
+        # print("successfully in")
         group, created = Group.objects.get_or_create(name="Reporter")
         if created:
             group.save()
         user_object.groups.add(group)
         reporter = Reporter(user = user_object)
         reporter.save()
-        print ("successfully saved")
+        # print ("successfully saved")
     return HttpResponseRedirect('/account/dashboard')
 
 def notFound(request):
