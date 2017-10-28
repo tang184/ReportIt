@@ -1,25 +1,10 @@
 function fileElement() {
-	// Find label
-	// var labels = document.getElementsByTagName('LABEL');
-	// for (var i = 0; i < labels.length; i++) {
-	// 	if (labels[i].htmlFor == "id_agentverifile") {
-	// 		var the_label = labels[i];
-	// 		the_label.style.display = 'none';
-	// 		break;
-	// 	}
-	// }
-
-	// var text = document.getElementById("id_agentverifile");
-	// text.style.display = 'none';
-
-
 	var text = document.getElementById("id_agentverifile");
 	text.disabled = true;
 }
 
 function register_submit() {
 	var reg_form = document.getElementById("register_form");
-// function submit_register_form(reg_form) {
 	var token = document.getElementsByName("csrfmiddlewaretoken");
 	var file_url = document.getElementById('id_agentverifile').value;
 	alert(file_url);
