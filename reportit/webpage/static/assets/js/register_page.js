@@ -33,20 +33,29 @@ function register_submit() {
 })();
 
 function getSignedRequest(file){
-	var xhr = new XMLHttpRequest();
-	xhr.open("GET", "/account/sign_s3?file_name=" + file.name + "&file_type=" + file.type);
-	xhr.onreadystatechange = function() {
-		if (xhr.readyState === 4) {
-			if (xhr.status === 200) {
-				var response = JSON.parse(xhr.responseText);
-				uploadFile(file, response.data, response.url);
+	var allowFileType = ["image/png", "image/tiff", "image/jpeg", "image/gif", "application/pdf"];
 
-			} else {
-				alert("Testing mode or invalid security key!");
+	var re = allowFileType.indexOf(file.type);
+
+	if (re === -1) {
+		alert("Uploaded image type not supported! PNG format is preferred!");
+	} else {
+
+		var xhr = new XMLHttpRequest();
+		xhr.open("GET", "/account/sign_s3?file_name=" + file.name + "&file_type=" + file.type);
+		xhr.onreadystatechange = function() {
+			if (xhr.readyState === 4) {
+				if (xhr.status === 200) {
+					var response = JSON.parse(xhr.responseText);
+					uploadFile(file, response.data, response.url);
+
+				} else {
+					alert("Testing mode or invalid security key!");
+				}
 			}
 		}
+		xhr.send();
 	}
-	xhr.send();
 }
 
 function uploadFile(file, s3Data, url) {
