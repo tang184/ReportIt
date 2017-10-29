@@ -12,10 +12,9 @@ function register_submit() {
 	var file = files[0];
 	if (!file) {
 		return alert("Please upload your verification file!");
-	}	
+	}
 
-	console.log(reg_form['agentverifile']);
-
+	document.getElementById('id_agentverifile').disabled = false;
 	reg_form.submit();
 }
 
@@ -26,6 +25,9 @@ function register_submit() {
 		var files = document.getElementById("file_input").files;
 		var file = files[0];
 		if (!file) {
+			var file = document.getElementById('id_agentverifile');
+			file.value = "";
+
 			return alert("File has not been selected.");
 		}
 		getSignedRequest(file);
@@ -72,5 +74,4 @@ function uploadFile(file, s3Data, url) {
 
 	var file = document.getElementById('id_agentverifile');
 	file.value = url.replace(" ", "+");
-	// file.disabled = false;
 }

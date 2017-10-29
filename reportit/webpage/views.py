@@ -30,6 +30,8 @@ from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 
 import hashlib
+import string
+import random
 
 
 # Testing_mode = True # Comment out this to enable real upload to s3
@@ -323,7 +325,7 @@ def submitConcern(request):
         return render(request, 'webpage/concern.html', context)
 
 def match(elem):
-    print(elem)
+    # print(elem)
     return elem[1]
 
 @login_required
@@ -347,7 +349,7 @@ def searchConcern(request):
                     concern[j] = p
 
 
-        print(concern)
+        # print(concern)
 
 
         fuzz.ratio("this is a test", "this is a test!")
@@ -659,6 +661,12 @@ def uploadVerification(request):
             
         return render(request, 'webpage/uploadVerification.html', locals())
 
+"""
+    
+"""
+def get_rand_str(size=12, chars=string.ascii_uppercase + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
+
 
 """
     For local usage, remember to invoke .env file to add env var
@@ -679,11 +687,14 @@ def sign_s3(request):
     file_type = request.GET.get('file_type')
 
     # hash the file name
-    full_name = file_name + file_type
+    rand_str1 = get_rand_str()
+    rand_str2 = get_rand_str()
+
+    full_name = rand_str1 + file_name + file_type
     name = full_name.encode()
     encode = hashlib.md5(name)
     file_name = encode.hexdigest()
-    
+
     url = 'https://%s.s3.amazonaws.com/%s' % (bucket_name, file_name)
 
     uploaders = Agent.objects.filter(user=request.user)
@@ -960,7 +971,6 @@ def third_party_sign_in(request):
             dict[request.user] = 1
             #if user_object.last_login == None:
             #if User.objects.filter(username=request.user.username).exists():
-            print("successfully in")
             group, created = Group.objects.get_or_create(name="Reporter")
             if created:
                 group.save()
