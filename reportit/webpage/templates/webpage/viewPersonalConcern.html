@@ -28,7 +28,7 @@
 	<section id="main" class="container">
 		<header>
 			<h2>My Concerns</h2>
-			<p>All of the concerns that have been published.</p>
+			<p>All of the concerns that has not solved</p>
 		</header>
 		{% if concernNotExist %}
         <div id="require-signup" class="alert alert-danger alert-dismissible" role="alert">Cannot find your concern!</div>
@@ -65,12 +65,12 @@
 									<tbody>
 									  {% for item in concern %}
 									  <tr>
-										    <td> {{ item.reporter }} </td>
+										    <td> <a href="/account/viewprofile/username?={{ item.reporter.user }}">{{ item.reporter }} </a></td>
 
 										    <td>
 										    	{% for ele in item.target_agent.all %}
 
-										    	{{ ele.legal_name }}, 
+										    	<a href="/account/viewprofile/username?={{ ele.user }}">{{ ele.legal_name }}</a>, 
 
 										    	{% endfor %}
 										    </td>
@@ -84,7 +84,7 @@
 
 											{% csrf_token %}
 
-											<button type="submit" id="concern_submit_button" class="btn btn-primary ">View</button>
+											<button type="submit" id="view" class="btn btn-primary " name="view">View</button>
 											</form> 
 										   </td>
 
@@ -93,7 +93,7 @@
 
 											{% csrf_token %}
 
-											<button type="submit" id="concern_submit_button" class="btn btn-danger ">Remove</button>
+											<button type="submit" id="remove" class="btn btn-danger " name="remove">Remove</button>
 											</form> 
 										   </td>
 

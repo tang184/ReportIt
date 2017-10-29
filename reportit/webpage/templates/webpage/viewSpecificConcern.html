@@ -27,8 +27,8 @@
 	<!-- Main -->
 	<section id="main" class="container">
 		<header>
-			<h2>My Concerns</h2>
-			<p>Concern</p>
+			<h2>{{ concern.title }}</h2>
+			<p>Reporter: {{concern.reporter.user}}</p>
 		</header>
 
 
@@ -48,13 +48,13 @@
 								<label>Concern Title</label>{{ concern.title }}
 								</div>
 								<div style="margin:10px">
-								<label>Reporter</label>{{ concern.reporter.user }}
+								<label>Reporter</label><a href="/account/viewprofile/username?={{ concern.reporter.user }}">{{ concern.reporter.user }}</a>
 								</div>
 								<div style="margin:10px">
 								<label>Report Agent</label>
 								{% for ele in concern.target_agent.all %}
 
-						    	{{ ele.legal_name }}, 
+						    	<a href="/account/viewprofile/username?={{ ele.user }}">{{ ele.legal_name }}</a>, 
 
 						    	{% endfor %}
 						   		</div>
@@ -82,23 +82,37 @@
 
 									{% csrf_token %}
 
-									<button type="submit" id="concern_submit_button" class="btn btn-primary ">Edit</button>
+									<button type="submit" id="edit" class="btn btn-primary " name="edit">Edit Concern</button>
 									</form> 
+
+									{% if not concern.isSolved %}
 
 									<form method="post" action="/account/resolveSpecificConcern/id?={{ concern.id }}">
 
 									{% csrf_token %}
 									<button type="submit" id="resolve_submit_button" class="btn btn-primary ">Mark as Solve</button>
 									</form> 
+
+									{% else %}
+
+									<form method="post" action="/account/unsolveSpecificConcern/id?={{ concern.id }}">
+
+									{% csrf_token %}
+									<button type="submit" id="unsolve_submit_button" class="btn btn-primary ">Mark as Unsolve</button>
+									</form> 
+
+									{% endif %}
+
+									<form method="post" action="/account/respondConcern/id?={{ concern.id }}">
+
+									{% csrf_token %}
+									<textarea rows="4" cols="50" name="respond" id="respond" maxlength="500" /></textarea>
+									<button type="submit" id="unsolve_submit_button" class="btn btn-warning ">Respond</button>
+									</form>
 
 								{% elif isagent %}
 
-									<form method="post" action="/account/respondSpecificConcern/id?={{ concern.id }}">
-
-									{% csrf_token %}
-
-									<button type="submit" id="upvote_submit_button" class="btn btn-info ">Respond</button>
-									</form>
+									{% if not concern.isSolved %}
 
 									<form method="post" action="/account/resolveSpecificConcern/id?={{ concern.id }}">
 
@@ -106,12 +120,21 @@
 									<button type="submit" id="resolve_submit_button" class="btn btn-primary ">Mark as Solve</button>
 									</form> 
 
-
-									<form method="post" action="/account/duplicateSpecificConcern/id?={{ concern.id }}">
+									<form method="post" action="/account/resolveSpecificConcern/id?={{ concern.id }}">
 
 									{% csrf_token %}
-									<button type="submit" id="downvote_submit_button" class="btn btn-warning ">Mark as Duplicate</button>
+									<button type="submit" id="downvote_submit_button" class="btn btn-danger ">Mark as Duplicate</button>
 									</form> 
+
+									{% endif %}									
+
+
+									<form method="post" action="/account/respondConcern/id?={{ concern.id }}">
+
+									{% csrf_token %}
+									<textarea rows="4" cols="50" name="respond" id="respond" maxlength="500" /></textarea>
+									<button type="submit" id="unsolve_submit_button" class="btn btn-warning ">Respond Concern</button>
+									</form>
 
 
 								{% else %}
@@ -133,10 +156,10 @@
 								</div>
 
 								<div class="col-md-6">
-									{% if concern.image %}
+									{% if not concern.image %}
 										<img src="{% static 'images/not-available.jpg' %}">
 									{% else %}
-										<img src="{% static 'images/not-available.jpg' %}">
+										<img height="300px" width="300px" src="{{concern.image}}">
 									{% endif %}
 								</div>
 								

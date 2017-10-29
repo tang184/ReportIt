@@ -11,9 +11,8 @@ urlpatterns = [
     url(r'^agentSignup/$', views.agentSignup, name = 'agentSignup'),
     url(r'^account/profile/$', views.viewProfile, name = 'profile'),
     url(r'^account/dashboard/$', views.dashboard, name = 'dashboard'),
-    url(r'^account/profile/$', views.viewProfile, name = 'profile'),
     url(r'^account/profile/edit$', views.editProfile, name = 'editprofile'),
-
+    url(r'^account/viewprofile/', views.viewpeopleProfile, name = 'profile'),
     url(r'^account/submitConcern/', views.submitConcern, name = 'submitConcern'),
 
     url(r'^account/uploadVerification/', views.uploadVerification, name = 'uploadVerification'),
@@ -26,6 +25,8 @@ urlpatterns = [
     url(r'^account/upvoteSpecificConcern/', views.upvoteSpecificConcern, name = 'upvoteSpecificConcern'),
     url(r'^account/downvoteSpecificConcern/', views.downvoteSpecificConcern, name = 'downvoteSpecificConcern'),
     url(r'^account/resolveSpecificConcern/', views.resolveSpecificConcern, name = 'resolveSpecificConcern'),
+    url(r'^account/unsolveSpecificConcern/', views.unsolveSpecificConcern, name = 'unsolveSpecificConcern'),
+    url(r'^account/respondConcern/', views.respondConcern, name = 'respondConcern'),
     url(r'^account/editSpecificConcern/', views.editSpecificConcern, name = 'editSpecificConcern'),
     url(r'^account/viewConcern/', views.viewConcern, name = 'viewConcern'),
     url(r'^account/viewAllConcerns/', views.viewAllConcerns, name = 'viewConcern'),
@@ -41,8 +42,8 @@ urlpatterns = [
     url(r'^reset/done/$', auth_views.password_reset_complete, name='password_reset_complete'),
     #add for third party login
     url(r'^oauth/', include('social_django.urls', namespace='social')),
-    url(r'^oauthinfo/', views.temp_for_google_sign_in, name='temp_for_google_sign_in'),
-    url(r'^oauthinfo2/', views.google_sign_in, name='google_sign_in'),
+    url(r'^oauthinfo/', views.temp_for_third_party_sign_in, name='temp_for_third_party_sign_in'),
+    url(r'^oauthinfo2/', views.third_party_sign_in, name='third_party_sign_in'),
 
     url(r'^getallagents$', views.getAllAgents, name = 'dashboard'),
 

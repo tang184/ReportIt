@@ -6,6 +6,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, Group
 
+from django.core.mail import EmailMessage
+
 from .forms import ReporterSignUpForm, ReporterAdditionalForm, AgentSignUpForm, AdditionalForm, SubmitConcernForm, EditConcernForm
 from .models import Concern, Reporter, Agent, File
 
@@ -116,13 +118,88 @@ def viewProfile(request):
     # User is a reporter
     if len(reporter) != 0:
         profile_user = request.user.reporter
-    if len(reporter) == 0:
+        isagent = False
+
+        concern = Concern.objects.filter(reporter=profile_user)
+        
+
+    else:
         profile_user = request.user.agent
+            #print(current_agent.user.username)
+        isagent = True
+
+        concern = Concern.objects.filter()
+        v = list(concern)
+        concern = []
+
+        for i in range(len(v)):
+            p = v[i].target_agent.all().filter(user=profile_user.user)
+            if (len(p) != 0):
+                concern.append(v[i])
+        #print(concern)       
+        
     context = {
         'profile_user' : profile_user,
+        'isagent' : isagent,
+        'concern': concern,
     }
 
     return render(request, 'webpage/profile.html', context)
+
+
+def viewpeopleProfile(request):
+    username = request.GET.get('')
+
+    current_user = User.objects.filter(username=username)
+    current_reporter = Reporter.objects.filter(user=current_user)
+    current_agent = Agent.objects.filter(user=current_user)
+
+
+    if (len(current_reporter) == 0):
+        # User is not a reporter
+        if (len(current_agent) == 0):
+            reporter = Reporter.objects.filter(user=request.user)
+            agent = Agent.objects.filter(user=request.user)
+            # User is a reporter
+            if len(reporter) != 0:
+                profile_user = request.user.reporter
+            if len(reporter) == 0:
+                profile_user = request.user.agent
+            context = {
+                'profile_user' : profile_user,
+            }
+        else:
+            current_agent = current_agent.get()
+            #print(current_agent.user.username)
+            isagent = True
+
+            concern = Concern.objects.filter()
+            v = list(concern)
+            concern = []
+
+            for i in range(len(v)):
+                p = v[i].target_agent.all().filter(user=current_user)
+                if (len(p) != 0):
+                    concern.append(v[i])
+            #print(concern)
+
+            context = {
+                'profile_user' : current_agent,
+                'isagent' : isagent,
+                'concern': concern,
+            }
+    else:
+        current_reporter = current_reporter.get()
+        isagent = False
+
+        concern = Concern.objects.filter(reporter=current_reporter)
+        context = {
+            'profile_user' : current_reporter,
+            'isagent' : isagent,
+            'concern': concern,
+        }
+        
+    return render(request, 'webpage/viewProfile.html', context)
 
 #@csrf_protect
 def editProfile(request):
@@ -183,18 +260,34 @@ def submitConcern(request):
         new_concern = Concern.objects.create(reporter=current_reporter, concern_id=concern_id)
         new_concern.content = json_data['content']
         new_concern.title = json_data['title']
+        new_concern.image = json_data['image']
         total_agent = Agent.objects.all()
 
 
+        target_agents = []
         for ele in total_agent:
             if (ele.legal_name in json_data['selectagent']):
                 new_concern.target_agent.add(ele)
+                target_agents.append(ele)
 
         
         new_concern.save()
 
+        list_of_agents = []
+        for item in target_agents:
+            agent_email = str(item.user.email)
+            print (agent_email)
+            list_of_agents.append(agent_email)
+
+        #send email to agent
+        email = EmailMessage('A New Concern Has Been Submitted to You', 'A New Concern Has Been Submitted to You',
+                                 to = list_of_agents)
+        email.send()
+        print ("email sent successfully")
+
         current_reporter.historical_concern_count += 1
         current_reporter.save()
+
 
         return HttpResponse(json.dumps("success"), content_type='application/json')
         
@@ -274,9 +367,9 @@ def viewConcern(request):
     if (len(current_reporter) == 0):
         # User is not a reporter, display ALL concerns
         if (len(current_agent) == 0):
-            concern = Concern.objects.all()
+            concern = Concern.objects.all(isSolved=False)
         else:
-            concern = Concern.objects.filter()
+            concern = Concern.objects.filter(isSolved=False)
             v = list(concern)
             concern = []
 
@@ -286,10 +379,10 @@ def viewConcern(request):
                     concern.append(v[i])
 
 
-            return render(request, 'webpage/viewPersonalConcern.html', locals())
+        return render(request, 'webpage/viewPersonalConcern.html', locals())
     else:
         current_reporter = current_reporter.get()
-        concern = Concern.objects.filter(reporter=current_reporter)
+        concern = Concern.objects.filter(reporter=current_reporter, isSolved=False)
 
     return render(request, 'webpage/viewPersonalConcern.html', locals())
 
@@ -299,7 +392,7 @@ def viewConcern(request):
 def viewAllConcerns(request):
     #current_reporter = Reporter.objects.filter(user=request.user)
 
-    concern = Concern.objects.all()
+    concern = Concern.objects.filter(isSolved=False)
 
     return render(request, 'webpage/viewAllConcerns.html', locals())
 
@@ -485,6 +578,72 @@ def removeSpecificConcern(request):
         return render(request, 'webpage/viewPersonalConcern.html', locals())
 
 
+
+@login_required
+def respondConcern(request):
+    current_reporter = Reporter.objects.filter(user=request.user)
+    current_agent = Agent.objects.filter(user=request.user)
+    # User is not a reporter
+    if (len(current_reporter) == 0):
+        if (len(current_agent) == 0):
+            form1 = ReporterSignUpForm()
+            form2 = ReporterAdditionalForm()
+            context = {
+                'form1': form1,
+                'form2': form2,
+                'notReporter': True
+            }
+
+            return render(request, 'webpage/reporterSignup.html', context)
+        else:
+            concern_id = request.GET.get('')
+            concern = Concern.objects.filter(id=concern_id)
+            concern = concern.get()
+
+            body = (request.POST)
+            respond = body['respond']
+            concern.respond = respond
+            concern.save()
+
+            concern = Concern.objects.filter()
+            v = list(concern)
+            concern = []
+
+            for i in range(len(v)):
+                p = v[i].target_agent.all().filter(user=request.user)
+                if (len(p) != 0):
+                    concern.append(v[i])
+            return render(request, 'webpage/viewPersonalConcern.html', locals())
+    else:
+        current_reporter = current_reporter.get()
+        concern_id = request.GET.get('')
+        concern = Concern.objects.filter(reporter=current_reporter,id=concern_id)
+
+        # Specific conern id does not exist (or has been deleted)
+        if (len(concern) != 1):
+            concern = Concern.objects.filter(reporter=current_reporter)
+            concernNotExist = True
+
+            if (len(concern) > 1):
+                print ("Error! Multiple concern tends to have identical id! Combination is: " + str(request.user) + str(concern_id))
+
+            return render(request, 'webpage/viewPersonalConcern.html', locals())
+
+        # Remove the corresponding concern from db
+        input_form = EditConcernForm(request.POST)
+
+        concern = concern.get()
+
+        body = (request.POST)
+        respond = body['respond']
+        concern.respond = respond
+        concern.save()
+
+        concern = Concern.objects.filter(reporter=current_reporter)
+
+        return render(request, 'webpage/viewPersonalConcern.html', locals())
+
+
 @login_required
 def uploadVerification(request):
 
@@ -594,7 +753,7 @@ def upvoteSpecificConcern(request):
 
         # Specific conern id does not exist (or has been deleted)
         if (len(concern) != 1):
-            concern = Concern.objects.filter(reporter=current_reporter)
+            concern = Concern.objects.filter(isSolved=False)
             concernNotExist = True
 
             if (len(concern) > 1):
@@ -613,7 +772,7 @@ def upvoteSpecificConcern(request):
 
         UpvoteSuccess = True
 
-        concern = Concern.objects.filter()
+        concern = Concern.objects.filter(isSolved=False)
 
         return render(request, 'webpage/viewAllConcerns.html', locals())
 
@@ -640,7 +799,7 @@ def downvoteSpecificConcern(request):
 
         # Specific conern id does not exist (or has been deleted)
         if (len(concern) != 1):
-            concern = Concern.objects.filter(reporter=current_reporter)
+            concern = Concern.objects.filter(isSolved=False)
             concernNotExist = True
 
             if (len(concern) > 1):
@@ -659,7 +818,7 @@ def downvoteSpecificConcern(request):
 
         DownvoteSuccess = True
 
-        concern = Concern.objects.filter()
+        concern = Concern.objects.filter(isSolved=False)
 
         return render(request, 'webpage/viewAllConcerns.html', locals())
 
@@ -705,7 +864,7 @@ def resolveSpecificConcern(request):
 
         # Specific conern id does not exist (or has been deleted)
         if (len(concern) != 1):
-            concern = Concern.objects.filter(reporter=current_reporter)
+            concern = Concern.objects.filter(isSolved=False)
             concernNotExist = True
 
             if (len(concern) > 1):
@@ -719,37 +878,103 @@ def resolveSpecificConcern(request):
         concern.isSolved = True
         concern.save()
 
-        concern = Concern.objects.filter()
+        concern = Concern.objects.filter(isSolved=False)
+
+        return render(request, 'webpage/viewAllConcerns.html', locals())
+
+
+@login_required
+def unsolveSpecificConcern(request):
+    current_reporter = Reporter.objects.filter(user=request.user)
+    current_agent = Agent.objects.filter(user=request.user)
+    # User is not a reporter
+    if (len(current_reporter) == 0):
+        if (len(current_agent) == 0):
+            form1 = ReporterSignUpForm()
+            form2 = ReporterAdditionalForm()
+            context = {
+                'form1': form1,
+                'form2': form2,
+                'notReporter': True
+            }
+
+            return render(request, 'webpage/reporterSignup.html', context)
+        else:
+            concern_id = request.GET.get('')
+            concern = Concern.objects.filter(id=concern_id)
+            concern = concern.get()
+
+            concern.isSolved = False
+            concern.save()
+
+            concern = Concern.objects.filter()
+            v = list(concern)
+            concern = []
+
+            for i in range(len(v)):
+                p = v[i].target_agent.all().filter(user=request.user)
+                if (len(p) != 0):
+                    concern.append(v[i])
+            return render(request, 'webpage/viewPersonalConcern.html', locals())
+
+    else:
+        current_reporter = current_reporter.get()
+        concern_id = request.GET.get('')
+        concern = Concern.objects.filter(id=concern_id)
+
+        # Specific conern id does not exist (or has been deleted)
+        if (len(concern) != 1):
+            concern = Concern.objects.filter(reporter=current_reporter)
+            concernNotExist = True
+
+            if (len(concern) > 1):
+                print ("Error! Multiple concern tends to have identical id! Combination is: " + str(request.user) + str(concern_id))
+
+            return render(request, 'webpage/viewAllConcerns.html', locals())
+
+
+        concern = concern.get()
+
+        concern.isSolved = False
+        concern.save()
+
+        concern = Concern.objects.filter(isSolved=False)
 
         return render(request, 'webpage/viewAllConcerns.html', locals())
 
 
 
-def temp_for_google_sign_in(request):
+def temp_for_third_party_sign_in(request):
     return HttpResponseRedirect('/oauthinfo2')
 
 dict = {}
 
-def google_sign_in(request):
+def third_party_sign_in(request):
     user_object = request.user
+    current_reporter = Reporter.objects.filter(user=request.user)
     #print(request)
     #print(request.user)
-    global dict
-    if request.user in dict.keys():
-        dict[request.user] += 1
-    else:
-        dict[request.user] = 1
-        #if user_object.last_login == None:
-        #if User.objects.filter(username=request.user.username).exists():
-        # print("successfully in")
-        group, created = Group.objects.get_or_create(name="Reporter")
-        if created:
-            group.save()
-        user_object.groups.add(group)
-        reporter = Reporter(user = user_object)
-        reporter.save()
-        # print ("successfully saved")
+
+    if (len(current_reporter) == 0):
+        global dict
+        if request.user in dict.keys():
+            dict[request.user] += 1
+        else:
+            dict[request.user] = 1
+            #if user_object.last_login == None:
+            #if User.objects.filter(username=request.user.username).exists():
+            print("successfully in")
+            group, created = Group.objects.get_or_create(name="Reporter")
+            if created:
+                group.save()
+            user_object.groups.add(group)
+            reporter = Reporter(user = user_object)
+            reporter.save()
+            print ("successfully saved")
+
+
     return HttpResponseRedirect('/account/dashboard')
+
 
 def notFound(request):
     return render(request, 'webpage/404.html')
