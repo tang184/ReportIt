@@ -5,6 +5,7 @@ venv/
 webpage/migrations/
 saved_data.json
 
+
 *.pyc
 *.DS_Store
 reportit/webpage/migrations/*

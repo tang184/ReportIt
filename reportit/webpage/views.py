@@ -26,11 +26,16 @@ import hashlib
 
 from django.db import models
 
-# Create your views here.
 from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 
-# Create your views here.
+import hashlib
+
+
+# Testing_mode = True # Comment out this to enable real upload to s3
+
+Testing_mode = False
+
 
 
 @login_required
@@ -80,6 +85,7 @@ def reporterSignup(request):
 
 
 def agentSignup(request):
+    print (request, request.POST, request.GET)
     if request.method == 'POST':
         form1 = AgentSignUpForm(request.POST)
         #print (form1)
@@ -246,7 +252,7 @@ def submitConcern(request):
     if request.method == 'POST':
         #reader = codecs.getreader("utf-8")
         json_data = json.loads(request.body.decode('utf-8'))
-        print(json_data)
+        # print(json_data)
         current_reporter = Reporter.objects.filter(user=request.user)
         current_reporter = current_reporter.get()
 
@@ -640,12 +646,21 @@ def respondConcern(request):
 
 @login_required
 def uploadVerification(request):
-    if (len(request.POST) == 2):
-        uploadSuccess = True
+
+    agents = Agent.objects.filter(user=request.user)
+
+    if (len(agents) != 1):
+        return render(request, 'webpage/dashboard.html')
     else:
-        uploadSuccess = False
-        
-    return render(request, 'webpage/uploadVerification.html', locals())
+        agent = agents.get()
+        files = File.objects.filter(uploader=agent)
+
+        if (len(files) > 1):
+            uploadSuccess = True
+        else:
+            uploadSuccess = False
+            
+        return render(request, 'webpage/uploadVerification.html', locals())
 
 
 """
@@ -665,50 +680,54 @@ def sign_s3(request):
     s3_bucket = boto3.client('s3') 
     file_name = request.GET.get('file_name')
     file_type = request.GET.get('file_type')
+
+    # hash the file name
+    full_name = file_name + file_type
+    name = full_name.encode()
+    encode = hashlib.md5(name)
+    file_name = encode.hexdigest()
+    
     url = 'https://%s.s3.amazonaws.com/%s' % (bucket_name, file_name)
 
     uploaders = Agent.objects.filter(user=request.user)
 
-    if (uploaders != None):
-        uploader = uploaders.get()
+    files = File.objects.filter(url=url.replace(" ", "+"))
 
-        files = File.objects.filter(uploader=uploader)
-
-        # Uploading multiple item would override previous one
-        if (len(files) == 0):
-            file = File.objects.create(uploader=uploader)
-        else:
-            file = files.get()
-
-        file.file_name = file_name
-        file.file_type = file_type
-        file.url = url.replace(" ", "+")
-        file.save()
-
-        s3_ob = boto3.client('s3')
-        presigned_post = s3_ob.generate_presigned_post(
-                Bucket = bucket_name,
-                Key = file_name,
-                Fields = {
-                    "acl": "public-read",
-                    "Content-Type": file_type
-                },
-                Conditions = [
-                    {"acl": "public-read"},
-                    {"Content-Type": file_type}
-                ],
-                ExpiresIn = 3600
-            )
-
-        json_context = {
-                'data': presigned_post,
-                'url': url
-            }
-
-        return JsonResponse(json_context)
+    # Uploading multiple item would override previous one
+    if (len(files) == 0):
+        file = File.objects.create(uploader=None)
     else:
-        print ("\n\nINVALID\n\n")
-        return redirect('/')
+        file = files.get()
+
+    file.file_name = file_name
+    file.file_type = file_type
+    file.url = url.replace(" ", "+")
+    file.save()
+
+    s3_ob = boto3.client('s3')
+    presigned_post = s3_ob.generate_presigned_post(
+            Bucket = bucket_name,
+            Key = file_name,
+            Fields = {
+                "acl": "public-read",
+                "Content-Type": file_type
+            },
+            Conditions = [
+                {"acl": "public-read"},
+                {"Content-Type": file_type}
+            ],
+            ExpiresIn = 3600
+        )
+
+    json_context = {
+            'data': presigned_post,
+            'url': url
+        }
+
+    if (Testing_mode):
+        return JsonResponse()
+    else:
+        return JsonResponse(json_context)
 
 
 
@@ -935,6 +954,7 @@ def third_party_sign_in(request):
     current_reporter = Reporter.objects.filter(user=request.user)
     #print(request)
     #print(request.user)
+
     if (len(current_reporter) == 0):
         global dict
         if request.user in dict.keys():
@@ -951,6 +971,7 @@ def third_party_sign_in(request):
             reporter = Reporter(user = user_object)
             reporter.save()
             print ("successfully saved")
+
 
     return HttpResponseRedirect('/account/dashboard')
 
