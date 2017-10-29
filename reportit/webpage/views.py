@@ -85,7 +85,6 @@ def reporterSignup(request):
 
 
 def agentSignup(request):
-    print (request, request.POST, request.GET)
     if request.method == 'POST':
         form1 = AgentSignUpForm(request.POST)
         #print (form1)
@@ -276,14 +275,12 @@ def submitConcern(request):
         list_of_agents = []
         for item in target_agents:
             agent_email = str(item.user.email)
-            print (agent_email)
             list_of_agents.append(agent_email)
 
         #send email to agent
         email = EmailMessage('A New Concern Has Been Submitted to You', 'A New Concern Has Been Submitted to You',
                                  to = list_of_agents)
         email.send()
-        print ("email sent successfully")
 
         current_reporter.historical_concern_count += 1
         current_reporter.save()
@@ -970,7 +967,6 @@ def third_party_sign_in(request):
             user_object.groups.add(group)
             reporter = Reporter(user = user_object)
             reporter.save()
-            print ("successfully saved")
 
 
     return HttpResponseRedirect('/account/dashboard')
