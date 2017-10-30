@@ -677,6 +677,9 @@ def sign_s3(request):
     access_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
     s3_zone = os.environ.get('S3_Zone')
 
+    print(s3_zone)
+    print(bucket_name)
+    print(access_key)
     if (bucket_name == None or access_key == None): 
         print ("\n\n==============")
         print ("Insufficient S3 info. Please indicate S3 credential in env!")

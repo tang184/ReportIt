@@ -10,3 +10,4 @@ saved_data.json
 *.DS_Store
 reportit/webpage/migrations/*
 reportit/webpage/migrations/0001_initial.py
+reMakeDb.sh
