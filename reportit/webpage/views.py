@@ -671,15 +671,11 @@ def get_rand_str(size=12, chars=string.ascii_uppercase + string.digits):
 """
     For local usage, remember to invoke .env file to add env var
 """
-@login_required
-def sign_s3(request):
+def signup_s3(request):
     bucket_name = os.environ.get('S3_BUCKET_NAME')
     access_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
     s3_zone = os.environ.get('S3_Zone')
 
-    print(s3_zone)
-    print(bucket_name)
-    print(access_key)
     if (bucket_name == None or access_key == None): 
         print ("\n\n==============")
         print ("Insufficient S3 info. Please indicate S3 credential in env!")
@@ -699,8 +695,6 @@ def sign_s3(request):
     file_name = encode.hexdigest()
 
     url = 'https://%s.s3.amazonaws.com/%s' % (bucket_name, file_name)
-
-    uploaders = Agent.objects.filter(user=request.user)
 
     files = File.objects.filter(url=url.replace(" ", "+"))
 
@@ -734,12 +728,86 @@ def sign_s3(request):
             'data': presigned_post,
             'url': url
         }
-
     if (Testing_mode):
         return JsonResponse()
     else:
         return JsonResponse(json_context)
 
+@login_required
+def sign_s3(request):
+    bucket_name = os.environ.get('S3_BUCKET_NAME')
+    access_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
+    s3_zone = os.environ.get('S3_Zone')
+
+    if (bucket_name == None or access_key == None): 
+        print ("\n\n==============")
+        print ("Insufficient S3 info. Please indicate S3 credential in env!")
+        print ("==============\n\n")
+
+    s3_bucket = boto3.client('s3') 
+    file_name = request.GET.get('file_name')
+    file_type = request.GET.get('file_type')
+
+    # hash the file name
+    rand_str1 = get_rand_str()
+    rand_str2 = get_rand_str()
+
+    full_name = rand_str1 + file_name + file_type
+    name = full_name.encode()
+    encode = hashlib.md5(name)
+    file_name = encode.hexdigest()
+    url = 'https://%s.s3.amazonaws.com/%s' % (bucket_name, file_name)
+
+    # Save information in Agent object
+    agents = Agent.objects.filter(user=request.user)
+
+    if (len(agents) != 1):
+        print ("Error! There should be one and only one agent!")
+        return JsonResponse()
+
+    agent = agents.get()
+    orig_file = agent.agentverifile
+    agent.agentverifile = url.replace(" ", "+")
+    agent.save()
+
+    # Delete the original file
+    files = File.objects.filter(url=orig_file)
+    if (len(files) < 1):
+        print ("Error! Agent should have exactly one verification file. But " + str(len(files)) + " found")
+    else:
+        file = files.get()
+
+    # Properly store the file object
+    file = File.objects.create(uploader=agent)
+    file.file_name = file_name
+    file.file_type = file_type
+    file.url = url.replace(" ", "+")
+    file.save()
+
+    # Construct s3 sign object
+    s3_ob = boto3.client('s3')
+    presigned_post = s3_ob.generate_presigned_post(
+            Bucket = bucket_name,
+            Key = file_name,
+            Fields = {
+                "acl": "public-read",
+                "Content-Type": file_type
+            },
+            Conditions = [
+                {"acl": "public-read"},
+                {"Content-Type": file_type}
+            ],
+            ExpiresIn = 3600
+        )
+
+    json_context = {
+            'data': presigned_post,
+            'url': url
+        }
+    if (Testing_mode):
+        return JsonResponse()
+    else:
+        return JsonResponse(json_context)
 
 
 @login_required
