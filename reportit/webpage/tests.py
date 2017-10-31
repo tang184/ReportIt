@@ -1100,6 +1100,7 @@ class AddTestCase(StaticLiveServerTestCase):
 			WebDriverWait(browser, timeout).until(element_present)
 		except TimeoutException:
 			print ("Timed out waiting for page to load")
+			return
 		un = browser.find_element_by_id('id_username')
 		un.send_keys("agent1")
 		pswd = browser.find_element_by_name('password')
@@ -1122,6 +1123,7 @@ class AddTestCase(StaticLiveServerTestCase):
 			WebDriverWait(browser, timeout).until(element_present)
 		except TimeoutException:
 			print ("Timed out waiting for page to load")
+			return
 		un = browser.find_element_by_name('username')
 		un.send_keys("agent1")
 		pswd = browser.find_element_by_name('password')
@@ -1135,6 +1137,7 @@ class AddTestCase(StaticLiveServerTestCase):
 			WebDriverWait(browser, timeout).until(element_present)
 		except TimeoutException:
 			print ("Timed out waiting for page to load")
+			return
 		browser.find_element_by_name('view').click()
 		browser.find_element_by_id('resolve_submit_button').click()
 		browser.find_element_by_name('view').click()
@@ -1167,6 +1170,7 @@ class AddTestCase(StaticLiveServerTestCase):
 			WebDriverWait(browser, timeout).until(element_present)
 		except TimeoutException:
 			print ("Timed out waiting for page to load")
+			return
 		browser.find_element_by_name('viewallconcerns').click()
 		assert 'concerns' in browser.page_source
 		assert 'construction noise' in browser.page_source
@@ -1261,6 +1265,7 @@ class AddTestCase(StaticLiveServerTestCase):
 			WebDriverWait(browser, timeout).until(element_present)
 		except TimeoutException:
 			print ("Timed out waiting for page to load")
+			return
 		un = browser.find_element_by_id('id_username')
 		un.send_keys("cs408")
 		pw = browser.find_element_by_name('password')
