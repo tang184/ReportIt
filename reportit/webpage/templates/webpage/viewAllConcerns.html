@@ -73,12 +73,12 @@
 									<tbody>
 									  {% for item in concern %}
 									  <tr>
-										    <td> <a href="/account/viewprofile/username?={{ item.reporter.user }}">{{ item.reporter }}</a> </td>
+										    <td> <a href="/account/viewprofile/username?={{ item.reporter.user }}" name="reporter_profile">{{ item.reporter }}</a> </td>
 
 										    <td>
 										    	{% for ele in item.target_agent.all %}
 
-										    	<a href="/account/viewprofile/username?={{ ele.user }}">{{ ele.legal_name }}</a>, 
+										    	<a href="/account/viewprofile/username?={{ ele.user }}" name="agent_profile">{{ ele.legal_name }}</a>, 
 
 										    	{% endfor %}
 										    </td>
