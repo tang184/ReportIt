@@ -19,6 +19,7 @@ import json
 import codecs
 import os
 import boto3
+from boto.s3.connection import S3Connection, Bucket, Key
 import hmac
 import datetime
 import base64
@@ -736,10 +737,11 @@ def signup_s3(request):
 @login_required
 def sign_s3(request):
     bucket_name = os.environ.get('S3_BUCKET_NAME')
-    access_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
+    access_key = os.environ.get('AWS_ACCESS_KEY_ID')
+    secret_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
     s3_zone = os.environ.get('S3_Zone')
 
-    if (bucket_name == None or access_key == None): 
+    if (bucket_name == None or secret_key == None): 
         print ("\n\n==============")
         print ("Insufficient S3 info. Please indicate S3 credential in env!")
         print ("==============\n\n")
@@ -774,8 +776,17 @@ def sign_s3(request):
     files = File.objects.filter(url=orig_file)
     if (len(files) < 1):
         print ("Error! Agent should have exactly one verification file. But " + str(len(files)) + " found")
+        print (orig_file)
     else:
         file = files.get()
+
+    conn = S3Connection(access_key, secret_key)
+    b = Bucket(conn, bucket_name)
+    k = Key(b)
+    k.key = file.file_name
+    b.delete_key(k)
+    file.delete()
+
 
     # Properly store the file object
     file = File.objects.create(uploader=agent)
