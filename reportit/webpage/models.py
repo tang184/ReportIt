@@ -31,10 +31,10 @@ class Agent(models.Model):
     #agentimage = models.CharField(verbose_name='Agent Badge Logo', max_length=300, validators=[validateURL], default=None)
     agentverifile = models.CharField(verbose_name='Agent verification file', max_length=300, validators=[validateURL], default=None, blank=True)
     about = models.CharField(verbose_name='About', max_length=300, default=None)
+    isVerified = models.BooleanField(default=False)
 
     def __str__(self):
         return "legal name: " + str(self.legal_name) + ", user name: " + str(self.user.username)
-
 
 class Concern(models.Model):
     reporter = models.ForeignKey(Reporter, on_delete=models.CASCADE)
