@@ -19,6 +19,7 @@ import json
 import codecs
 import os
 import boto3
+from boto.s3.connection import S3Connection, Bucket, Key
 import hmac
 import datetime
 import base64
@@ -667,16 +668,16 @@ def uploadVerification(request):
 def get_rand_str(size=12, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
 
-
 """
-    For local usage, remember to invoke .env file to add env var
+    This method extracts containing necessary AWS S3 credential
 """
-def signup_s3(request):
+def extract_credential(request):
     bucket_name = os.environ.get('S3_BUCKET_NAME')
-    access_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
+    access_key = os.environ.get('AWS_ACCESS_KEY_ID')
+    secret_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
     s3_zone = os.environ.get('S3_Zone')
 
-    if (bucket_name == None or access_key == None): 
+    if (bucket_name == None or secret_key == None): 
         print ("\n\n==============")
         print ("Insufficient S3 info. Please indicate S3 credential in env!")
         print ("==============\n\n")
@@ -693,41 +694,68 @@ def signup_s3(request):
     name = full_name.encode()
     encode = hashlib.md5(name)
     file_name = encode.hexdigest()
-
     url = 'https://%s.s3.amazonaws.com/%s' % (bucket_name, file_name)
 
-    files = File.objects.filter(url=url.replace(" ", "+"))
 
-    # Uploading multiple item would override previous one
-    if (len(files) == 0):
-        file = File.objects.create(uploader=None)
-    else:
-        file = files.get()
+    result = {
+        'bucket_name': bucket_name,
+        'access_key': access_key,
+        'secret_key': secret_key,
+        'url': url,
+        's3_bucket': s3_bucket,
+        's3_zone': s3_zone,
+        'file_type': file_type,
+        'file_name': file_name
+    }
 
-    file.file_name = file_name
-    file.file_type = file_type
-    file.url = url.replace(" ", "+")
-    file.save()
+    return result
 
+"""
+    This method packs up the presigned post according to 
+        AWS S3 protocol
+"""
+def pack_pre_signed_post(request, data):
     s3_ob = boto3.client('s3')
     presigned_post = s3_ob.generate_presigned_post(
-            Bucket = bucket_name,
-            Key = file_name,
+            Bucket = data['bucket_name'],
+            Key = data['file_name'],
             Fields = {
                 "acl": "public-read",
-                "Content-Type": file_type
+                "Content-Type": data['file_type']
             },
             Conditions = [
                 {"acl": "public-read"},
-                {"Content-Type": file_type}
+                {"Content-Type": data['file_type']}
             ],
             ExpiresIn = 3600
         )
+    return presigned_post
+
+"""
+    Responds pre-signed request on Agent sign up
+"""
+def signup_s3(request):
+    extracted_data = extract_credential(request)
+    files = File.objects.filter(url=extracted_data['url'].replace(" ", "+"))
+
+    # Check if file name has been previously uploaded. This should NEVER happen
+    if (len(files) != 0):
+        print ("\nWarning! File:[" + extracted_data['file_name'] + "] is having a similar name as an uploaded file!\n")
+
+    file = File.objects.create(uploader=None)
+
+    file.file_name = extracted_data['file_name']
+    file.file_type = extracted_data['file_type']
+    file.url = extracted_data['url'].replace(" ", "+")
+    file.save()
+
+    presigned_post = pack_pre_signed_post(request, extracted_data)
 
     json_context = {
             'data': presigned_post,
-            'url': url
+            'url': extracted_data['url']
         }
+
     if (Testing_mode):
         return JsonResponse()
     else:
@@ -735,28 +763,7 @@ def signup_s3(request):
 
 @login_required
 def sign_s3(request):
-    bucket_name = os.environ.get('S3_BUCKET_NAME')
-    access_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
-    s3_zone = os.environ.get('S3_Zone')
-
-    if (bucket_name == None or access_key == None): 
-        print ("\n\n==============")
-        print ("Insufficient S3 info. Please indicate S3 credential in env!")
-        print ("==============\n\n")
-
-    s3_bucket = boto3.client('s3') 
-    file_name = request.GET.get('file_name')
-    file_type = request.GET.get('file_type')
-
-    # hash the file name
-    rand_str1 = get_rand_str()
-    rand_str2 = get_rand_str()
-
-    full_name = rand_str1 + file_name + file_type
-    name = full_name.encode()
-    encode = hashlib.md5(name)
-    file_name = encode.hexdigest()
-    url = 'https://%s.s3.amazonaws.com/%s' % (bucket_name, file_name)
+    extracted_data = extract_credential(request)
 
     # Save information in Agent object
     agents = Agent.objects.filter(user=request.user)
@@ -767,43 +774,38 @@ def sign_s3(request):
 
     agent = agents.get()
     orig_file = agent.agentverifile
-    agent.agentverifile = url.replace(" ", "+")
+    agent.agentverifile = extracted_data['url'].replace(" ", "+")
     agent.save()
 
     # Delete the original file
     files = File.objects.filter(url=orig_file)
     if (len(files) < 1):
         print ("Error! Agent should have exactly one verification file. But " + str(len(files)) + " found")
+        print (orig_file)
     else:
         file = files.get()
+        
+        conn = S3Connection(extracted_data['access_key'], extracted_data['secret_key'])
+        b = Bucket(conn, extracted_data['bucket_name'])
+        k = Key(b)
+        k.key = file.file_name
+        b.delete_key(k)
+        file.delete()
 
     # Properly store the file object
     file = File.objects.create(uploader=agent)
-    file.file_name = file_name
-    file.file_type = file_type
-    file.url = url.replace(" ", "+")
+    file.file_name = extracted_data['file_name']
+    file.file_type = extracted_data['file_type']
+    file.url = extracted_data['url'].replace(" ", "+")
     file.save()
 
-    # Construct s3 sign object
-    s3_ob = boto3.client('s3')
-    presigned_post = s3_ob.generate_presigned_post(
-            Bucket = bucket_name,
-            Key = file_name,
-            Fields = {
-                "acl": "public-read",
-                "Content-Type": file_type
-            },
-            Conditions = [
-                {"acl": "public-read"},
-                {"Content-Type": file_type}
-            ],
-            ExpiresIn = 3600
-        )
+    presigned_post = pack_pre_signed_post(request, extracted_data)
 
     json_context = {
             'data': presigned_post,
-            'url': url
+            'url': extracted_data['url']
         }
+
     if (Testing_mode):
         return JsonResponse()
     else:
