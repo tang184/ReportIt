@@ -739,6 +739,7 @@ def third_party_sign_in(request):
         dict[request.user] = 1
         #if user_object.last_login == None:
         #if User.objects.filter(username=request.user.username).exists():
+        print (request.user)
         print("successfully in")
         group, created = Group.objects.get_or_create(name="Reporter")
         if created:
