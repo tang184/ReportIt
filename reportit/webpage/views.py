@@ -671,7 +671,7 @@ def get_rand_str(size=12, chars=string.ascii_uppercase + string.digits):
 """
     This method extracts containing necessary AWS S3 credential
 """
-def extract_credential(request):
+def extract_credential(request, file_path=""):
     bucket_name = os.environ.get('S3_BUCKET_NAME')
     access_key = os.environ.get('AWS_ACCESS_KEY_ID')
     secret_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
@@ -693,7 +693,7 @@ def extract_credential(request):
     full_name = rand_str1 + file_name + file_type
     name = full_name.encode()
     encode = hashlib.md5(name)
-    file_name = encode.hexdigest()
+    file_name = file_path + encode.hexdigest()
     url = 'https://%s.s3.amazonaws.com/%s' % (bucket_name, file_name)
 
 
@@ -732,7 +732,7 @@ def pack_pre_signed_post(request, data):
     return presigned_post
 
 """
-    Responds pre-signed request on Agent sign up
+    Called on Agent sign up
 """
 def signup_s3(request):
     extracted_data = extract_credential(request)
@@ -761,6 +761,10 @@ def signup_s3(request):
     else:
         return JsonResponse(json_context)
 
+
+"""
+    Called by uploadVerification file
+"""
 @login_required
 def sign_s3(request):
     extracted_data = extract_credential(request)
@@ -811,6 +815,41 @@ def sign_s3(request):
     else:
         return JsonResponse(json_context)
 
+"""
+    Called by attach profile picture
+"""
+@login_required
+def signpicture_s3(request):
+    file_path = "image/"
+    extracted_data = extract_credential(request, file_path)
+
+    # Find corresponding reporter
+    reporters = Reporter.objects.filter(user=request.user)
+
+    if (len(reporters) != 1):
+        print ("Error! There should be one and only one agent!")
+        return JsonResponse()
+
+    reporter = reporters.get()
+
+    # Properly store the file object
+    file = File.objects.create(uploader=None)
+    file.file_name = extracted_data['file_name']
+    file.file_type = extracted_data['file_type']
+    file.url = extracted_data['url'].replace(" ", "+")
+    file.save()
+
+    presigned_post = pack_pre_signed_post(request, extracted_data)
+
+    json_context = {
+            'data': presigned_post,
+            'url': extracted_data['url']
+        }
+
+    if (Testing_mode):
+        return JsonResponse()
+    else:
+        return JsonResponse(json_context)
 
 @login_required
 def upvoteSpecificConcern(request):
