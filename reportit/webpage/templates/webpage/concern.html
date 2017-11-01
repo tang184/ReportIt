@@ -43,23 +43,27 @@
 							</form> -->
 
 							<form id="submitconcern">
-							  Title:<br>
+							Title:<br>
 							  <input type="text" name="title" required id="id_title" maxlength="500" />
 							  <br>
-							  Target Agency:<br>
+
+							Target Agency:<br>
 							  <select id="selectagent" name="agent" multiple="multiple" required style="background-color:inherit">
 							  	{% for o in agent_legalnames %}
 								    <option value="{{o}}">{{o}}</option>
-								{% endfor %}								  
+								{% endfor %}
 								</select>
+
 							Attach Image:<br>
-							  <input type="text" name="image" id="image" maxlength="500" />							  
+							  <input type="text" name="image" id="image" maxlength="500" disabled="true" />
+
 							Content:<br>
 							  <textarea name="content" rows="4" cols="50" required id="id_content" maxlength="500"></textarea>
 							  <br><br>
-							
-							
 							</form> 
+
+			              	<label>Attached Image</label>
+							<input type="file" id="file_input">
 
 							<button type="submit" id="concern_submit_button" class="btn btn-primary btn-lg btn-block login-button">Submit</button>
 						</div>
@@ -74,6 +78,5 @@
 {% block scripts %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
 <script src="{% static 'assets/js/concern.js' %}"></script>
-
 
 {% endblock %}
