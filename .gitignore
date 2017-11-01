@@ -5,7 +5,9 @@ venv/
 webpage/migrations/
 saved_data.json
 
+
 *.pyc
 *.DS_Store
 reportit/webpage/migrations/*
 reportit/webpage/migrations/0001_initial.py
+reMakeDb.sh

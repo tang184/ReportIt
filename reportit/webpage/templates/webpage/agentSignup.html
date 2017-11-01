@@ -17,7 +17,7 @@
 
 		<title>Agent Signup</title>
 	</head>
-	<body>
+	<body onload="fileElement()">
 		<div class="container">
 			<div class="row main">
 				<div class="panel-heading">
@@ -27,7 +27,7 @@
 	               	</div>
 	            </div>
 				<div class="main-login main-center">
-					<form class="form-horizontal" method="post" action="#">
+					<form class="form-horizontal" method="post" action="#" id="register_form">
 						{% csrf_token %}
 
 						{% for field in form1 %}
@@ -39,7 +39,7 @@
         					{% endif %}
        						 {% for error in field.errors %}
 							<p style="color: red">{{ error }}</p>
-						{% endfor %}
+							{% endfor %}
 					  </p>
 					{% endfor %}
 
@@ -56,23 +56,30 @@
 					  </p>
 					{% endfor %}
 
-
-						<div class="form-group ">
-							<button type="submit" class="btn btn-primary login-button"  name="signup_submit" id="signup_submit">Register</button>
-						</div>
-						<div class="btn login">
-				            <a href="/login" name="login" id="login">Login</a>
-				         </div>
-						<div class="btn homepage">
-				            <a href="/" name="homepage" id="homepage">Homepage</a>
-				         </div>
-				         <div class="btn reporter">
-				            <a href="/reporterSignup" name="reporter" id="reporter">Reporter Signup</a>
-				         </div>
 					</form>
+
+	              	<label>Verification file</label>
+					<input type="file" id="file_input">
+
+					<div class="form-group ">
+						<input type="button" class="btn btn-primary login-button"  name="signup_submit" id="signup_submit" onclick="register_submit()" value="Submit">
+					</div>
+					<div class="btn login">
+			            <a href="/login" name="login" id="login">Login</a>
+			         </div>
+					<div class="btn homepage">
+			            <a href="/" name="homepage" id="homepage">Homepage</a>
+			         </div>
+			         <div class="btn reporter">
+			            <a href="/reporterSignup" name="reporter" id="reporter">Reporter Signup</a>
+			         </div>
 				</div>
 			</div>
 		</div>
 
 	</body>
+
+{% block scripts %}
+  <script src="{% static 'assets/js/register_page.js' %}"></script>
+{% endblock %}
 </html>

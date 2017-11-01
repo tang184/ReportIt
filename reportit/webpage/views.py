@@ -26,11 +26,18 @@ import hashlib
 
 from django.db import models
 
-# Create your views here.
 from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 
-# Create your views here.
+import hashlib
+import string
+import random
+
+
+# Testing_mode = True # Comment out this to enable real upload to s3
+
+Testing_mode = False
+
 
 
 @login_required
@@ -112,13 +119,88 @@ def viewProfile(request):
     # User is a reporter
     if len(reporter) != 0:
         profile_user = request.user.reporter
-    if len(reporter) == 0:
+        isagent = False
+
+        concern = Concern.objects.filter(reporter=profile_user)
+        
+
+    else:
         profile_user = request.user.agent
+            #print(current_agent.user.username)
+        isagent = True
+
+        concern = Concern.objects.filter()
+        v = list(concern)
+        concern = []
+
+        for i in range(len(v)):
+            p = v[i].target_agent.all().filter(user=profile_user.user)
+            if (len(p) != 0):
+                concern.append(v[i])
+        #print(concern)       
+        
     context = {
         'profile_user' : profile_user,
+        'isagent' : isagent,
+        'concern': concern,
     }
 
     return render(request, 'webpage/profile.html', context)
+
+
+def viewpeopleProfile(request):
+    username = request.GET.get('')
+
+    current_user = User.objects.filter(username=username)
+    current_reporter = Reporter.objects.filter(user=current_user)
+    current_agent = Agent.objects.filter(user=current_user)
+
+
+    if (len(current_reporter) == 0):
+        # User is not a reporter
+        if (len(current_agent) == 0):
+            reporter = Reporter.objects.filter(user=request.user)
+            agent = Agent.objects.filter(user=request.user)
+            # User is a reporter
+            if len(reporter) != 0:
+                profile_user = request.user.reporter
+            if len(reporter) == 0:
+                profile_user = request.user.agent
+            context = {
+                'profile_user' : profile_user,
+            }
+        else:
+            current_agent = current_agent.get()
+            #print(current_agent.user.username)
+            isagent = True
+
+            concern = Concern.objects.filter()
+            v = list(concern)
+            concern = []
+
+            for i in range(len(v)):
+                p = v[i].target_agent.all().filter(user=current_user)
+                if (len(p) != 0):
+                    concern.append(v[i])
+            #print(concern)
+
+            context = {
+                'profile_user' : current_agent,
+                'isagent' : isagent,
+                'concern': concern,
+            }
+    else:
+        current_reporter = current_reporter.get()
+        isagent = False
+
+        concern = Concern.objects.filter(reporter=current_reporter)
+        context = {
+            'profile_user' : current_reporter,
+            'isagent' : isagent,
+            'concern': concern,
+        }
+        
+    return render(request, 'webpage/viewProfile.html', context)
 
 #@csrf_protect
 def editProfile(request):
@@ -171,7 +253,7 @@ def submitConcern(request):
     if request.method == 'POST':
         #reader = codecs.getreader("utf-8")
         json_data = json.loads(request.body.decode('utf-8'))
-        print(json_data)
+        # print(json_data)
         current_reporter = Reporter.objects.filter(user=request.user)
         current_reporter = current_reporter.get()
 
@@ -179,6 +261,7 @@ def submitConcern(request):
         new_concern = Concern.objects.create(reporter=current_reporter, concern_id=concern_id)
         new_concern.content = json_data['content']
         new_concern.title = json_data['title']
+        new_concern.image = json_data['image']
         total_agent = Agent.objects.all()
 
 
@@ -194,14 +277,12 @@ def submitConcern(request):
         list_of_agents = []
         for item in target_agents:
             agent_email = str(item.user.email)
-            print (agent_email)
             list_of_agents.append(agent_email)
 
         #send email to agent
         email = EmailMessage('A New Concern Has Been Submitted to You', 'A New Concern Has Been Submitted to You',
                                  to = list_of_agents)
         email.send()
-        print ("email sent successfully")
 
         current_reporter.historical_concern_count += 1
         current_reporter.save()
@@ -244,7 +325,7 @@ def submitConcern(request):
         return render(request, 'webpage/concern.html', context)
 
 def match(elem):
-    print(elem)
+    # print(elem)
     return elem[1]
 
 @login_required
@@ -268,7 +349,7 @@ def searchConcern(request):
                     concern[j] = p
 
 
-        print(concern)
+        # print(concern)
 
 
         fuzz.ratio("this is a test", "this is a test!")
@@ -285,9 +366,9 @@ def viewConcern(request):
     if (len(current_reporter) == 0):
         # User is not a reporter, display ALL concerns
         if (len(current_agent) == 0):
-            concern = Concern.objects.all()
+            concern = Concern.objects.all(isSolved=False)
         else:
-            concern = Concern.objects.filter()
+            concern = Concern.objects.filter(isSolved=False)
             v = list(concern)
             concern = []
 
@@ -297,10 +378,10 @@ def viewConcern(request):
                     concern.append(v[i])
 
 
-            return render(request, 'webpage/viewPersonalConcern.html', locals())
+        return render(request, 'webpage/viewPersonalConcern.html', locals())
     else:
         current_reporter = current_reporter.get()
-        concern = Concern.objects.filter(reporter=current_reporter)
+        concern = Concern.objects.filter(reporter=current_reporter, isSolved=False)
 
     return render(request, 'webpage/viewPersonalConcern.html', locals())
 
@@ -310,7 +391,7 @@ def viewConcern(request):
 def viewAllConcerns(request):
     #current_reporter = Reporter.objects.filter(user=request.user)
 
-    concern = Concern.objects.all()
+    concern = Concern.objects.filter(isSolved=False)
 
     return render(request, 'webpage/viewAllConcerns.html', locals())
 
@@ -496,19 +577,162 @@ def removeSpecificConcern(request):
         return render(request, 'webpage/viewPersonalConcern.html', locals())
 
 
+
+@login_required
+def respondConcern(request):
+    current_reporter = Reporter.objects.filter(user=request.user)
+    current_agent = Agent.objects.filter(user=request.user)
+    # User is not a reporter
+    if (len(current_reporter) == 0):
+        if (len(current_agent) == 0):
+            form1 = ReporterSignUpForm()
+            form2 = ReporterAdditionalForm()
+            context = {
+                'form1': form1,
+                'form2': form2,
+                'notReporter': True
+            }
+
+            return render(request, 'webpage/reporterSignup.html', context)
+        else:
+            concern_id = request.GET.get('')
+            concern = Concern.objects.filter(id=concern_id)
+            concern = concern.get()
+
+            body = (request.POST)
+            respond = body['respond']
+            concern.respond = respond
+            concern.save()
+
+            concern = Concern.objects.filter()
+            v = list(concern)
+            concern = []
+
+            for i in range(len(v)):
+                p = v[i].target_agent.all().filter(user=request.user)
+                if (len(p) != 0):
+                    concern.append(v[i])
+            return render(request, 'webpage/viewPersonalConcern.html', locals())
+    else:
+        current_reporter = current_reporter.get()
+        concern_id = request.GET.get('')
+        concern = Concern.objects.filter(reporter=current_reporter,id=concern_id)
+
+        # Specific conern id does not exist (or has been deleted)
+        if (len(concern) != 1):
+            concern = Concern.objects.filter(reporter=current_reporter)
+            concernNotExist = True
+
+            if (len(concern) > 1):
+                print ("Error! Multiple concern tends to have identical id! Combination is: " + str(request.user) + str(concern_id))
+
+            return render(request, 'webpage/viewPersonalConcern.html', locals())
+
+        # Remove the corresponding concern from db
+        input_form = EditConcernForm(request.POST)
+
+        concern = concern.get()
+
+        body = (request.POST)
+        respond = body['respond']
+        concern.respond = respond
+        concern.save()
+
+        concern = Concern.objects.filter(reporter=current_reporter)
+
+        return render(request, 'webpage/viewPersonalConcern.html', locals())
+
+
 @login_required
 def uploadVerification(request):
-    if (len(request.POST) == 2):
-        uploadSuccess = True
+
+    agents = Agent.objects.filter(user=request.user)
+
+    if (len(agents) != 1):
+        return render(request, 'webpage/dashboard.html')
     else:
-        uploadSuccess = False
-        
-    return render(request, 'webpage/uploadVerification.html', locals())
+        agent = agents.get()
+        files = File.objects.filter(uploader=agent)
+
+        if (len(files) > 1):
+            uploadSuccess = True
+        else:
+            uploadSuccess = False
+            
+        return render(request, 'webpage/uploadVerification.html', locals())
+
+"""
+    
+"""
+def get_rand_str(size=12, chars=string.ascii_uppercase + string.digits):
+    return ''.join(random.choice(chars) for _ in range(size))
 
 
 """
     For local usage, remember to invoke .env file to add env var
 """
+def signup_s3(request):
+    bucket_name = os.environ.get('S3_BUCKET_NAME')
+    access_key = os.environ.get('AWS_SECRET_ACCESS_KEY')
+    s3_zone = os.environ.get('S3_Zone')
+
+    if (bucket_name == None or access_key == None): 
+        print ("\n\n==============")
+        print ("Insufficient S3 info. Please indicate S3 credential in env!")
+        print ("==============\n\n")
+
+    s3_bucket = boto3.client('s3') 
+    file_name = request.GET.get('file_name')
+    file_type = request.GET.get('file_type')
+
+    # hash the file name
+    rand_str1 = get_rand_str()
+    rand_str2 = get_rand_str()
+
+    full_name = rand_str1 + file_name + file_type
+    name = full_name.encode()
+    encode = hashlib.md5(name)
+    file_name = encode.hexdigest()
+
+    url = 'https://%s.s3.amazonaws.com/%s' % (bucket_name, file_name)
+
+    files = File.objects.filter(url=url.replace(" ", "+"))
+
+    # Uploading multiple item would override previous one
+    if (len(files) == 0):
+        file = File.objects.create(uploader=None)
+    else:
+        file = files.get()
+
+    file.file_name = file_name
+    file.file_type = file_type
+    file.url = url.replace(" ", "+")
+    file.save()
+
+    s3_ob = boto3.client('s3')
+    presigned_post = s3_ob.generate_presigned_post(
+            Bucket = bucket_name,
+            Key = file_name,
+            Fields = {
+                "acl": "public-read",
+                "Content-Type": file_type
+            },
+            Conditions = [
+                {"acl": "public-read"},
+                {"Content-Type": file_type}
+            ],
+            ExpiresIn = 3600
+        )
+
+    json_context = {
+            'data': presigned_post,
+            'url': url
+        }
+    if (Testing_mode):
+        return JsonResponse()
+    else:
+        return JsonResponse(json_context)
+
 @login_required
 def sign_s3(request):
     bucket_name = os.environ.get('S3_BUCKET_NAME')
@@ -523,51 +747,67 @@ def sign_s3(request):
     s3_bucket = boto3.client('s3') 
     file_name = request.GET.get('file_name')
     file_type = request.GET.get('file_type')
+
+    # hash the file name
+    rand_str1 = get_rand_str()
+    rand_str2 = get_rand_str()
+
+    full_name = rand_str1 + file_name + file_type
+    name = full_name.encode()
+    encode = hashlib.md5(name)
+    file_name = encode.hexdigest()
     url = 'https://%s.s3.amazonaws.com/%s' % (bucket_name, file_name)
 
-    uploaders = Agent.objects.filter(user=request.user)
+    # Save information in Agent object
+    agents = Agent.objects.filter(user=request.user)
 
-    if (uploaders != None):
-        uploader = uploaders.get()
+    if (len(agents) != 1):
+        print ("Error! There should be one and only one agent!")
+        return JsonResponse()
 
-        files = File.objects.filter(uploader=uploader)
+    agent = agents.get()
+    orig_file = agent.agentverifile
+    agent.agentverifile = url.replace(" ", "+")
+    agent.save()
 
-        # Uploading multiple item would override previous one
-        if (len(files) == 0):
-            file = File.objects.create(uploader=uploader)
-        else:
-            file = files.get()
-
-        file.file_name = file_name
-        file.file_type = file_type
-        file.url = url.replace(" ", "+")
-        file.save()
-
-        s3_ob = boto3.client('s3')
-        presigned_post = s3_ob.generate_presigned_post(
-                Bucket = bucket_name,
-                Key = file_name,
-                Fields = {
-                    "acl": "public-read",
-                    "Content-Type": file_type
-                },
-                Conditions = [
-                    {"acl": "public-read"},
-                    {"Content-Type": file_type}
-                ],
-                ExpiresIn = 3600
-            )
-
-        json_context = {
-                'data': presigned_post,
-                'url': url
-            }
-
-        return JsonResponse(json_context)
+    # Delete the original file
+    files = File.objects.filter(url=orig_file)
+    if (len(files) < 1):
+        print ("Error! Agent should have exactly one verification file. But " + str(len(files)) + " found")
     else:
-        print ("\n\nINVALID\n\n")
-        return redirect('/')
+        file = files.get()
 
+    # Properly store the file object
+    file = File.objects.create(uploader=agent)
+    file.file_name = file_name
+    file.file_type = file_type
+    file.url = url.replace(" ", "+")
+    file.save()
+
+    # Construct s3 sign object
+    s3_ob = boto3.client('s3')
+    presigned_post = s3_ob.generate_presigned_post(
+            Bucket = bucket_name,
+            Key = file_name,
+            Fields = {
+                "acl": "public-read",
+                "Content-Type": file_type
+            },
+            Conditions = [
+                {"acl": "public-read"},
+                {"Content-Type": file_type}
+            ],
+            ExpiresIn = 3600
+        )
+
+    json_context = {
+            'data': presigned_post,
+            'url': url
+        }
+    if (Testing_mode):
+        return JsonResponse()
+    else:
+        return JsonResponse(json_context)
 
 
 @login_required
@@ -592,7 +832,7 @@ def upvoteSpecificConcern(request):
 
         # Specific conern id does not exist (or has been deleted)
         if (len(concern) != 1):
-            concern = Concern.objects.filter(reporter=current_reporter)
+            concern = Concern.objects.filter(isSolved=False)
             concernNotExist = True
 
             if (len(concern) > 1):
@@ -611,7 +851,7 @@ def upvoteSpecificConcern(request):
 
         UpvoteSuccess = True
 
-        concern = Concern.objects.filter()
+        concern = Concern.objects.filter(isSolved=False)
 
         return render(request, 'webpage/viewAllConcerns.html', locals())
 
@@ -638,7 +878,7 @@ def downvoteSpecificConcern(request):
 
         # Specific conern id does not exist (or has been deleted)
         if (len(concern) != 1):
-            concern = Concern.objects.filter(reporter=current_reporter)
+            concern = Concern.objects.filter(isSolved=False)
             concernNotExist = True
 
             if (len(concern) > 1):
@@ -657,7 +897,7 @@ def downvoteSpecificConcern(request):
 
         DownvoteSuccess = True
 
-        concern = Concern.objects.filter()
+        concern = Concern.objects.filter(isSolved=False)
 
         return render(request, 'webpage/viewAllConcerns.html', locals())
 
@@ -703,7 +943,7 @@ def resolveSpecificConcern(request):
 
         # Specific conern id does not exist (or has been deleted)
         if (len(concern) != 1):
-            concern = Concern.objects.filter(reporter=current_reporter)
+            concern = Concern.objects.filter(isSolved=False)
             concernNotExist = True
 
             if (len(concern) > 1):
@@ -717,7 +957,67 @@ def resolveSpecificConcern(request):
         concern.isSolved = True
         concern.save()
 
-        concern = Concern.objects.filter()
+        concern = Concern.objects.filter(isSolved=False)
+
+        return render(request, 'webpage/viewAllConcerns.html', locals())
+
+
+@login_required
+def unsolveSpecificConcern(request):
+    current_reporter = Reporter.objects.filter(user=request.user)
+    current_agent = Agent.objects.filter(user=request.user)
+    # User is not a reporter
+    if (len(current_reporter) == 0):
+        if (len(current_agent) == 0):
+            form1 = ReporterSignUpForm()
+            form2 = ReporterAdditionalForm()
+            context = {
+                'form1': form1,
+                'form2': form2,
+                'notReporter': True
+            }
+
+            return render(request, 'webpage/reporterSignup.html', context)
+        else:
+            concern_id = request.GET.get('')
+            concern = Concern.objects.filter(id=concern_id)
+            concern = concern.get()
+
+            concern.isSolved = False
+            concern.save()
+
+            concern = Concern.objects.filter()
+            v = list(concern)
+            concern = []
+
+            for i in range(len(v)):
+                p = v[i].target_agent.all().filter(user=request.user)
+                if (len(p) != 0):
+                    concern.append(v[i])
+            return render(request, 'webpage/viewPersonalConcern.html', locals())
+
+    else:
+        current_reporter = current_reporter.get()
+        concern_id = request.GET.get('')
+        concern = Concern.objects.filter(id=concern_id)
+
+        # Specific conern id does not exist (or has been deleted)
+        if (len(concern) != 1):
+            concern = Concern.objects.filter(reporter=current_reporter)
+            concernNotExist = True
+
+            if (len(concern) > 1):
+                print ("Error! Multiple concern tends to have identical id! Combination is: " + str(request.user) + str(concern_id))
+
+            return render(request, 'webpage/viewAllConcerns.html', locals())
+
+
+        concern = concern.get()
+
+        concern.isSolved = False
+        concern.save()
+
+        concern = Concern.objects.filter(isSolved=False)
 
         return render(request, 'webpage/viewAllConcerns.html', locals())
 
@@ -730,6 +1030,7 @@ dict = {}
 
 def third_party_sign_in(request):
     user_object = request.user
+    current_reporter = Reporter.objects.filter(user=request.user)
     #print(request)
     #print(request.user)
     global dict
@@ -748,6 +1049,7 @@ def third_party_sign_in(request):
         reporter = Reporter(user = user_object)
         reporter.save()
         print ("successfully saved")
+
     return HttpResponseRedirect('/account/dashboard')
 
 

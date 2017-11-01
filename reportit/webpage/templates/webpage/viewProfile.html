@@ -2,39 +2,49 @@
 {% load static %}
 {% load util %}
 
-<section id="main" class="container">
-<header>
-<h2>My Profile</h2>
-<p>Just an assorted selection of elements.</p>
-</header>
 
 {% block content %}
 
 <section id="main" class="container">
 
 <header>
-	<h2>My Profile</h2>
+	{% if isagent %}
+	<h2>{{profile_user.legal_name}}'s Profile</h2>
+	{% else %}
+	<h2>{{profile_user.user.username}}'s Profile</h2>
+	{% endif %}
 	<!-- <p>My profile content</p> -->
 </header>
-{% if request.user.reporter|to_class_name == 'Reporter' %}
-<center><img src="{{profile_user.reporterimg}}" height="100" width="100" align="middle"></img></center>
-{% else %}
+
+{% if isagent %}
 <center><img src="{{profile_user.agentimage}}" height="100" width="100" align="middle"></img></center>
+
+{% else %}
+
+<center><img src="{{profile_user.reporterimg}}" height="100" width="100" align="middle"></img></center>
+
 {% endif %}
+
 <div class="row">
 <div class="12u">
-
-
 
 <!-- Table -->
 <section class="box">
 	<div class="table-wrapper">
 		<table>
-			
+
 			<tbody>
+				{% if not isagent %}
 				<tr>
 					<td>Username</td>
-					<td>{{request.user.username}}</td>
+					<td>{{profile_user.user.username}}</td>
+
+				</tr>
+				{% endif %}
+
+				<tr>
+					<td>Legal Name</td>
+					<td>{{profile_user.legal_name}}</td>
 
 				</tr>
 				<!-- <tr>
@@ -47,7 +57,7 @@
 					<td> Morbi faucibus arcu accumsan lorem.</td>
 
 				</tr> -->
-				{% if request.user.reporter|to_class_name == 'Reporter' %}
+				{% if not isagent %}
 				<tr>
 					<td>Gender</td>
 					<td>{{ profile_user.gender }}</td>
@@ -70,19 +80,6 @@
 				</tr>
 				
 			</tbody>
-			<tfoot>
-				<tr>
-					<td>
-					<div class="12u">
-						<ul class="actions">
-							<li><a href="edit" class="button small" name="edit_button"/>Edit</a></li>
-							<!-- <li><input type="reset" value="Cancel" class="alt" /></li> -->
-						</ul>
-					</div>
-					</td>
-					
-				</tr>
-			</tfoot>
 
 		</table>
 	</div>
@@ -90,6 +87,9 @@
 </section>
 </div>
 </div>
+
+
+
 <div class="row">
 	<div class="12u">
 

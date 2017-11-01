@@ -1,4 +1,4 @@
 Django>=1.11.1
 social-auth-app-django>=1.1.0
-git+ssh://git@github.com/seatgeek/fuzzywuzzy.git@0.15.1#egg=fuzzywuzzy
+fuzzywuzzy
 boto3
