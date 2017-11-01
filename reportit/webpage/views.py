@@ -1033,22 +1033,22 @@ def third_party_sign_in(request):
     current_reporter = Reporter.objects.filter(user=request.user)
     #print(request)
     #print(request.user)
-
-    if (len(current_reporter) == 0):
-        global dict
-        if request.user in dict.keys():
-            dict[request.user] += 1
-        else:
-            dict[request.user] = 1
-            #if user_object.last_login == None:
-            #if User.objects.filter(username=request.user.username).exists():
-            group, created = Group.objects.get_or_create(name="Reporter")
-            if created:
-                group.save()
-            user_object.groups.add(group)
-            reporter = Reporter(user = user_object)
-            reporter.save()
-
+    global dict
+    if request.user in dict.keys():
+        dict[request.user] += 1
+    else:
+        dict[request.user] = 1
+        #if user_object.last_login == None:
+        #if User.objects.filter(username=request.user.username).exists():
+        print (request.user)
+        print("successfully in")
+        group, created = Group.objects.get_or_create(name="Reporter")
+        if created:
+            group.save()
+        user_object.groups.add(group)
+        reporter = Reporter(user = user_object)
+        reporter.save()
+        print ("successfully saved")
 
     return HttpResponseRedirect('/account/dashboard')
 

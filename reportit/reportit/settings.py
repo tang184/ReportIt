@@ -83,7 +83,9 @@ WSGI_APPLICATION = 'reportit.wsgi.application'
 
 #add for third party login
 AUTHENTICATION_BACKENDS = (
-    'social_core.backends.facebook.FacebookOAuth2',
+    'social_core.backends.github.GithubOAuth2',
+    #'social_core.backends.facebook.FacebookOAuth2',
+    'social.backends.twitter.TwitterOAuth',
     'social_core.backends.google.GoogleOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 )
@@ -117,8 +119,8 @@ SOCIAL_AUTH_USERNAME_FORM_HTML = '/webpage/templates/webpage/reporterSignup.html
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '526390079783-65f89qmpk4120cqgpps2pm4mvlth3f1f.apps.googleusercontent.com'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'UkY8l1aM01Y2cmJyRsSmNH2b'
 
-SOCIAL_AUTH_FACEBOOK_APP_KEY = '166948077223824'
-SOCIAL_AUTH_FACEBOOK_APP_SECRET = '9e7934e9cd44fe6967b9e87f4d01b8aa'
+SOCIAL_AUTH_GITHUB_KEY = 'bef78fe2c9af4f96d209'
+SOCIAL_AUTH_GITHUB_SECRET = '6165fb18c58bc79457adcc45c67585334e02bcd0'
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
