@@ -928,6 +928,8 @@ def resolveSpecificConcern(request):
             concern.isSolved = True
             concern.save()
 
+
+
             concern = Concern.objects.filter()
             v = list(concern)
             concern = []
@@ -936,6 +938,18 @@ def resolveSpecificConcern(request):
                 p = v[i].target_agent.all().filter(user=request.user)
                 if (len(p) != 0):
                     concern.append(v[i])
+
+
+            #send email start
+            list_of_reporters = []
+            list_of_reporters.append(str(concern.reporter.user.email))
+            # send email to agent
+            email = EmailMessage('Your Submitted Concern Has Been Resolved', 'Your submitted concern has been marked as resolved by at least an agent.',
+                                 to=list_of_reporters)
+            email.send()
+            #end
+
+
             return render(request, 'webpage/viewPersonalConcern.html', locals())
 
     else:
