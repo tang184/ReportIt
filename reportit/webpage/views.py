@@ -674,7 +674,7 @@ def respondConcern(request):
 
             body = (request.POST)
             respond = body['respond']
-            concern.respond = respond
+            concern.respond = current_agent.legal_name + " : " + respond
             concern.save()
 
             concern = Concern.objects.filter()
@@ -708,7 +708,7 @@ def respondConcern(request):
 
         body = (request.POST)
         respond = body['respond']
-        concern.respond = respond
+        concern.respond = current_reporter.user.username + " : " + respond
         concern.save()
 
         concern = Concern.objects.filter(reporter=current_reporter)
