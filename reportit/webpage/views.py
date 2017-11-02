@@ -95,7 +95,9 @@ def agentSignup(request):
         form2 = AdditionalForm(request.POST)
         #print(form2)
         if form1.is_valid() and form2.is_valid():
-            model1 = form1.save()
+            model1 = form1.save(commit=False)
+            model1.is_active=False
+            model1.save()
             #print(model1)
             model2 = form2.save(commit=False)
             #print(model2)
