@@ -1,6 +1,20 @@
 function fileElement() {
 	var text = document.getElementById("id_agentverifile");
 	text.disabled = true;
+
+	var labels = document.getElementsByTagName('LABEL');
+	for (var i = 0; i < labels.length; i++) {
+	    if (labels[i].htmlFor != '') {
+	         var elem = document.getElementById(labels[i].htmlFor);
+	         if (elem)
+	            elem.label = labels[i];         
+	    }
+	}
+
+	var isVerified = document.getElementById("id_isVerified");
+	isVerified.label.innerHTML = "";
+	isVerified.hidden = true;
+
 }
 
 function register_submit() {
