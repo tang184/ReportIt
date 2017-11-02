@@ -78,12 +78,7 @@
 								{% if user == concern.reporter.user %}
 								
 
-									<form method="post" action="/account/editSpecificConcern/id?={{ concern.id }}">
-
-									{% csrf_token %}
-
-									<button type="submit" id="edit" class="btn btn-primary " name="edit">Edit Concern</button>
-									</form> 
+									<a href="/account/editSpecificConcern/id?={{ concern.id }}" ><button type="submit" class="btn btn-primary">Edit Concern</button> </a>
 
 									{% if not concern.isSolved %}
 

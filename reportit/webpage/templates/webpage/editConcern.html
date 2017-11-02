@@ -36,6 +36,7 @@
 					<section class="box">
 						<div class="table-wrapper">
 						<div class="main-login main-center">
+							<!--
 							<form method="post" action="/account/editSpecificConcern/id=?={{ concern.concern_id }}">
 							{% csrf_token %}
 
@@ -52,6 +53,26 @@
 							  <br><br>
 							
 							<button type="submit" href="#" id="concern_submit_button" class="btn btn-primary btn-lg btn-block login-button">Submit</button>
+							</form> -->
+
+
+							<form id="submitconcern">
+							  Title:<br>
+							  <input type="text" name="title" required id="id_title" maxlength="500" value="{{concern_context.title}}"/>
+							  <br>
+							  Target Agency:<br>
+							  <select id="selectagent" name="agent" multiple="multiple" required style="background-color:inherit">
+							  	{% for o in agent_legalnames %}
+								    <option value="{{o}}">{{o}}</option>
+								{% endfor %}								  
+								</select>
+							Attach Image:<br>
+							  <input type="text" name="image" id="image" maxlength="500" value="{{concern_context.image}}" />							  
+							Content:<br>
+							  <textarea name="content" rows="4" cols="50" required id="id_content" maxlength="500">{{concern_context.content}}</textarea>
+							  <br><br>
+
+							  <button type="submit" href="#" id="concern_submit_button" class="btn btn-primary btn-lg btn-block login-button">Submit</button>							
 							</form> 
 						</div>
 						</div>
@@ -61,3 +82,13 @@
 		</section>
 {% endblock %}
 
+
+
+{% block scripts %}
+<script type="text/javascript">
+var a = "{{concern_id}}"
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.4/js/select2.min.js"></script>
+<script type="text/javascript" src="{% static 'assets/js/EditConcern.js' %}"></script>
+
+{% endblock %}

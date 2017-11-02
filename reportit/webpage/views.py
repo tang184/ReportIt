@@ -33,6 +33,7 @@ from fuzzywuzzy import process
 import hashlib
 import string
 import random
+import time
 
 
 # Testing_mode = True # Comment out this to enable real upload to s3
@@ -440,82 +441,145 @@ def viewSpecificConcern(request):
 
 @login_required
 def editSpecificConcern(request):
-    current_reporter = Reporter.objects.filter(user=request.user)
 
-    # User is not a reporter
-    if (len(current_reporter) == 0):
-        form1 = ReporterSignUpForm()
-        form2 = ReporterAdditionalForm()
-        context = {
-            'form1': form1,
-            'form2': form2,
-            'notReporter': True
-        }
-
-        return render(request, 'webpage/reporterSignup.html', context)
-    else:
+    if request.method == 'POST':
+        #reader = codecs.getreader("utf-8")
+        current_reporter = Reporter.objects.filter(user=request.user)
         current_reporter = current_reporter.get()
         concern_id = request.GET.get('')
+        #print(concern_id)
         concern = Concern.objects.filter(reporter=current_reporter,id=concern_id)
+        json_data = json.loads(request.body.decode('utf-8'))
+        #print(json_data)
+        new_concern=concern.get()
+        #print(concern)
 
-        # Specific conern id does not exist (or has been deleted)
-        if (len(concern) != 1):
-            concern = Concern.objects.filter(reporter=current_reporter)
-            concernNotExist = True
+        new_concern.content = json_data['content']
+        new_concern.title = json_data['title']
+        new_concern.image = json_data['image']
 
-            if (len(concern) > 1):
-                print ("Error! Multiple concern tends to have identical id! Combination is: " + str(request.user) + str(concern_id))
+        total_agent = Agent.objects.all()
 
-            return render(request, 'webpage/viewPersonalConcern.html', locals())
+        target_agents = []
+        new_concern.target_agent.clear()
+
+        for ele in total_agent:
+            if (ele.legal_name in json_data['selectagent']):
+                new_concern.target_agent.add(ele)
+                target_agents.append(ele)
+
+        
+        new_concern.save()
+
+        """
+        
+
+        list_of_agents = []
+        for item in target_agents:
+            agent_email = str(item.user.email)
+            print (agent_email)
+            list_of_agents.append(agent_email)
+
+        #send email to agent
+        email = EmailMessage('A New Concern Has Been Submitted to You', 'A New Concern Has Been Submitted to You',
+                                 to = list_of_agents)
+        email.send()
+        print ("email sent successfully")
+
+        current_reporter.historical_concern_count += 1
+        current_reporter.save()
+        """
 
 
-        input_form = EditConcernForm(request.POST)
-        concern = concern.get()
+        return HttpResponse(json.dumps("success"), content_type='application/json')
+        
+    else:
+        current_reporter = Reporter.objects.filter(user=request.user)
 
-        # User submit their changes
-        if (input_form.is_valid()):
-            concern.content = request.POST.get('content')
-            concern.title = request.POST.get('title')
+        # User is not a reporter
+        if (len(current_reporter) == 0):
+            form1 = ReporterSignUpForm()
+            form2 = ReporterAdditionalForm()
+            context = {
+                'form1': form1,
+                'form2': form2,
+                'notReporter': True
+            }
 
-            agents = request.POST.get('agent')
-
-            concern.target_agent.clear()
-            total_agent = Agent.objects.all()
-            for ele in total_agent:
-                if (ele.legal_name == agents):
-                    concern.target_agent.add(ele)
-
-            concern.save()
-
-            editSuccess = True
-            concern = Concern.objects.filter(reporter=current_reporter)
-
-            return render(request, 'webpage/viewPersonalConcern.html', locals())
+            return render(request, 'webpage/reporterSignup.html', context)
         else:
-            num_concern = len(concern.target_agent.all())
+            current_reporter = current_reporter.get()
+            concern_id = request.GET.get('')
+            #print(current_reporter)
+            #print(concern_id)
+            concern = Concern.objects.filter(reporter=current_reporter,id=concern_id)
+            print(concern)
 
-            # no agent is targeted
-            if (num_concern == 0):
-                concern_context = {
-                'title': concern.title,
-                'content': concern.content,
-                'agent': None
-                }
+            # Specific conern id does not exist (or has been deleted)
+            if (len(concern) != 1):
+                concern = Concern.objects.filter(reporter=current_reporter)
+                concernNotExist = True
+
+                time.sleep(5)
+
+                if (len(concern) > 1):
+                    print ("Error! Multiple concern tends to have identical id! Combination is: " + str(request.user) + str(concern_id))
+
+                return render(request, 'webpage/viewPersonalConcern.html', locals())
+
+
+            input_form = EditConcernForm(request.POST)
+            concern = concern.get()
+
+            # User submit their changes
+            if (input_form.is_valid()):
+                concern.content = request.POST.get('content')
+                concern.title = request.POST.get('title')
+
+                agents = request.POST.get('agent')
+
+                concern.target_agent.clear()
+                total_agent = Agent.objects.all()
+                for ele in total_agent:
+                    if (ele.legal_name == agents):
+                        concern.target_agent.add(ele)
+
+                concern.save()
+
+                editSuccess = True
+                concern = Concern.objects.filter(reporter=current_reporter)
+
+                return render(request, 'webpage/viewPersonalConcern.html', locals())
             else:
-                src = concern.target_agent.all()
-                tar = []
-                for ele in src:
-                    tar.append(str(ele.legal_name))
+                num_concern = len(concern.target_agent.all())
 
-                concern_context = {
+                # no agent is targeted
+                if (num_concern == 0):
+                    concern_context = {
                     'title': concern.title,
                     'content': concern.content,
-                    'agent': tar
-                }
+                    'agent': None
+                    }
+                else:
+                    src = concern.target_agent.all()
+                    tar = []
+                    for ele in src:
+                        tar.append(str(ele.user.username))
 
-            form = EditConcernForm(initial=concern_context)
+                    concern_context = {
+                        'title': concern.title,
+                        'content': concern.content,
+                        'image': concern.image,
+                        'agent': tar
+                    }
 
-            return render(request, 'webpage/editConcern.html', locals())
+                form = EditConcernForm(initial=concern_context)
+                total_agent = Agent.objects.all()
+                agent_legalnames = []
+                for ele in total_agent:
+                    agent_legalnames.append(ele.legal_name)
+
+                return render(request, 'webpage/editConcern.html', locals())
 
 @login_required
 def removeSpecificConcern(request):
