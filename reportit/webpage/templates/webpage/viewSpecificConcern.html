@@ -134,12 +134,18 @@
 
 								{% else %}
 
+									{% if request.user.username in v %}
+
+									{% else %}
+
 									<form method="post" action="/account/upvoteSpecificConcern/id?={{ concern.id }}">
 
 									{% csrf_token %}
 
 									<button type="submit" id="upvote_submit_button" class="btn btn-info ">Upvote</button>
 									</form>
+
+									{% endif %}
 
 									<form method="post" action="/account/downvoteSpecificConcern/id?={{ concern.id }}">
 

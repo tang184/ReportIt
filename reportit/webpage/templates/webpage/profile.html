@@ -19,7 +19,7 @@
 {% if request.user.reporter|to_class_name == 'Reporter' %}
 <center><img src="{{profile_user.reporterimg}}" height="100" width="100" align="middle"></img></center>
 {% else %}
-<center><img src="{{profile_user.agentimage}}" height="100" width="100" align="middle"></img></center>
+<center><img src="http://localhost:8000/static/images/default_avatar.png" height="100" width="100" align="middle"></img></center>
 {% endif %}
 <div class="row">
 <div class="12u">

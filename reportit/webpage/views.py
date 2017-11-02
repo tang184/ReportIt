@@ -439,6 +439,12 @@ def viewSpecificConcern(request):
             return render(request, 'webpage/viewPersonalConcern.html', locals())
         else:
             concern = concern.get()
+            upvote_reporters = list(concern.upvote_reporter.all())
+            v = []
+            for k in upvote_reporters:
+                v.append(k.user.username)
+            print(v)
+
             return render(request, 'webpage/viewSpecificConcern.html', locals())
 
 @login_required
@@ -952,6 +958,9 @@ def upvoteSpecificConcern(request):
 
         concern.upvote_count += 1
 
+        concern.upvote_reporter.add(current_reporter)
+        print(current_reporter)
+
         concern.save()
 
         id = concern_id
@@ -997,6 +1006,8 @@ def downvoteSpecificConcern(request):
         concern = concern.get()
 
         concern.upvote_count -= 1
+
+        concern.upvote_reporter.remove(current_reporter)
 
         concern.save()
 

@@ -37,10 +37,11 @@ class Agent(models.Model):
         return "legal name: " + str(self.legal_name) + ", user name: " + str(self.user.username)
 
 class Concern(models.Model):
-    reporter = models.ForeignKey(Reporter, on_delete=models.CASCADE)
+    reporter = models.ForeignKey(Reporter, related_name="reporter", on_delete=models.CASCADE)
     target_agent = models.ManyToManyField(Agent)
     title = models.CharField(max_length=500)
     # content = MarkdownField(blank=False)
+    upvote_reporter = models.ManyToManyField(Reporter, related_name="upvote_reporter")
     content = models.CharField(max_length=500)
     image = models.CharField(max_length=500, default="http://localhost:8000/static/images/not-available.jpg")
     concern_id = models.IntegerField(default=-1, blank=True) # For now, total count is used as id of concern
